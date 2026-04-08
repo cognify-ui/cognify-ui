@@ -10,6 +10,38 @@
     <meta property="og:title" content="Cognify AI — Нейросеть с контекстом">
     <meta property="og:description" content="Помнит весь разговор! Анализируй видео, аудио, изображения.">
     <meta name="theme-color" content="#0a0a0a">
+	<!-- Добавь в <head> -->
+	<title>Cognify AI | Бесплатная нейросеть с видео, аудио, изображениями</title>
+	<meta name="description" content="Cognify AI — бесплатная нейросеть. Анализируй видео, аудио, изображения, PDF. 4 AI модели: Groq, Cerebras, Cloudflare, Gemini. Без лимитов!">
+	<meta name="keywords" content="нейросеть, бесплатно, AI, искусственный интеллект, ChatGPT аналог, Groq, Gemini, Cerebras, Cloudflare, обработка видео, анализ аудио, распознавание изображений, нейросеть онлайн, бесплатный AI">
+	<meta name="author" content="Cognify AI">
+	<meta name="robots" content="index, follow">
+	<meta name="googlebot" content="index, follow">
+	<meta name="yandex" content="index, follow">
+	<meta name="bingbot" content="index, follow">
+
+	<!-- Open Graph (для соцсетей и поисковиков) -->
+	<meta property="og:title" content="Cognify AI — Бесплатная нейросеть">
+	<meta property="og:description" content="Анализируй видео, аудио, изображения и документы бесплатно. 4 AI модели в одном месте!">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://cognify-ui.github.io">
+	<meta property="og:image" content="https://cognify-ui.github.io/og-image.png">
+	<meta property="og:locale" content="ru_RU">
+	<meta property="og:locale:alternate" content="en_US">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Cognify AI — Бесплатная нейросеть">
+	<meta name="twitter:description" content="Анализируй видео, аудио, изображения и документы бесплатно">
+
+	<!-- Geo (для локального SEO) -->
+	<meta name="geo.region" content="RU">
+	<meta name="geo.placename" content="Moscow">
+
+	<!-- Verification для поисковиков -->
+	<meta name="google-site-verification" content="тут_код_после_подтверждения">
+	<meta name="yandex-verification" content="тут_код_после_подтверждения">
+	<meta name="msvalidate.01" content="тут_код_для_bing">
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     
     <style>
@@ -1029,6 +1061,27 @@
         updateFileButtons();
         
         console.log('Cognify AI v4.0 — С КОНТЕКСТОМ ДИАЛОГА! AI помнит весь разговор!');
+        
+        // ============================================
+        // 🔔 АВТОМАТИЧЕСКИЙ ПИНГ ПОИСКОВИКОВ
+        // ============================================
+        function pingSearchEngines() {
+            const url = encodeURIComponent('https://cognify-ui.github.io');
+            
+            // Google
+            fetch('https://www.google.com/ping?sitemap=' + url + '/sitemap.xml')
+                .catch(e => console.log('Google ping error:', e));
+            
+            // Bing
+            fetch('https://www.bing.com/ping?sitemap=' + url + '/sitemap.xml')
+                .catch(e => console.log('Bing ping error:', e));
+            
+            console.log('🔔 Поисковики уведомлены об обновлении сайта');
+        }
+        
+        // ВЫЗЫВАЕМ ФУНКЦИЮ через 3 секунды после загрузки
+        setTimeout(pingSearchEngines, 3000);
+        
     </script>
 </body>
 </html>
