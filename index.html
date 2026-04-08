@@ -275,65 +275,51 @@
     </div>
 
     <script>
-        let currentApi = 'groq';
-        let token = localStorage.getItem('token');
-        let username = localStorage.getItem('username');
+        let todayCount = parseInt(localStorage.getItem('todayCount') || '0');
+        const lastDate = localStorage.getItem('lastDate');
+        const today = new Date().toDateString();
         
         // Проверка авторизации
-        if (!token) {
-            window.location.href = '/login.html';
+        let currentUser = localStorage.getItem('currentUser');
+        
+        if (!currentUser) {
+            // Если не залогинен, показываем форму входа
+            document.body.innerHTML = `
+                <div class="container" style="text-align: center; padding: 50px;">
+                    <h1>🧠 Cognify-ui</h1>
+                    <p>Для использования нейросети нужно войти или зарегистрироваться</p>
+                    <div style="margin-top: 30px;">
+                        <button onclick="location.href='/login.html'" style="margin: 10px; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; color: white; cursor: pointer;">Войти</button>
+                        <button onclick="location.href='/register.html'" style="margin: 10px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 12px; color: white; cursor: pointer;">Регистрация</button>
+                    </div>
+                </div>
+            `;
+            throw new Error('Не авторизован');
         }
         
-        // Загрузка лимитов
-        async function loadLimits() {
-            const response = await fetch('https://cognify-backend.твой-аккаунт.workers.dev/api/limits', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await response.json();
-            document.getElementById('usedCount').innerText = data.used || 0;
-            document.getElementById('totalCount').innerText = localStorage.getItem('totalRequests') || 0;
+        if (lastDate !== today) {
+            todayCount = 0;
+            localStorage.setItem('lastDate', today);
+            localStorage.setItem('todayCount', '0');
         }
         
-        // Загрузка статистики
-        async function loadStats() {
-            const response = await fetch('https://cognify-backend.твой-аккаунт.workers.dev/api/stats', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await response.json();
-            alert(`📊 Статистика:\nВсего запросов: ${data.totalRequests || 0}\nСегодня: ${data.todayRequests || 0}\nВ истории: ${data.historyLength || 0} сообщений`);
-        }
+        document.getElementById('usedCount').innerText = todayCount;
         
-        // Показать историю
-        async function showHistory() {
-            const response = await fetch('https://cognify-backend.твой-аккаунт.workers.dev/api/history', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await response.json();
-            
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML = '';
-            
-            if (data.history && data.history.length > 0) {
-                for (let msg of data.history) {
-                    const isUser = msg.role === 'user';
-                    addMessage(msg.content, isUser);
-                }
-            } else {
-                addMessage("История пуста. Задай первый вопрос!", false);
-            }
-        }
+        const messagesContainer = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
         
-        function showStats() {
-            loadStats();
-        }
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
         
         function addMessage(text, isUser) {
-            const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
             messageDiv.innerHTML = `<div class="message-content">${escapeHtml(text)}</div>`;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
         
         function escapeHtml(text) {
@@ -342,79 +328,74 @@
             return div.innerHTML;
         }
         
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const question = input.value.trim();
-            if (!question) return;
-            
-            addMessage(question, true);
-            input.value = '';
-            input.style.height = 'auto';
-            
-            // Показываем загрузку
+        function showLoading() {
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'message bot';
-            loadingDiv.id = 'loadingMsg';
+            loadingDiv.id = 'loadingMessage';
             loadingDiv.innerHTML = `<div class="message-content"><div class="loading"></div> Думаю...</div>`;
-            document.getElementById('messages').appendChild(loadingDiv);
-            
-            try {
-                const response = await fetch('https://cognify-backend.твой-аккаунт.workers.dev/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ message: question, api: currentApi })
-                });
-                
-                const data = await response.json();
-                document.getElementById('loadingMsg')?.remove();
-                
-                if (data.error) {
-                    addMessage(`❌ ${data.error}`, false);
-                } else {
-                    addMessage(data.answer, false);
-                    // Обновляем счетчик
-                    if (data.remaining !== undefined) {
-                        document.getElementById('usedCount').innerText = 20 - data.remaining;
-                        let total = parseInt(localStorage.getItem('totalRequests') || '0');
-                        localStorage.setItem('totalRequests', total + 1);
-                        document.getElementById('totalCount').innerText = total + 1;
-                    }
-                }
-            } catch (error) {
-                document.getElementById('loadingMsg')?.remove();
-                addMessage(`❌ Ошибка: ${error.message}`, false);
-            }
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function hideLoading() {
+            const loading = document.getElementById('loadingMessage');
+            if (loading) loading.remove();
+        }
+        
+        function getDemoAnswer(question) {
+            const answers = [
+                `🤖 Привет, ${currentUser}! Твой вопрос: "${question.slice(0, 50)}..." Сегодня осталось ${19 - todayCount} запросов.`,
+                `✨ Cognify: Отличный вопрос, ${currentUser}! У тебя осталось ${19 - todayCount} бесплатных запросов на сегодня.`,
+                `🧠 Привет, ${currentUser}! Я Cognify. Спроси что-нибудь ещё! Осталось ${19 - todayCount} запросов.`
+            ];
+            return answers[Math.floor(Math.random() * answers.length)];
         }
         
         function logout() {
-            localStorage.clear();
-            window.location.href = '/login.html';
+            localStorage.removeItem('currentUser');
+            location.reload();
         }
         
-        // Выбор API
-        document.querySelectorAll('.api-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.api-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentApi = btn.dataset.api;
-                addMessage(`🔄 Переключено на ${btn.innerText}`, false);
-            });
-        });
+        async function sendRequest() {
+            const question = userInput.value.trim();
+            if (!question) return;
+            
+            if (todayCount >= 20) {
+                addMessage("❌ Лимит 20 запросов в день исчерпан. Завтра будет новый лимит! 🔄", false);
+                return;
+            }
+            
+            addMessage(question, true);
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                addMessage(getDemoAnswer(question), false);
+                
+                todayCount++;
+                localStorage.setItem('todayCount', todayCount);
+                document.getElementById('usedCount').innerText = todayCount;
+            }, 1000);
+        }
         
-        // Отправка
-        document.getElementById('sendBtn').addEventListener('click', sendMessage);
-        document.getElementById('userInput').addEventListener('keypress', (e) => {
+        sendBtn.addEventListener('click', sendRequest);
+        userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendMessage();
+                sendRequest();
             }
         });
         
-        // Загрузка лимитов
-        loadLimits();
-    </script>
+        // Добавляем кнопку выхода
+        const header = document.querySelector('.header');
+        const logoutBtn = document.createElement('button');
+        logoutBtn.textContent = '🚪 Выйти';
+        logoutBtn.style.cssText = 'position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: none; padding: 8px 16px; border-radius: 20px; color: white; cursor: pointer;';
+        logoutBtn.onclick = logout;
+        header.style.position = 'relative';
+        header.appendChild(logoutBtn);    
+	</script>
 </body>
 </html>
