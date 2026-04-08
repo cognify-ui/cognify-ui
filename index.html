@@ -1017,25 +1017,88 @@
             shareChatId = chatId;
             const chat = chats[chatId];
             if (!chat) return;
-            const shareUrl = `${window.location.origin}${window.location.pathname}?share=${chatId}`;
-            document.getElementById('shareLinkInput').value = shareUrl;
+            
+            const shareUrl = window.location.origin + window.location.pathname + '?share=' + chatId;
+            
+            const input = document.getElementById('shareLinkInput');
+            if (input) {
+                input.value = shareUrl;
+                input.style.display = 'block';
+                input.disabled = false;
+            }
+            
             document.getElementById('shareModal').classList.add('show');
             toggleUserMenu();
         }
         
-        function closeShareModal() { document.getElementById('shareModal').classList.remove('show'); }
+        function closeShareModal() { 
+            document.getElementById('shareModal').classList.remove('show'); 
+        }
         
         function getChatText() {
             const chat = chats[shareChatId];
             return chat ? chat.messages.map(m => `${m.role === 'user' ? '👤' : '🧠'}: ${m.content}`).join('\n\n') : '';
         }
         
-        function shareToTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getChatText())}`, '_blank'); }
-        function shareToWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(getChatText())}`, '_blank'); }
-        function shareToVK() { window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI&description=${encodeURIComponent(getChatText())}`, '_blank'); }
-        function shareToTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getChatText())}`, '_blank'); }
-		function copyChatLink() { const input = document.getElementById('shareLinkInput'); input.select(); document.execCommand('copy'); showToast('🔗 Ссылка скопирована!'); }        
-        // ============================================
+        function shareToTelegram() { 
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getChatText())}`, '_blank'); 
+        }
+        
+        function shareToWhatsApp() { 
+            window.open(`https://wa.me/?text=${encodeURIComponent(getChatText())}`, '_blank'); 
+        }
+        
+        function shareToVK() { 
+            window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI&description=${encodeURIComponent(getChatText())}`, '_blank'); 
+        }
+        
+        function shareToTwitter() { 
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getChatText())}`, '_blank'); 
+        }
+        
+        function copyChatLink() { 
+            const input = document.getElementById('shareLinkInput');
+            if (!input) {
+                showToast('❌ Ошибка: поле не найдено', true);
+                return;
+            }
+            
+            const link = input.value;
+            if (!link) {
+                showToast('❌ Нет ссылки для копирования', true);
+                return;
+            }
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(() => {
+                    showToast('🔗 Ссылка скопирована!');
+                }).catch(() => {
+                    copyFallback(link);
+                });
+            } else {
+                copyFallback(link);
+            }
+        }
+        
+        function copyFallback(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-9999px';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                showToast('🔗 Ссылка скопирована!');
+            } catch (err) {
+                showToast('❌ Не удалось скопировать', true);
+            }
+            
+            document.body.removeChild(textarea);
+        }        // ============================================
         // UI СОБЫТИЯ
         // ============================================
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
