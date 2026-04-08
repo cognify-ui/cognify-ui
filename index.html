@@ -1034,8 +1034,7 @@
         function shareToWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(getChatText())}`, '_blank'); }
         function shareToVK() { window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI&description=${encodeURIComponent(getChatText())}`, '_blank'); }
         function shareToTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getChatText())}`, '_blank'); }
-        function copyChatLink() { const input = document.getElementById('shareLinkInput'); input.select(); document.execCommand('copy'); showToast('🔗 Ссылка скопирована!'); }
-        
+		function copyChatLink() { const input = document.getElementById('shareLinkInput'); input.select(); document.execCommand('copy'); showToast('🔗 Ссылка скопирована!'); }        
         // ============================================
         // UI СОБЫТИЯ
         // ============================================
