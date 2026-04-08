@@ -4,40 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <!-- ============================================ -->
-    <!-- SEO И МЕТА-ТЕГИ ДЛЯ РАСКРУТКИ -->
-    <!-- ============================================ -->
-    <title>Cognify AI | Бесплатная нейросеть с поддержкой видео, аудио, изображений</title>
-    <meta name="description" content="Cognify AI — бесплатная нейросеть нового поколения. Поддержка видео, аудио, изображений, PDF. 4 AI модели: Groq, Gemini, Cerebras, Cloudflare. Без лимитов!">
-    <meta name="keywords" content="нейросеть, бесплатно, AI, искусственный интеллект, ChatGPT аналог, Groq, Gemini, обработка видео, анализ аудио, распознавание изображений">
+    <!-- SEO -->
+    <title>Cognify AI | Бесплатная нейросеть с видео, аудио, изображениями</title>
+    <meta name="description" content="Cognify AI — бесплатная нейросеть. Анализируй видео, аудио, изображения, PDF. 4 AI модели. Без лимитов!">
+    <meta name="keywords" content="нейросеть, бесплатно, AI, искусственный интеллект, ChatGPT, Groq, Gemini, обработка видео">
     <meta name="author" content="Cognify AI">
     <meta name="robots" content="index, follow">
-    <meta name="googlebot" content="index, follow">
-    <meta name="yandex" content="index, follow">
     
-    <!-- Open Graph для соцсетей -->
+    <!-- Open Graph -->
     <meta property="og:title" content="Cognify AI — Бесплатная нейросеть">
-    <meta property="og:description" content="Анализируй видео, аудио, изображения и документы бесплатно. 4 AI модели в одном месте!">
+    <meta property="og:description" content="Анализируй видео, аудио, изображения и документы бесплатно">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://cognify-ui.github.io">
-    <meta property="og:image" content="https://cognify-ui.github.io/og-image.png">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Cognify AI — Бесплатная нейросеть">
-    <meta name="twitter:description" content="Анализируй видео, аудио, изображения и документы бесплатно">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://cognify-ui.github.io">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     
     <!-- PWA -->
-    <link rel="manifest" href="data:application/manifest+json,{"name":"Cognify AI","short_name":"Cognify","start_url":"/","display":"standalone","background_color":"#0a0a0a","theme_color":"#667eea"}">
     <meta name="theme-color" content="#0a0a0a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     
     <style>
         * {
@@ -53,11 +35,9 @@
             overflow: hidden;
         }
         
-        /* Анимация загрузки */
-        @keyframes gradientBg {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes pulse {
@@ -65,15 +45,14 @@
             50% { opacity: 0.5; }
         }
         
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .app {
             display: flex;
             height: 100vh;
-            animation: slideIn 0.3s ease;
+            animation: fadeIn 0.3s ease;
         }
         
         /* Sidebar */
@@ -105,7 +84,7 @@
             gap: 8px;
         }
         
-        .lang-switch {
+        .lang-switch, .theme-switch {
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             border-radius: 20px;
@@ -116,7 +95,7 @@
             transition: all 0.2s;
         }
         
-        .lang-switch:hover {
+        .lang-switch:hover, .theme-switch:hover {
             border-color: #667eea;
             background: #2a2a2a;
         }
@@ -230,6 +209,70 @@
             color: white;
         }
         
+        /* User Menu */
+        .user-info {
+            position: relative;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .user-menu {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 200px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .user-menu.show {
+            display: block;
+        }
+        
+        .user-menu-item {
+            padding: 10px 16px;
+            color: #9ca3af;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .user-menu-item:hover {
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        .user-menu-item:first-child {
+            border-bottom: 1px solid #2a2a2a;
+            margin-bottom: 4px;
+            cursor: default;
+        }
+        
+        .user-menu-item:first-child:hover {
+            background: transparent;
+            color: #9ca3af;
+        }
+        
         /* API Selector */
         .api-selector {
             display: flex;
@@ -257,7 +300,7 @@
             color: white;
         }
         
-        /* Stats Badge */
+        /* Stats */
         .stats-badge {
             background: #1a1a1a;
             border-radius: 20px;
@@ -281,11 +324,6 @@
             gap: 12px;
             margin-bottom: 24px;
             animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .message-avatar {
@@ -329,21 +367,7 @@
             font-family: monospace;
         }
         
-        /* Image Preview */
-        .image-preview {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 12px;
-            margin-top: 8px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .image-preview:hover {
-            transform: scale(1.02);
-        }
-        
-        /* Input Area */
+        /* Input */
         .input-area {
             padding: 20px 24px;
             border-top: 1px solid #1f1f1f;
@@ -400,8 +424,6 @@
             border-radius: 24px;
             padding: 8px 20px;
             color: white;
-            font-size: 14px;
-            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -421,30 +443,8 @@
             animation: spin 0.6s linear infinite;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #3a3a3a;
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4a4a4a;
-        }
-        
-        /* Share Modal */
-        .share-modal {
+        /* Modal */
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -460,89 +460,56 @@
             transition: all 0.3s;
         }
         
-        .share-modal.show {
+        .modal.show {
             opacity: 1;
             visibility: visible;
         }
         
-        .share-content {
+        .modal-content {
             background: #1a1a1a;
             border-radius: 24px;
-            padding: 24px;
+            padding: 32px;
             max-width: 400px;
             width: 90%;
             border: 1px solid #2a2a2a;
         }
         
-        .share-content h3 {
+        .modal-content h2 {
             color: white;
             margin-bottom: 20px;
+            text-align: center;
         }
         
-        .share-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .share-buttons button {
-            background: #2a2a2a;
-            border: none;
-            border-radius: 12px;
-            padding: 10px 16px;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        
-        .share-buttons button:hover {
-            background: #3a3a3a;
-            transform: scale(1.02);
-        }
-        
-        .share-link {
-            background: #0f0f0f;
-            border-radius: 12px;
-            padding: 10px;
-            display: flex;
-            gap: 8px;
-        }
-        
-        .share-link input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #9ca3af;
-            font-size: 12px;
-            outline: none;
-        }
-        
-        .share-link button {
-            background: #667eea;
-            border: none;
-            border-radius: 8px;
-            padding: 6px 12px;
-            color: white;
-            cursor: pointer;
-        }
-        
-        .close-modal {
+        .modal-content input {
             width: 100%;
-            background: #2a2a2a;
-            border: none;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #0f0f0f;
+            border: 1px solid #2a2a2a;
             border-radius: 12px;
-            padding: 10px;
             color: white;
-            cursor: pointer;
-            margin-top: 16px;
+            font-size: 14px;
         }
         
-        /* Toast уведомления */
+        .modal-content button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .modal-switch {
+            text-align: center;
+            color: #667eea;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
         .toast {
             position: fixed;
             bottom: 30px;
@@ -555,13 +522,13 @@
             color: white;
             font-size: 14px;
             z-index: 1100;
-            animation: slideUp 0.3s ease;
+            animation: fadeIn 0.3s ease;
         }
         
-        @keyframes slideUp {
-            from { bottom: 0; opacity: 0; }
-            to { bottom: 30px; opacity: 1; }
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
         
         /* Mobile */
         @media (max-width: 768px) {
@@ -572,24 +539,10 @@
                 height: 100vh;
                 transition: left 0.3s;
             }
-            
-            .sidebar.open {
-                left: 0;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            .api-selector {
-                order: 2;
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .stats-badge {
-                order: 1;
-            }
+            .sidebar.open { left: 0; }
+            .menu-toggle { display: block; }
+            .api-selector { order: 2; width: 100%; justify-content: center; }
+            .stats-badge { order: 1; }
         }
         
         .menu-toggle {
@@ -602,6 +555,19 @@
             padding: 8px;
             border-radius: 8px;
         }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -609,34 +575,41 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo">
-                    <span>🧠</span> <span data-lang="logo">Cognify AI</span>
+                <div class="logo">🧠 Cognify AI</div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">🇬🇧 EN</button>
+                    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</button>
                 </div>
-                <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">🇬🇧 EN</button>
             </div>
-            <button class="new-chat-btn" onclick="createNewChat()">
-                <span>➕</span> <span data-lang="newChat">Новый чат</span>
-            </button>
+            <button class="new-chat-btn" onclick="createNewChat()">➕ Новый чат</button>
             <div class="history-list" id="historyList"></div>
         </div>
         
         <!-- Main Chat -->
         <div class="main-chat">
             <div class="chat-header">
-                <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="header-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
                     <div class="chat-title" id="chatTitle">Новый чат</div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                    <div class="stats-badge" id="statsBadge">
-                        📊 <span id="statsCount">0</span> сообщений
-                    </div>
+                <div class="header-right">
+                    <div class="stats-badge" id="statsBadge">📊 <span id="statsCount">0</span></div>
                     <div class="api-selector" id="apiSelector">
                         <button class="api-btn" data-api="groq">🚀 Groq</button>
                         <button class="api-btn" data-api="cerebras">⚡ Cerebras</button>
                         <button class="api-btn" data-api="cloudflare">☁️ Cloudflare</button>
                         <button class="api-btn active" data-api="gemini">🤖 Gemini</button>
                         <button class="api-btn" data-api="fallback">🔄 Fallback</button>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" onclick="toggleUserMenu()" id="userAvatar">👤</div>
+                        <div class="user-menu" id="userMenu">
+                            <div class="user-menu-item" id="userNameDisplay">Гость</div>
+                            <div class="user-menu-item" onclick="showAuthModal()">🔑 Войти / Регистрация</div>
+                            <div class="user-menu-item" onclick="exportAllChats()">📥 Экспорт чатов</div>
+                            <div class="user-menu-item" onclick="clearAllData()">🗑️ Очистить всё</div>
+                            <div class="user-menu-item" onclick="logout()" id="logoutBtn" style="color: #ff6b6b;">🚪 Выйти</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -646,18 +619,17 @@
                     <div class="message-avatar">🧠</div>
                     <div class="message-content">
                         <p><strong>🤖 Добро пожаловать в Cognify AI!</strong></p>
-                        <p>Это <strong>бесплатная нейросеть</strong> нового поколения с поддержкой:</p>
-                        <p>• 🎬 <strong>Видео</strong> — анализ, описание, извлечение смысла<br>
-                        • 🎵 <strong>Аудио</strong> — транскрипция, перевод, анализ<br>
-                        • 🖼️ <strong>Изображения</strong> — распознавание, описание, ответы на вопросы<br>
-                        • 📄 <strong>Документы</strong> — PDF, TXT, анализ текста</p>
+                        <p>✅ <strong>Войдите в аккаунт</strong> — нажмите на аватар 👤 сверху</p>
+                        <p>• 🎬 Видео — анализ, описание<br>
+                        • 🎵 Аудио — транскрипция, перевод<br>
+                        • 🖼️ Изображения — распознавание<br>
+                        • 📄 Документы — PDF, TXT</p>
                         <p><strong>🔥 Доступные AI модели:</strong><br>
-                        • 🚀 Groq — самый быстрый (только текст)<br>
+                        • 🚀 Groq — самый быстрый (текст)<br>
                         • ⚡ Cerebras — 14,400 запросов/день<br>
                         • ☁️ Cloudflare — глобальная сеть<br>
-                        • 🤖 Gemini — видео, аудио, изображения, файлы</p>
-                        <p>💡 <strong>Совет:</strong> Для загрузки файлов выбери <strong>Gemini</strong> и нажми 📎</p>
-                        <p>📢 <strong>Поделись сайтом с друзьями!</strong> Чем больше пользователей, тем лучше становится AI!</p>
+                        • 🤖 Gemini — видео, аудио, изображения</p>
+                        <p>💡 <strong>Для файлов:</strong> выбери Gemini и нажми 📎</p>
                     </div>
                 </div>
             </div>
@@ -668,52 +640,65 @@
                     <input type="file" id="imageInput" accept="image/*" style="display: none;">
                     <label for="fileInput" class="file-label" id="fileLabel" style="display: none;">📎</label>
                     <input type="file" id="fileInput" accept="image/*,video/*,audio/*,.pdf,.txt" style="display: none;">
-                    <textarea id="userInput" placeholder="Напиши свой вопрос или загрузи файл..." rows="1"></textarea>
-                    <button class="send-btn" id="sendBtn"><span data-lang="send">Отправить</span></button>
+                    <textarea id="userInput" placeholder="Напиши свой вопрос..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn">Отправить</button>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <h2 id="authTitle">🔐 Вход</h2>
+            <input type="text" id="authUsername" placeholder="Имя пользователя">
+            <input type="password" id="authPassword" placeholder="Пароль">
+            <button id="authSubmitBtn" onclick="authSubmit()">Войти</button>
+            <div class="modal-switch" id="authSwitch" onclick="toggleAuthMode()">Нет аккаунта? Зарегистрироваться</div>
+        </div>
+    </div>
+    
     <!-- Share Modal -->
-    <div class="share-modal" id="shareModal">
-        <div class="share-content">
-            <h3 id="shareTitle">Поделиться чатом</h3>
-            <div class="share-buttons">
-                <button onclick="shareToTelegram()">📱 Telegram</button>
-                <button onclick="shareToWhatsApp()">💬 WhatsApp</button>
-                <button onclick="shareToVK()">📘 VK</button>
-                <button onclick="shareToTwitter()">🐦 Twitter</button>
-                <button onclick="shareToFacebook()">📘 Facebook</button>
-                <button onclick="copyChatLink()">🔗 Копировать</button>
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <h3>📤 Поделиться чатом</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                <button onclick="shareToTelegram()" style="background:#2a2a2a;">📱 Telegram</button>
+                <button onclick="shareToWhatsApp()" style="background:#2a2a2a;">💬 WhatsApp</button>
+                <button onclick="shareToVK()" style="background:#2a2a2a;">📘 VK</button>
+                <button onclick="shareToTwitter()" style="background:#2a2a2a;">🐦 Twitter</button>
             </div>
-            <div class="share-link">
-                <input type="text" id="shareLinkInput" readonly>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="shareLinkInput" readonly style="flex:1;">
                 <button onclick="copyChatLink()">Копировать</button>
             </div>
-            <button class="close-modal" onclick="closeShareModal()">Закрыть</button>
+            <button onclick="closeShareModal()" style="margin-top: 20px; background:#2a2a2a;">Закрыть</button>
         </div>
     </div>
 
     <script>
         // ============================================
-        // COGNIFY AI - ПОЛНЫЙ КЛИЕНТ
+        // КОНФИГУРАЦИЯ
         // ============================================
-        
         const WORKER_URL = 'https://groq-proxy.playgame8987.workers.dev';
         
         let currentChatId = Date.now().toString();
         let currentApi = 'gemini';
         let currentLang = 'ru';
+        let currentTheme = 'dark';
         let currentImageFile = null;
         let currentUploadFile = null;
-        let chats = JSON.parse(localStorage.getItem('chats') || '{}');
+        let currentUser = localStorage.getItem('currentUser') || null;
+        let chats = {};
         let shareChatId = null;
+        let authMode = 'login';
         
-        // Счетчик сообщений для статистики
         let totalMessages = parseInt(localStorage.getItem('totalMessages') || '0');
         document.getElementById('statsCount').innerText = totalMessages;
         
+        // ============================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================
         function showToast(message, isError = false) {
             const toast = document.createElement('div');
             toast.className = 'toast';
@@ -724,43 +709,304 @@
             setTimeout(() => toast.remove(), 3000);
         }
         
-        // Переводы
+        // ============================================
+        // ПЕРЕВОДЫ
+        // ============================================
         const translations = {
             ru: {
-                newChat: 'Новый чат', send: 'Отправить', placeholder: 'Напиши свой вопрос или загрузи файл...',
-                shareTitle: 'Поделиться чатом', thinking: 'Думаю...', switchedTo: 'Переключено на',
-                fileReady: 'Файл готов к отправке', type: 'Тип', size: 'Размер', askQuestion: 'Напиши вопрос об этом файле'
+                newChat: 'Новый чат', send: 'Отправить', placeholder: 'Напиши свой вопрос...',
+                thinking: 'Думаю...', switchedTo: 'Переключено на', logout: 'Выйти'
             },
             en: {
-                newChat: 'New chat', send: 'Send', placeholder: 'Type your question or upload file...',
-                shareTitle: 'Share chat', thinking: 'Thinking...', switchedTo: 'Switched to',
-                fileReady: 'File ready to send', type: 'Type', size: 'Size', askQuestion: 'Ask a question about this file'
+                newChat: 'New chat', send: 'Send', placeholder: 'Type your question...',
+                thinking: 'Thinking...', switchedTo: 'Switched to', logout: 'Logout'
             }
         };
         
         function t(key) { return translations[currentLang][key] || translations.ru[key] || key; }
         
-        function updateLanguage() {
-            document.getElementById('langBtn').innerHTML = currentLang === 'ru' ? '🇬🇧 EN' : '🇷🇺 RU';
-            document.getElementById('userInput').placeholder = t('placeholder');
-            document.getElementById('shareTitle').innerText = t('shareTitle');
-            const newChatBtn = document.querySelector('.new-chat-btn span:last-child');
-            if (newChatBtn) newChatBtn.innerText = t('newChat');
-            const sendBtnSpan = document.querySelector('#sendBtn span');
-            if (sendBtnSpan) sendBtnSpan.innerText = t('send');
-        }
-        
         function toggleLanguage() {
             currentLang = currentLang === 'ru' ? 'en' : 'ru';
             localStorage.setItem('language', currentLang);
-            updateLanguage();
-            showToast(currentLang === 'ru' ? '🌐 Язык: Русский' : '🌐 Language: English');
+            document.getElementById('langBtn').innerHTML = currentLang === 'ru' ? '🇬🇧 EN' : '🇷🇺 RU';
+            document.getElementById('userInput').placeholder = t('placeholder');
+            const newChatBtn = document.querySelector('.new-chat-btn');
+            if (newChatBtn) newChatBtn.innerHTML = `➕ ${t('newChat')}`;
+            document.getElementById('sendBtn').innerHTML = t('send');
+            showToast(currentLang === 'ru' ? '🌐 Русский' : '🌐 English');
         }
         
+        // ============================================
+        // ТЕМА
+        // ============================================
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', currentTheme);
+            if (currentTheme === 'light') {
+                document.body.style.background = '#f5f5f5';
+                document.querySelector('.main-chat').style.background = '#f5f5f5';
+                document.querySelector('.sidebar').style.background = '#e5e5e5';
+                document.getElementById('themeBtn').innerHTML = '☀️';
+            } else {
+                document.body.style.background = '#0a0a0a';
+                document.querySelector('.main-chat').style.background = '#0a0a0a';
+                document.querySelector('.sidebar').style.background = '#0f0f0f';
+                document.getElementById('themeBtn').innerHTML = '🌙';
+            }
+        }
+        
+        // ============================================
+        // СИСТЕМА АККАУНТОВ
+        // ============================================
+        function loadUserData() {
+            const key = currentUser ? `chats_${currentUser}` : 'chats_guest';
+            const saved = localStorage.getItem(key);
+            chats = saved ? JSON.parse(saved) : {};
+            
+            if (Object.keys(chats).length === 0) {
+                createNewChat();
+            } else {
+                const lastKey = currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest';
+                const lastId = localStorage.getItem(lastKey);
+                if (lastId && chats[lastId]) {
+                    currentChatId = lastId;
+                } else {
+                    currentChatId = Object.keys(chats)[0];
+                }
+                loadChat(currentChatId);
+            }
+            renderHistory();
+        }
+        
+        function saveUserData() {
+            const key = currentUser ? `chats_${currentUser}` : 'chats_guest';
+            localStorage.setItem(key, JSON.stringify(chats));
+            const lastKey = currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest';
+            localStorage.setItem(lastKey, currentChatId);
+        }
+        
+        function updateUserUI() {
+            const avatar = document.getElementById('userAvatar');
+            const nameDisplay = document.getElementById('userNameDisplay');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (currentUser) {
+                avatar.innerHTML = currentUser.charAt(0).toUpperCase();
+                nameDisplay.innerHTML = `👤 ${currentUser}`;
+                if (logoutBtn) logoutBtn.style.display = 'block';
+            } else {
+                avatar.innerHTML = '👤';
+                nameDisplay.innerHTML = '👤 Гость';
+                if (logoutBtn) logoutBtn.style.display = 'block';
+            }
+        }
+        
+        function showAuthModal() {
+            authMode = 'login';
+            document.getElementById('authTitle').innerHTML = '🔐 Вход';
+            document.getElementById('authSubmitBtn').innerHTML = 'Войти';
+            document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться';
+            document.getElementById('authModal').classList.add('show');
+            toggleUserMenu();
+        }
+        
+        function toggleAuthMode() {
+            if (authMode === 'login') {
+                authMode = 'register';
+                document.getElementById('authTitle').innerHTML = '📝 Регистрация';
+                document.getElementById('authSubmitBtn').innerHTML = 'Зарегистрироваться';
+                document.getElementById('authSwitch').innerHTML = 'Уже есть аккаунт? Войти';
+            } else {
+                authMode = 'login';
+                document.getElementById('authTitle').innerHTML = '🔐 Вход';
+                document.getElementById('authSubmitBtn').innerHTML = 'Войти';
+                document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться';
+            }
+        }
+        
+        function authSubmit() {
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value;
+            
+            if (!username || !password) {
+                showToast('Заполните все поля', true);
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            if (authMode === 'register') {
+                if (users[username]) {
+                    showToast('Пользователь уже существует', true);
+                    return;
+                }
+                if (password.length < 4) {
+                    showToast('Пароль минимум 4 символа', true);
+                    return;
+                }
+                users[username] = password;
+                localStorage.setItem('users', JSON.stringify(users));
+                showToast('✅ Регистрация успешна! Теперь войдите.');
+                toggleAuthMode();
+            } else {
+                if (users[username] !== password) {
+                    showToast('Неверное имя или пароль', true);
+                    return;
+                }
+                currentUser = username;
+                localStorage.setItem('currentUser', username);
+                updateUserUI();
+                loadUserData();
+                showToast(`👋 Добро пожаловать, ${username}!`);
+                document.getElementById('authModal').classList.remove('show');
+            }
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+        }
+        
+        function logout() {
+            if (confirm('Выйти из аккаунта?')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                updateUserUI();
+                loadUserData();
+                showToast('🚪 Вы вышли');
+                toggleUserMenu();
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('⚠️ Удалить ВСЕ чаты? Отменить нельзя!')) {
+                chats = {};
+                createNewChat();
+                saveUserData();
+                renderHistory();
+                totalMessages = 0;
+                localStorage.setItem('totalMessages', '0');
+                document.getElementById('statsCount').innerText = '0';
+                showToast('🗑️ Все данные очищены');
+                toggleUserMenu();
+            }
+        }
+        
+        function exportAllChats() {
+            const data = JSON.stringify(chats, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cognify-chats-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📥 Экспорт завершен');
+            toggleUserMenu();
+        }
+        
+        // ============================================
+        // УПРАВЛЕНИЕ ЧАТАМИ
+        // ============================================
+        function createNewChat() {
+            currentChatId = Date.now().toString();
+            chats[currentChatId] = {
+                id: currentChatId,
+                title: currentLang === 'ru' ? 'Новый чат' : 'New chat',
+                messages: [{ role: 'bot', content: 'Привет! Я Cognify AI. Задай любой вопрос или загрузи файл!' }],
+                createdAt: new Date().toISOString()
+            };
+            saveUserData();
+            renderHistory();
+            loadChat(currentChatId);
+            showToast('✨ Новый чат');
+        }
+        
+        function loadChat(chatId) {
+            currentChatId = chatId;
+            const chat = chats[chatId];
+            if (!chat) return;
+            
+            document.getElementById('chatTitle').innerText = chat.title;
+            const messagesArea = document.getElementById('messagesArea');
+            messagesArea.innerHTML = '';
+            chat.messages.forEach(msg => addMessageToUI(msg.content, msg.role === 'user'));
+            
+            document.querySelectorAll('.history-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.dataset.id === chatId) el.classList.add('active');
+            });
+        }
+        
+        function addMessageToUI(text, isUser) {
+            const messagesArea = document.getElementById('messagesArea');
+            const div = document.createElement('div');
+            div.className = `message ${isUser ? 'user' : 'bot'}`;
+            div.innerHTML = `<div class="message-avatar">${isUser ? '👤' : '🧠'}</div><div class="message-content">${formatMessage(text)}</div>`;
+            messagesArea.appendChild(div);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+        
+        function saveAndAddMessage(text, isUser) {
+            const chat = chats[currentChatId];
+            if (chat) {
+                chat.messages.push({ role: isUser ? 'user' : 'bot', content: text });
+                if (chat.messages.filter(m => m.role === 'user').length === 1 && isUser) {
+                    chat.title = text.slice(0, 30) + (text.length > 30 ? '...' : '');
+                    document.getElementById('chatTitle').innerText = chat.title;
+                }
+                saveUserData();
+                renderHistory();
+                if (isUser) {
+                    totalMessages++;
+                    localStorage.setItem('totalMessages', totalMessages);
+                    document.getElementById('statsCount').innerText = totalMessages;
+                }
+            }
+            addMessageToUI(text, isUser);
+        }
+        
+        function formatMessage(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        }
+        
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            const sorted = Object.values(chats).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            sorted.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = 'history-item' + (chat.id === currentChatId ? ' active' : '');
+                item.dataset.id = chat.id;
+                item.innerHTML = `
+                    <span class="history-title">${escapeHtml(chat.title)}</span>
+                    <div class="history-actions">
+                        <button class="history-btn" onclick="event.stopPropagation(); openShareModal('${chat.id}')">🔗</button>
+                        <button class="history-btn" onclick="event.stopPropagation(); deleteChat('${chat.id}')">🗑️</button>
+                    </div>
+                `;
+                item.onclick = () => loadChat(chat.id);
+                historyList.appendChild(item);
+            });
+        }
+        
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        
+        function deleteChat(chatId) {
+            if (confirm('Удалить чат?')) {
+                delete chats[chatId];
+                saveUserData();
+                const remaining = Object.keys(chats);
+                if (remaining.length === 0) createNewChat();
+                else loadChat(remaining[0]);
+                renderHistory();
+                showToast('🗑️ Чат удален');
+            }
+        }
+        
+        // ============================================
+        // API И ФАЙЛЫ
+        // ============================================
         function updateFileButtons() {
             const imageLabel = document.getElementById('imageLabel');
             const fileLabel = document.getElementById('fileLabel');
-            
             if (currentApi === 'gemini') {
                 imageLabel.style.display = 'flex';
                 fileLabel.style.display = 'flex';
@@ -775,146 +1021,15 @@
             }
         }
         
-        function init() {
-            const savedLang = localStorage.getItem('language');
-            if (savedLang) currentLang = savedLang;
-            updateLanguage();
-            
-            if (Object.keys(chats).length === 0) {
-                createNewChat();
-            } else {
-                const lastChatId = localStorage.getItem('lastChatId');
-                if (chats[lastChatId]) {
-                    currentChatId = lastChatId;
-                } else {
-                    currentChatId = Object.keys(chats)[0];
-                }
-                loadChat(currentChatId);
-            }
-            renderHistory();
+        function switchApi(api) {
+            currentApi = api;
+            document.querySelectorAll('.api-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.api === api) btn.classList.add('active');
+            });
             updateFileButtons();
-            
-            // Обновляем статистику
-            document.getElementById('statsCount').innerText = totalMessages;
-        }
-        
-        function createNewChat() {
-            currentChatId = Date.now().toString();
-            chats[currentChatId] = {
-                id: currentChatId,
-                title: currentLang === 'ru' ? 'Новый чат' : 'New chat',
-                messages: [{ role: 'bot', content: currentLang === 'ru' ? 
-                    'Привет! Я Cognify AI. Задай любой вопрос или загрузи файл!' : 
-                    'Hi! I\'m Cognify AI. Ask any question or upload a file!' }],
-                createdAt: new Date().toISOString()
-            };
-            saveChats();
-            renderHistory();
-            loadChat(currentChatId);
-            showToast(currentLang === 'ru' ? '✨ Новый чат создан!' : '✨ New chat created!');
-        }
-        
-        function loadChat(chatId) {
-            currentChatId = chatId;
-            localStorage.setItem('lastChatId', chatId);
-            const chat = chats[chatId];
-            if (!chat) return;
-            
-            document.getElementById('chatTitle').innerText = chat.title;
-            const messagesArea = document.getElementById('messagesArea');
-            messagesArea.innerHTML = '';
-            chat.messages.forEach(msg => {
-                addMessageToUI(msg.content, msg.role === 'user');
-            });
-            
-            document.querySelectorAll('.history-item').forEach(el => {
-                el.classList.remove('active');
-                if (el.dataset.id === chatId) el.classList.add('active');
-            });
-        }
-        
-        function addMessageToUI(text, isUser) {
-            const messagesArea = document.getElementById('messagesArea');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            messageDiv.innerHTML = `<div class="message-avatar">${isUser ? '👤' : '🧠'}</div><div class="message-content">${formatMessage(text)}</div>`;
-            messagesArea.appendChild(messageDiv);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-        
-        function saveAndAddMessage(text, isUser) {
-            const chat = chats[currentChatId];
-            if (chat) {
-                chat.messages.push({ role: isUser ? 'user' : 'bot', content: text });
-                
-                const userMessagesCount = chat.messages.filter(m => m.role === 'user').length;
-                if (userMessagesCount === 1 && isUser) {
-                    chat.title = text.slice(0, 30) + (text.length > 30 ? '...' : '');
-                    document.getElementById('chatTitle').innerText = chat.title;
-                }
-                saveChats();
-                renderHistory();
-                
-                if (isUser) {
-                    totalMessages++;
-                    localStorage.setItem('totalMessages', totalMessages);
-                    document.getElementById('statsCount').innerText = totalMessages;
-                }
-            }
-            addMessageToUI(text, isUser);
-        }
-        
-        function formatMessage(text) {
-            return text
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/`(.*?)`/g, '<code>$1</code>')
-                .replace(/\n/g, '<br>');
-        }
-        
-        function saveChats() { 
-            localStorage.setItem('chats', JSON.stringify(chats));
-        }
-        
-        function renderHistory() {
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
-            const sorted = Object.values(chats).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            sorted.forEach(chat => {
-                const item = document.createElement('div');
-                item.className = 'history-item' + (chat.id === currentChatId ? ' active' : '');
-                item.dataset.id = chat.id;
-                item.innerHTML = `
-                    <span class="history-title">${escapeHtml(chat.title)}</span>
-                    <div class="history-actions">
-                        <button class="history-btn" onclick="event.stopPropagation(); openShareModal('${chat.id}')" title="Поделиться">🔗</button>
-                        <button class="history-btn" onclick="event.stopPropagation(); deleteChat('${chat.id}')" title="Удалить">🗑️</button>
-                    </div>
-                `;
-                item.onclick = () => loadChat(chat.id);
-                historyList.appendChild(item);
-            });
-        }
-        
-        function escapeHtml(text) { 
-            const div = document.createElement('div'); 
-            div.textContent = text; 
-            return div.innerHTML; 
-        }
-        
-        function deleteChat(chatId) {
-            if (confirm(currentLang === 'ru' ? 'Удалить этот чат?' : 'Delete this chat?')) {
-                delete chats[chatId];
-                saveChats();
-                const remaining = Object.keys(chats);
-                if (remaining.length === 0) {
-                    createNewChat();
-                } else {
-                    loadChat(remaining[0]);
-                }
-                renderHistory();
-                showToast(currentLang === 'ru' ? '🗑️ Чат удален' : '🗑️ Chat deleted');
-            }
+            const names = { groq: '🚀 Groq', cerebras: '⚡ Cerebras', cloudflare: '☁️ Cloudflare', gemini: '🤖 Gemini', fallback: '🔄 Fallback' };
+            saveAndAddMessage(`${t('switchedTo')} ${names[api]}`, false);
         }
         
         async function sendMessage() {
@@ -922,7 +1037,7 @@
             const question = input.value.trim();
             if (!question && !currentImageFile && !currentUploadFile) return;
             
-            let userMsg = question || (currentLang === 'ru' ? 'Анализ файла' : 'File analysis');
+            let userMsg = question || 'Анализ';
             if (currentImageFile) userMsg += `\n\n🖼️ ${currentImageFile.name}`;
             if (currentUploadFile && currentApi === 'gemini') userMsg += `\n\n📎 ${currentUploadFile.name}`;
             
@@ -942,22 +1057,20 @@
             let answer;
             try {
                 if (currentApi === 'fallback') {
-                    answer = `🔁 **Fallback Mode**\n\n${currentLang === 'ru' ? 'Выбери Groq, Cerebras, Cloudflare или Gemini для реальных ответов!' : 'Choose Groq, Cerebras, Cloudflare or Gemini for real answers!'}`;
+                    answer = '🔁 Fallback mode. Choose Groq, Cerebras, Cloudflare or Gemini for real AI!';
                 }
                 else if (currentApi === 'gemini' && currentUploadFile) {
                     const formData = new FormData();
                     formData.append('file', currentUploadFile);
-                    formData.append('question', question || (currentLang === 'ru' ? 'Опиши этот файл' : 'Describe this file'));
+                    formData.append('question', question || 'Опиши этот файл');
                     const response = await fetch(`${WORKER_URL}/upload`, { method: 'POST', body: formData });
                     const data = await response.json();
                     answer = data.answer || data.error || 'Error';
                     currentUploadFile = null;
                     document.getElementById('fileInput').value = '';
-                    showToast(currentLang === 'ru' ? '📎 Файл обработан!' : '📎 File processed!');
                 }
                 else {
-                    let imageBase64 = null;
-                    let imageMime = null;
+                    let imageBase64 = null, imageMime = null;
                     if (currentImageFile) {
                         const bytes = await currentImageFile.arrayBuffer();
                         imageBase64 = btoa(String.fromCharCode(...new Uint8Array(bytes)));
@@ -965,150 +1078,94 @@
                         currentImageFile = null;
                         document.getElementById('imageInput').value = '';
                     }
-                    
                     const response = await fetch(`${WORKER_URL}/chat`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            message: question || (currentLang === 'ru' ? 'Проанализируй' : 'Analyze'), 
-                            api: currentApi,
-                            imageBase64: imageBase64,
-                            imageMime: imageMime
-                        })
+                        body: JSON.stringify({ message: question || 'Анализ', api: currentApi, imageBase64, imageMime })
                     });
                     const data = await response.json();
                     answer = data.answer || data.error || 'Error';
                 }
             } catch (err) {
-                answer = `❌ ${currentLang === 'ru' ? 'Ошибка соединения. Попробуй позже.' : 'Connection error. Try again later.'}`;
-                console.error(err);
+                answer = `❌ Ошибка: ${err.message}`;
             }
             
             document.getElementById(loadingId)?.remove();
             saveAndAddMessage(answer, false);
         }
         
-        function switchApi(api) {
-            currentApi = api;
-            document.querySelectorAll('.api-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.api === api) btn.classList.add('active');
-            });
-            updateFileButtons();
-            
-            const apiNames = {
-                groq: '🚀 Groq', cerebras: '⚡ Cerebras', cloudflare: '☁️ Cloudflare', gemini: '🤖 Gemini', fallback: '🔄 Fallback'
-            };
-            const msg = `${t('switchedTo')} ${apiNames[api]}`;
-            saveAndAddMessage(msg, false);
-            showToast(msg);
-        }
-        
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
-        
-        // Share functions
+        // ============================================
+        // ШЕРИНГ
+        // ============================================
         function openShareModal(chatId) {
             shareChatId = chatId;
             const chat = chats[chatId];
             if (!chat) return;
-            
             const chatText = chat.messages.map(m => `${m.role === 'user' ? '👤' : '🧠'}: ${m.content}`).join('\n\n');
             const shareUrl = `${window.location.origin}${window.location.pathname}?share=${chatId}`;
-            
             document.getElementById('shareLinkInput').value = shareUrl;
             document.getElementById('shareModal').classList.add('show');
+            toggleUserMenu();
         }
         
-        function closeShareModal() {
-            document.getElementById('shareModal').classList.remove('show');
-        }
+        function closeShareModal() { document.getElementById('shareModal').classList.remove('show'); }
         
         function getChatText() {
             const chat = chats[shareChatId];
-            if (!chat) return '';
-            return chat.messages.map(m => `${m.role === 'user' ? '👤' : '🧠'}: ${m.content}`).join('\n\n');
+            return chat ? chat.messages.map(m => `${m.role === 'user' ? '👤' : '🧠'}: ${m.content}`).join('\n\n') : '';
         }
         
-        function shareToTelegram() {
-            const text = encodeURIComponent(getChatText());
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${text}`, '_blank');
-        }
+        function shareToTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getChatText())}`, '_blank'); }
+        function shareToWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(getChatText())}`, '_blank'); }
+        function shareToVK() { window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI&description=${encodeURIComponent(getChatText())}`, '_blank'); }
+        function shareToTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getChatText())}`, '_blank'); }
+        function copyChatLink() { const input = document.getElementById('shareLinkInput'); input.select(); document.execCommand('copy'); showToast('🔗 Ссылка скопирована!'); }
         
-        function shareToWhatsApp() {
-            const text = encodeURIComponent(getChatText());
-            window.open(`https://wa.me/?text=${text}`, '_blank');
-        }
+        // ============================================
+        // UI СОБЫТИЯ
+        // ============================================
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('show'); }
         
-        function shareToVK() {
-            const text = encodeURIComponent(getChatText());
-            window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI&description=${text}`, '_blank');
-        }
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.querySelectorAll('.api-btn').forEach(btn => btn.addEventListener('click', () => switchApi(btn.dataset.api)));
         
-        function shareToTwitter() {
-            const text = encodeURIComponent(getChatText());
-            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
-        }
-        
-        function shareToFacebook() {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank');
-        }
-        
-        function copyChatLink() {
-            const input = document.getElementById('shareLinkInput');
-            input.select();
-            document.execCommand('copy');
-            showToast(currentLang === 'ru' ? '🔗 Ссылка скопирована!' : '🔗 Link copied!');
-        }
-        
-        // File handlers
         document.getElementById('imageInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (!file) return;
-            currentImageFile = file;
-            saveAndAddMessage(`🖼️ ${t('fileReady')}: **${file.name}**\n📁 ${t('type')}: ${file.type}\n📊 ${t('size')}: ${(file.size / 1024 / 1024).toFixed(2)} MB\n\n${t('askQuestion')}`, false);
+            if (file) { currentImageFile = file; saveAndAddMessage(`🖼️ Изображение: ${file.name}`, false); }
         });
-        
         document.getElementById('fileInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (!file) return;
-            currentUploadFile = file;
-            saveAndAddMessage(`📎 ${t('fileReady')}: **${file.name}**\n📁 ${t('type')}: ${file.type}\n📊 ${t('size')}: ${(file.size / 1024 / 1024).toFixed(2)} MB\n\n${t('askQuestion')}`, false);
-        });
-        
-        // Event listeners
-        document.getElementById('sendBtn').addEventListener('click', sendMessage);
-        document.querySelectorAll('.api-btn').forEach(btn => {
-            btn.addEventListener('click', () => switchApi(btn.dataset.api));
+            if (file) { currentUploadFile = file; saveAndAddMessage(`📎 Файл: ${file.name}`, false); }
         });
         
         const textarea = document.getElementById('userInput');
-        textarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
-        textarea.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+        textarea.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
+        textarea.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
         
         document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.querySelector('.menu-toggle');
-            if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-                if (!sidebar.contains(e.target) && !menuToggle?.contains(e.target)) {
-                    sidebar.classList.remove('open');
+            const menu = document.getElementById('userMenu');
+            const avatar = document.getElementById('userAvatar');
+            if (menu && !menu.contains(e.target) && !avatar.contains(e.target)) menu.classList.remove('show');
+            if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('open')) {
+                if (!document.getElementById('sidebar').contains(e.target) && !document.querySelector('.menu-toggle')?.contains(e.target)) {
+                    document.getElementById('sidebar').classList.remove('open');
                 }
             }
         });
         
-        init();
+        // Инициализация
+        const savedLang = localStorage.getItem('language');
+        if (savedLang) currentLang = savedLang;
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) { currentTheme = savedTheme; toggleTheme(); }
         
-        // SEO: Отправка статистики в Google Analytics (если добавишь код)
-        console.log('Cognify AI v2.0 - Бесплатная нейросеть с поддержкой видео, аудио, изображений');
+        updateUserUI();
+        loadUserData();
+        updateFileButtons();
+        updateLanguage();
+        
+        console.log('Cognify AI v3.0 — Полная версия с аккаунтами и выходом');
     </script>
 </body>
 </html>
