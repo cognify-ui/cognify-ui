@@ -22,10 +22,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Cognify AI | Нейросеть с контекстом диалога</title>
-    <meta name="description" content="Бесплатная нейросеть, которая помнит весь разговор! Поддержка видео, аудио, изображений, PDF. 5 AI моделей.">
-    <meta name="keywords" content="нейросеть, AI, контекст, диалог, бесплатно, Groq, Gemini, Cerebras">
-    <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#0a0a0a">
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     
     <style>
@@ -36,7 +32,7 @@
             background: #0a0a0a;
             height: 100vh;
             overflow: hidden;
-            transition: background 0.2s ease;
+            transition: background 0.2s ease, color 0.2s;
         }
         
         @keyframes fadeIn {
@@ -260,12 +256,18 @@
         .message.user .message-avatar { background: #2a2a2a; }
         .message.bot .message-avatar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         
+        /* ГЛАВНОЕ ИСПРАВЛЕНИЕ: цвета текста для тёмной темы */
+        .message-content,
+        .message-text {
+            color: #e5e7eb;
+        }
+        
         .message-content {
             flex: 1;
-            color: #e5e7eb;
             line-height: 1.6;
             font-size: 15px;
         }
+        
         .message-content pre {
             background: #1a1a1a;
             padding: 12px;
@@ -437,7 +439,7 @@
         ::-webkit-scrollbar-track { background: #1a1a1a; }
         ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
         
-        /* Light theme overrides */
+        /* Light theme overrides — всё, включая текст сообщений */
         body.light-theme,
         body.light-theme .main-chat { background: #f5f5f5; }
         body.light-theme .sidebar { background: #e5e5e5; border-color: #ccc; }
@@ -447,7 +449,8 @@
         body.light-theme .chat-title,
         body.light-theme .logo,
         body.light-theme .history-item,
-        body.light-theme .message-content { color: #111; }
+        body.light-theme .message-content,
+        body.light-theme .message-text { color: #111; }
         body.light-theme .history-item:hover,
         body.light-theme .history-item.active { background: #d0d0d0; color: #000; }
         body.light-theme .api-selector,
@@ -649,7 +652,7 @@
         }
         
         // ============================================
-        // ТЕМА (улучшена)
+        // ТЕМА (исправлена: теперь текст всегда читаем)
         // ============================================
         function toggleTheme() {
             currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -907,12 +910,11 @@
         }
         
         // ============================================
-        // КОПИРОВАНИЕ ТЕКСТА (унифицировано)
+        // КОПИРОВАНИЕ ТЕКСТА
         // ============================================
         function copyMessageText(elementId) {
             const element = document.getElementById(elementId);
             if (!element) return;
-            
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = element.innerHTML;
             const textToCopy = tempDiv.textContent || tempDiv.innerText;
@@ -923,19 +925,14 @@
             const wrapper = button.closest('.message-content-wrapper');
             if (wrapper) {
                 const textDiv = wrapper.querySelector('.message-text');
-                if (textDiv && textDiv.id) {
-                    copyMessageText(textDiv.id);
-                }
+                if (textDiv && textDiv.id) copyMessageText(textDiv.id);
             }
         }
         
         function copyToClipboard(text) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('📋 Ответ скопирован!');
-                }).catch(() => {
-                    fallbackCopy(text);
-                });
+                navigator.clipboard.writeText(text).then(() => showToast('📋 Ответ скопирован!'))
+                    .catch(() => fallbackCopy(text));
             } else {
                 fallbackCopy(text);
             }
@@ -958,7 +955,7 @@
         }
         
         // ============================================
-        // ОТПРАВКА С КОНТЕКСТОМ (улучшена обработка ошибок)
+        // ОТПРАВКА С КОНТЕКСТОМ
         // ============================================
         function updateFileButtons() {
             const imageLabel = document.getElementById('imageLabel');
@@ -1130,7 +1127,6 @@
             if (file) { currentUploadFile = file; saveAndAddMessage(`📎 Файл: ${file.name}`, false); }
         });
         
-        // Кнопка очистки поля ввода
         document.getElementById('clearInputBtn').addEventListener('click', () => {
             document.getElementById('userInput').value = '';
             document.getElementById('userInput').style.height = 'auto';
@@ -1156,7 +1152,7 @@
         if (savedLang) currentLang = savedLang;
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) { currentTheme = savedTheme; toggleTheme(); }
-        else toggleTheme(); // применить тему по умолчанию (dark)
+        else toggleTheme(); // по умолчанию тёмная тема
         
         updateUserUI();
         loadUserData();
