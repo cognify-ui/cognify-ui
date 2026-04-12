@@ -145,11 +145,6 @@ def get_seo_prompt(topic=None):
         "CNN", "The Guardian", "Forbes", "Bloomberg"
     ]
     
-    seo_keywords = [
-        "искусственный интеллект", "AI", "нейросети", "машинное обучение",
-        "технологии будущего", "инновации", "цифровая трансформация"
-    ]
-    
     prompt = f"""
 Ты — профессиональный журналист. Сгенерируй УНИКАЛЬНУЮ, ДЕТАЛЬНУЮ новость на тему: {topic}
 
@@ -177,6 +172,33 @@ def get_seo_prompt(topic=None):
 """
     return prompt, topic
 
+def extract_json_from_response(text):
+    """Более надежное извлечение JSON из ответа"""
+    # Удаляем markdown блоки
+    text = re.sub(r'```(?:json)?\s*', '', text)
+    text = re.sub(r'```\s*', '', text)
+    
+    # Ищем JSON объект
+    json_pattern = r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
+    matches = re.findall(json_pattern, text, re.DOTALL)
+    
+    for match in matches:
+        try:
+            return json.loads(match)
+        except:
+            continue
+    
+    # Если не нашли, пробуем найти любой объект
+    start = text.find('{')
+    end = text.rfind('}')
+    if start != -1 and end != -1:
+        try:
+            return json.loads(text[start:end+1])
+        except:
+            pass
+    
+    return None
+
 def generate_news_with_model(model_name, prompt, retry_count=0):
     """Генерирует новость с указанной моделью"""
     try:
@@ -187,32 +209,22 @@ def generate_news_with_model(model_name, prompt, retry_count=0):
         )
         
         text = response.text
-        text = re.sub(r'```json\s*', '', text)
-        text = re.sub(r'```\s*', '', text)
         
-        start_idx = text.find('{')
-        end_idx = text.rfind('}')
-        if start_idx != -1 and end_idx != -1:
-            text = text[start_idx:end_idx+1]
+        article = extract_json_from_response(text)
         
-        article = json.loads(text)
-        
-        required_fields = ['title', 'summary', 'content', 'source', 'tags']
-        if all(field in article for field in required_fields):
-            content_length = len(article.get('content', ''))
-            print(f"   ✅ УСПЕШНО! Длина текста: {content_length} символов")
-            return article
+        if article:
+            required_fields = ['title', 'summary', 'content', 'source', 'tags']
+            if all(field in article for field in required_fields):
+                content_length = len(article.get('content', ''))
+                print(f"   ✅ УСПЕШНО! Длина текста: {content_length} символов")
+                return article
+            else:
+                print(f"   ⚠️ Не все поля заполнены")
+                return None
         else:
-            print(f"   ⚠️ Не все поля заполнены")
+            print(f"   ⚠️ Не удалось извлечь JSON")
             return None
             
-    except json.JSONDecodeError as e:
-        print(f"   ❌ Ошибка парсинга JSON: {e}")
-        if retry_count < MAX_RETRIES:
-            print(f"   🔄 Повторная попытка ({retry_count + 1}/{MAX_RETRIES})...")
-            time.sleep(5)
-            return generate_news_with_model(model_name, prompt, retry_count + 1)
-        return None
     except Exception as e:
         error_msg = str(e)
         if "429" in error_msg:
@@ -282,7 +294,14 @@ def generate_image_url(title, tags):
     config = IMAGE_THEMES[theme]
     seed = hashlib.md5(f"{title}{datetime.now().strftime('%Y%m%d')}".encode()).hexdigest()[:10]
     
-    return f"https://api.dicebear.com/7.x/{config['style']}/svg?seed={seed}&backgroundColor={config['color']}&radius=50"
+    # Добавляем случайные параметры для разнообразия
+    random_params = {
+        'size': random.choice([50, 60, 70, 80]),
+        'margin': random.randint(0, 10),
+        'rotate': random.randint(0, 360)
+    }
+    
+    return f"https://api.dicebear.com/7.x/{config['style']}/svg?seed={seed}&backgroundColor={config['color']}&radius=50&size={random_params['size']}&margin={random_params['margin']}"
 
 def generate_seo_metadata(article):
     """Генерирует SEO-метаданные"""
@@ -296,15 +315,18 @@ def generate_seo_metadata(article):
     }
 
 def generate_news_html(article):
-    """Генерирует отдельную HTML-страницу для новости (ИСПРАВЛЕНО)"""
+    """Генерирует отдельную HTML-страницу для новости"""
+    import html
     os.makedirs('news', exist_ok=True)
     
-    content_html = article.get('content', '').replace('\n', '<br>')
+    # Экранирование для безопасности
+    title = html.escape(article.get('title', 'Новость'))
+    summary = html.escape(article.get('summary', ''))
+    content = html.escape(article.get('content', '')).replace('\n', '<br>')
+    source = html.escape(article.get('source', 'Cognify AI'))
+    
     article_id = article.get('id', '')
-    title = article.get('title', 'Новость')
-    summary = article.get('summary', '')
     image_url = article.get('image_url', '')
-    source = article.get('source', 'Cognify AI')
     published_at = article.get('published_at', '')
     tags = article.get('tags', [])
     
@@ -313,13 +335,36 @@ def generate_news_html(article):
     else:
         pub_date = 'Дата неизвестна'
     
-    tags_html = ''.join([f'<a href="/?tag={tag}" class="tag">#{tag}</a>' for tag in tags[:5]])
+    tags_html = ''.join([f'<a href="/?tag={tag}" class="tag">#{html.escape(tag)}</a>' for tag in tags[:5]])
     
     image_html = ''
     if image_url:
-        image_html = f'<img class="article-image" src="{image_url}" alt="{title}">'
+        image_html = f'<img class="article-image" src="{html.escape(image_url)}" alt="{title}">'
     
-    html = f'''<!DOCTYPE html>
+    # Schema.org разметка
+    schema_markup = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": title,
+        "description": summary[:200],
+        "datePublished": published_at,
+        "author": {
+            "@type": "Organization",
+            "name": "Cognify AI"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Cognify AI",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://cognify-ui.github.io/logo.png"
+            }
+        }
+    }
+    
+    json_ld = f'<script type="application/ld+json">\n{json.dumps(schema_markup, ensure_ascii=False, indent=2)}\n</script>'
+    
+    html_content = f'''<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -411,7 +456,7 @@ def generate_news_html(article):
                 <span>📖 {len(article.get('content', ''))} символов</span>
             </div>
             <div class="content">
-                {content_html}
+                {content}
             </div>
             <div class="tags">
                 {tags_html}
@@ -419,23 +464,13 @@ def generate_news_html(article):
             <a href="/" class="back-link">← Назад к новостям</a>
         </div>
     </div>
-    <script type="application/ld+json">
-    {{
-        "@context": "https://schema.org",
-        "@type": "NewsArticle",
-        "headline": "{title.replace('"', '\\"')}",
-        "description": "{summary[:200].replace('"', '\\"')}",
-        "datePublished": "{published_at}",
-        "author": {{ "@type": "Organization", "name": "Cognify AI" }},
-        "publisher": {{ "@type": "Organization", "name": "Cognify AI" }}
-    }}
-    </script>
+    {json_ld}
 </body>
-</html>
+</html>'''
     
     html_path = f"news/{article_id}.html"
     with open(html_path, 'w', encoding='utf-8') as f:
-        f.write(html)
+        f.write(html_content)
     
     print(f"   ✅ Создана страница: {html_path}")
     return html_path
@@ -453,23 +488,21 @@ def generate_sitemap():
     
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n'
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    sitemap += f'''  <url>
-    <loc>https://cognify-ui.github.io/</loc>
-    <lastmod>{today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-'''
+    sitemap += '  <url>\n'
+    sitemap += '    <loc>https://cognify-ui.github.io/</loc>\n'
+    sitemap += f'    <lastmod>{today}</lastmod>\n'
+    sitemap += '    <changefreq>daily</changefreq>\n'
+    sitemap += '    <priority>1.0</priority>\n'
+    sitemap += '  </url>\n'
     
     for article in articles:
         pub_date = article.get('published_at', today)[:10]
-        sitemap += f'''  <url>
-    <loc>https://cognify-ui.github.io/news/{article['id']}.html</loc>
-    <lastmod>{pub_date}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-'''
+        sitemap += '  <url>\n'
+        sitemap += f'    <loc>https://cognify-ui.github.io/news/{article["id"]}.html</loc>\n'
+        sitemap += f'    <lastmod>{pub_date}</lastmod>\n'
+        sitemap += '    <changefreq>weekly</changefreq>\n'
+        sitemap += '    <priority>0.8</priority>\n'
+        sitemap += '  </url>\n'
     
     sitemap += '</urlset>'
     
@@ -490,6 +523,46 @@ Disallow: /news_generator.py
         f.write(robots)
     print("✅ robots.txt создан")
 
+def generate_rss_feed():
+    """Генерация RSS 2.0 фида"""
+    import html
+    if not os.path.exists(NEWS_FILE):
+        return
+    
+    with open(NEWS_FILE, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    articles = data.get('articles', [])[:20]
+    
+    rss = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    rss += '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
+    rss += '<channel>\n'
+    rss += '    <title>Cognify AI News</title>\n'
+    rss += '    <link>https://cognify-ui.github.io/</link>\n'
+    rss += '    <description>Latest AI and technology news generated by AI</description>\n'
+    rss += '    <language>ru</language>\n'
+    rss += '    <atom:link href="https://cognify-ui.github.io/rss.xml" rel="self" type="application/rss+xml"/>\n'
+    
+    for article in articles:
+        pub_date = article.get('published_at', '')
+        if pub_date:
+            pub_date = datetime.fromisoformat(pub_date).strftime('%a, %d %b %Y %H:%M:%S +0000')
+        
+        rss += '    <item>\n'
+        rss += f'        <title>{html.escape(article["title"])}</title>\n'
+        rss += f'        <link>https://cognify-ui.github.io/news/{article["id"]}.html</link>\n'
+        rss += f'        <description>{html.escape(article["summary"][:500])}</description>\n'
+        rss += f'        <pubDate>{pub_date}</pubDate>\n'
+        rss += f'        <guid>https://cognify-ui.github.io/news/{article["id"]}.html</guid>\n'
+        rss += '    </item>\n'
+    
+    rss += '</channel>\n</rss>'
+    
+    with open('rss.xml', 'w', encoding='utf-8') as f:
+        f.write(rss)
+    
+    print("✅ RSS фид создан: rss.xml")
+
 def generate_all_news_pages():
     """Генерирует HTML для всех новостей"""
     if not os.path.exists(NEWS_FILE):
@@ -507,6 +580,7 @@ def generate_all_news_pages():
     
     generate_sitemap()
     generate_robots_txt()
+    generate_rss_feed()
     print(f"✅ Создано {len(articles)} HTML страниц")
 
 def save_news_article(article):
@@ -555,6 +629,7 @@ def save_news_article(article):
     generate_news_html(new_article)
     generate_sitemap()
     generate_robots_txt()
+    generate_rss_feed()
     
     print(f"\n✅ Сохранено. Всего новостей: {len(existing['articles'])}")
     print(f"📏 Длина текста: {len(article.get('content', ''))} символов")
