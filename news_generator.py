@@ -16,7 +16,6 @@ GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 
 if not GEMINI_API_KEY:
     print("❌ Ошибка: GEMINI_API_KEY не найден")
-    print("Добавьте секрет в GitHub: Settings → Secrets and variables → Actions")
     exit(1)
 
 print(f"✅ API ключ найден: {GEMINI_API_KEY[:15]}...")
@@ -34,9 +33,8 @@ FIXED_MODELS = [
     "gemini-2.0-flash-lite-001",
 ]
 
-# ========== РАСШИРЕННЫЕ ТЕМЫ ДЛЯ НОВОСТЕЙ ==========
+# SEO темы
 SEO_TOPICS = [
-    # AI
     "chatgpt", "openai", "google gemini", "microsoft copilot", "claude ai",
     "midjourney", "stable diffusion", "dall-e 3", "ai art", "neural networks",
     "deep learning", "machine learning", "nvidia h100", "ai startup", "ai funding",
@@ -45,31 +43,18 @@ SEO_TOPICS = [
     "ai education", "humanoid robot", "self-driving car", "computer vision",
     "ai video generation", "sora ai", "ai coding", "github copilot", "ai cybersecurity",
     "deepseek", "llama 3", "mistral ai", "perplexity ai",
-    # Технологии
     "iphone", "samsung galaxy", "google pixel", "playstation", "xbox",
-    "nintendo switch", "windows", "macos", "android", "ios", "telegram update",
-    "whatsapp new features", "instagram updates", "tiktok news", "youtube new features",
-    "spotify", "netflix", "cybersecurity", "5g", "6g", "wifi 7", "foldable phone",
+    "nintendo switch", "windows", "macos", "android", "ios",
+    "spotify", "netflix", "cybersecurity", "5g", "6g", "wifi 7",
     "smartwatch", "smart home", "iot", "electric car", "tesla", "spacex", "nasa",
-    # Наука
-    "physics discovery", "quantum computing", "biology breakthrough", "medical research",
-    "cancer treatment", "gene editing", "crispr", "james webb", "mars mission",
-    "climate change", "renewable energy", "fusion energy", "battery technology",
-    # Бизнес
-    "stock market", "cryptocurrency", "bitcoin", "ethereum", "blockchain",
-    "inflation", "interest rates", "global economy", "startup funding", "ipo",
+    "quantum computing", "medical research", "cancer treatment", "gene editing",
+    "crispr", "james webb", "mars mission", "climate change", "renewable energy",
+    "fusion energy", "cryptocurrency", "bitcoin", "ethereum", "blockchain",
+    "inflation", "global economy", "startup funding", "ipo",
     "elon musk", "jeff bezos", "mark zuckerberg",
-    # Здоровье
-    "health news", "fitness trends", "mental health", "covid update", "longevity",
-    # Спорт
-    "football news", "premier league", "champions league", "nba finals",
-    "tennis grand slam", "formula 1", "olympics",
-    # Развлечения
-    "hollywood news", "netflix series", "marvel movie", "star wars", "stranger things",
-    "kpop news", "taylor swift", "beyonce",
 ]
 
-# Конфигурация изображений по темам
+# Конфигурация изображений
 IMAGE_THEMES = {
     'chatgpt': {'style': 'bottts', 'color': '10a37f'},
     'openai': {'style': 'bottts', 'color': '10a37f'},
@@ -77,131 +62,45 @@ IMAGE_THEMES = {
     'gemini': {'style': 'identicon', 'color': '8e6ced'},
     'microsoft': {'style': 'micah', 'color': '00a4ef'},
     'claude': {'style': 'adventurer', 'color': 'd97757'},
-    'meta': {'style': 'lorelei', 'color': '0064e1'},
-    'midjourney': {'style': 'pixel-art', 'color': 'ff6b35'},
     'nvidia': {'style': 'bottts', 'color': '76b900'},
-    'robot': {'style': 'bottts', 'color': '6b7280'},
-    'autonomous': {'style': 'bottts', 'color': 'ef4444'},
     'iphone': {'style': 'bottts', 'color': '34c759'},
     'samsung': {'style': 'bottts', 'color': '1428a0'},
-    'playstation': {'style': 'bottts', 'color': '003791'},
-    'xbox': {'style': 'bottts', 'color': '107c10'},
     'tesla': {'style': 'bottts', 'color': 'e82127'},
     'spacex': {'style': 'bottts', 'color': '005288'},
     'bitcoin': {'style': 'identicon', 'color': 'f7931a'},
     'health': {'style': 'adventurer', 'color': '2ecc71'},
-    'sport': {'style': 'micah', 'color': 'e67e22'},
-    'movie': {'style': 'pixel-art', 'color': '9b59b6'},
     'default': {'style': 'bottts', 'color': '6366f1'}
 }
 
 def get_available_models():
-    """Возвращает фиксированный список моделей для генерации"""
-    print("\n📋 Загружаем список моделей для генерации...")
-    
+    """Возвращает доступные модели"""
+    print("\n📋 Загружаем список моделей...")
     available_models = []
-    api_models = []
     
     try:
+        api_models = []
         for model in client.models.list():
             model_name = model.name.replace('models/', '')
             api_models.append(model_name)
         
-        print(f"   📡 Найдено моделей в API: {len(api_models)}")
-        
         for model in FIXED_MODELS:
             if model in api_models:
                 available_models.append(model)
-                print(f"   ✅ {model} - доступна")
-            else:
-                print(f"   ⚠️ {model} - не найдена в API, пропускаем")
+                print(f"   ✅ {model}")
         
         if not available_models and api_models:
             available_models = api_models[:3]
-            print(f"   📌 Используем первые 3 доступные модели: {available_models}")
             
     except Exception as e:
-        print(f"   ⚠️ Ошибка проверки API: {e}")
+        print(f"   ⚠️ Ошибка: {e}")
         available_models = FIXED_MODELS.copy()
-        print(f"   📌 Используем фиксированный список из {len(available_models)} моделей")
-    
-    print(f"\n📊 Итоговый список для генерации ({len(available_models)} моделей):")
-    for i, model in enumerate(available_models, 1):
-        print(f"   {i}. {model}")
     
     return available_models
-
-def get_seo_prompt(topic=None):
-    """Генерирует SEO-оптимизированный промпт для новости"""
-    if not topic:
-        topic = random.choice(SEO_TOPICS)
-    
-    target_length = random.randint(1500, 10000)
-    
-    sources = [
-        "The Verge", "TechCrunch", "Wired", "VentureBeat", "Ars Technica",
-        "MIT Technology Review", "IEEE Spectrum", "Reuters", "BBC News",
-        "CNN", "The Guardian", "Forbes", "Bloomberg"
-    ]
-    
-    prompt = f"""
-Ты — профессиональный журналист. Сгенерируй УНИКАЛЬНУЮ, ДЕТАЛЬНУЮ новость на тему: {topic}
-
-ТРЕБОВАНИЯ:
-1. Дата: сегодня или вчера
-2. Источник: {random.choice(sources)}
-3. Язык: русский
-4. ДЛИНА ТЕКСТА: {target_length} символов
-5. Добавь цитаты экспертов, цифры, статистику
-
-СТРУКТУРА:
-- Заголовок (до 100 символов)
-- Краткое описание (до 350 символов)
-- Полный текст (1500-10000 символов) с подзаголовками
-- Теги: 5-7 штук
-
-ФОРМАТ - ТОЛЬКО JSON:
-{{
-    "title": "Заголовок",
-    "summary": "Краткое описание",
-    "content": "Полный текст новости...",
-    "source": "Источник",
-    "tags": ["тег1", "тег2", "тег3", "тег4", "тег5"]
-}}
-"""
-    return prompt, topic
-
-def extract_json_from_response(text):
-    """Более надежное извлечение JSON из ответа"""
-    # Удаляем markdown блоки
-    text = re.sub(r'```(?:json)?\s*', '', text)
-    text = re.sub(r'```\s*', '', text)
-    
-    # Ищем JSON объект
-    json_pattern = r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
-    matches = re.findall(json_pattern, text, re.DOTALL)
-    
-    for match in matches:
-        try:
-            return json.loads(match)
-        except:
-            continue
-    
-    # Если не нашли, пробуем найти любой объект
-    start = text.find('{')
-    end = text.rfind('}')
-    if start != -1 and end != -1:
-        try:
-            return json.loads(text[start:end+1])
-        except:
-            pass
-    
-    return None
 
 def generate_news_with_model(model_name, prompt, retry_count=0):
     """Генерирует новость с указанной моделью"""
     try:
-        print(f"   🧠 Пробуем модель: {model_name}...")
+        print(f"   🧠 Пробуем {model_name}...")
         response = client.models.generate_content(
             model=model_name,
             contents=prompt
@@ -209,119 +108,97 @@ def generate_news_with_model(model_name, prompt, retry_count=0):
         
         text = response.text
         
-        article = extract_json_from_response(text)
+        # Извлекаем JSON
+        text = re.sub(r'```(?:json)?\s*', '', text)
+        text = re.sub(r'```\s*', '', text)
         
-        if article:
-            required_fields = ['title', 'summary', 'content', 'source', 'tags']
-            if all(field in article for field in required_fields):
-                content_length = len(article.get('content', ''))
-                print(f"   ✅ УСПЕШНО! Длина текста: {content_length} символов")
-                return article
-            else:
-                print(f"   ⚠️ Не все поля заполнены")
-                return None
-        else:
-            print(f"   ⚠️ Не удалось извлечь JSON")
-            return None
+        start = text.find('{')
+        end = text.rfind('}')
+        if start != -1 and end != -1:
+            text = text[start:end+1]
+        
+        article = json.loads(text)
+        
+        if all(k in article for k in ['title', 'summary', 'content', 'source', 'tags']):
+            print(f"   ✅ Успех! {len(article['content'])} символов")
+            return article
             
     except Exception as e:
-        error_msg = str(e)
-        if "429" in error_msg:
-            print(f"   ⏳ Превышен лимит, ждём 30 сек...")
+        if "429" in str(e) and retry_count < MAX_RETRIES:
+            print(f"   ⏳ Лимит, ждём 30 сек...")
             time.sleep(30)
-            if retry_count < MAX_RETRIES:
-                return generate_news_with_model(model_name, prompt, retry_count + 1)
-        elif "404" in error_msg:
-            print(f"   ❌ Модель {model_name} не найдена")
+            return generate_news_with_model(model_name, prompt, retry_count + 1)
         else:
-            print(f"   ❌ Ошибка: {error_msg[:100]}")
-        return None
+            print(f"   ❌ Ошибка: {str(e)[:100]}")
+    
+    return None
 
 def generate_news():
-    """Генерирует новость, перебирая все модели"""
-    available_models = get_available_models()
-    
-    if not available_models:
-        print("❌ Нет доступных моделей")
+    """Генерирует новость"""
+    models = get_available_models()
+    if not models:
+        print("❌ Нет моделей")
         return None
     
-    print(f"\n🔄 Начинаем перебор {len(available_models)} моделей...")
-    print("=" * 60)
-    
     for attempt in range(3):
-        print(f"\n🎯 Попытка {attempt + 1}/3 - выбор темы...")
-        
         topic = random.choice(SEO_TOPICS)
-        prompt, selected_topic = get_seo_prompt(topic)
-        print(f"📌 Тема: {selected_topic.upper()}")
         
-        for i, model_name in enumerate(available_models, 1):
-            print(f"\n[{i}/{len(available_models)}] Тестируем модель {model_name}...")
-            
-            article = generate_news_with_model(model_name, prompt)
-            
+        prompt = f"""Сгенерируй УНИКАЛЬНУЮ новость на тему: {topic}
+
+ТРЕБОВАНИЯ:
+1. Дата: сегодня или вчера
+2. Источник: {random.choice(['The Verge', 'TechCrunch', 'Wired', 'Reuters', 'BBC News'])}
+3. Язык: русский
+4. Длина: 2000-5000 символов
+5. Добавь цитаты и цифры
+
+ФОРМАТ JSON:
+{{
+    "title": "Заголовок",
+    "summary": "Краткое описание (до 350 символов)",
+    "content": "Полный текст новости...",
+    "source": "Источник",
+    "tags": ["тег1", "тег2", "тег3", "тег4", "тег5"]
+}}
+"""
+        
+        for model in models:
+            article = generate_news_with_model(model, prompt)
             if article:
-                article['seo_topic'] = selected_topic
-                article['used_model'] = model_name
+                article['seo_topic'] = topic
+                article['used_model'] = model
                 article['generation_time'] = datetime.now().isoformat()
-                print(f"\n🎉 Успех! Модель: {model_name}, Тема: {selected_topic}")
                 return article
-            
-            if i < len(available_models):
-                time.sleep(random.randint(3, 7))
         
-        if attempt < 2:
-            print(f"\n⏰ Пауза 20 сек...")
-            time.sleep(20)
+        time.sleep(20)
     
-    print("\n❌ Не удалось сгенерировать новость")
     return None
 
 def generate_image_url(title, tags):
-    """Генерирует изображение под тему новости"""
+    """Генерирует URL изображения"""
     title_lower = title.lower()
     tags_lower = [t.lower() for t in tags]
     
     theme = 'default'
-    for key, config in IMAGE_THEMES.items():
+    for key in IMAGE_THEMES:
         if key in title_lower or any(key in tag for tag in tags_lower):
             theme = key
             break
     
     config = IMAGE_THEMES[theme]
-    seed = hashlib.md5(f"{title}{datetime.now().strftime('%Y%m%d')}".encode()).hexdigest()[:10]
+    seed = hashlib.md5(f"{title}{datetime.now().date()}".encode()).hexdigest()[:10]
     
-    # Добавляем случайные параметры для разнообразия
-    random_params = {
-        'size': random.choice([50, 60, 70, 80]),
-        'margin': random.randint(0, 10),
-        'rotate': random.randint(0, 360)
-    }
-    
-    return f"https://api.dicebear.com/7.x/{config['style']}/svg?seed={seed}&backgroundColor={config['color']}&radius=50&size={random_params['size']}&margin={random_params['margin']}"
-
-def generate_seo_metadata(article):
-    """Генерирует SEO-метаданные"""
-    return {
-        "meta_title": f"{article['title']} | Cognify AI News",
-        "meta_description": article['summary'][:160],
-        "meta_keywords": ", ".join(article.get('tags', []) + [article.get('seo_topic', 'news')]),
-        "og_title": article['title'],
-        "og_description": article['summary'][:200],
-        "twitter_card": "summary_large_image"
-    }
+    return f"https://api.dicebear.com/7.x/{config['style']}/svg?seed={seed}&backgroundColor={config['color']}&radius=50"
 
 def generate_news_html(article):
-    """Генерирует отдельную HTML-страницу для новости"""
+    """Генерирует HTML страницу для новости"""
     import html
     os.makedirs('news', exist_ok=True)
     
-    # Экранирование для безопасности
     title = html.escape(article.get('title', 'Новость'))
     summary = html.escape(article.get('summary', ''))
     content = html.escape(article.get('content', '')).replace('\n', '<br>')
     source = html.escape(article.get('source', 'Cognify AI'))
-    
     article_id = article.get('id', '')
     image_url = article.get('image_url', '')
     published_at = article.get('published_at', '')
@@ -330,36 +207,13 @@ def generate_news_html(article):
     if published_at:
         pub_date = published_at.split('T')[0]
     else:
-        pub_date = 'Дата неизвестна'
+        pub_date = datetime.now().strftime('%Y-%m-%d')
     
-    tags_html = ''.join([f'<a href="/?tag={tag}" class="tag">#{html.escape(tag)}</a>' for tag in tags[:5]])
+    tags_html = ''.join([f'<a href="/?tag={html.escape(tag)}" class="tag">#{html.escape(tag)}</a>' for tag in tags[:5]])
     
     image_html = ''
     if image_url:
         image_html = f'<img class="article-image" src="{html.escape(image_url)}" alt="{title}">'
-    
-    # Schema.org разметка
-    schema_markup = {
-        "@context": "https://schema.org",
-        "@type": "NewsArticle",
-        "headline": title,
-        "description": summary[:200],
-        "datePublished": published_at,
-        "author": {
-            "@type": "Organization",
-            "name": "Cognify AI"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "Cognify AI",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://cognify-ui.github.io/logo.png"
-            }
-        }
-    }
-    
-    json_ld = f'<script type="application/ld+json">\n{json.dumps(schema_markup, ensure_ascii=False, indent=2)}\n</script>'
     
     html_content = f'''<!DOCTYPE html>
 <html lang="ru">
@@ -374,9 +228,7 @@ def generate_news_html(article):
     <meta property="og:image" content="{image_url}">
     <meta property="og:url" content="https://cognify-ui.github.io/news/{article_id}.html">
     <meta property="og:type" content="article">
-    <meta name="twitter:card" content="summary_large_image">
     <link rel="canonical" href="https://cognify-ui.github.io/news/{article_id}.html">
-    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -397,10 +249,9 @@ def generate_news_html(article):
             width: 100%;
             height: 400px;
             object-fit: cover;
-            background: #f0f0f0;
         }}
         .article-content {{ padding: 40px; }}
-        h1 {{ font-size: 32px; color: #1a1a2e; margin-bottom: 20px; line-height: 1.3; }}
+        h1 {{ font-size: 32px; margin-bottom: 20px; }}
         .meta {{
             display: flex;
             gap: 20px;
@@ -409,15 +260,9 @@ def generate_news_html(article):
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid #e0e0e0;
-            flex-wrap: wrap;
         }}
-        .content {{ font-size: 18px; line-height: 1.8; color: #333; margin-bottom: 30px; }}
-        .tags {{
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 30px 0;
-        }}
+        .content {{ font-size: 18px; line-height: 1.8; margin-bottom: 30px; }}
+        .tags {{ display: flex; gap: 10px; flex-wrap: wrap; margin: 30px 0; }}
         .tag {{
             background: #f0f0f0;
             padding: 6px 14px;
@@ -431,14 +276,10 @@ def generate_news_html(article):
             margin-top: 30px;
             color: #667eea;
             text-decoration: none;
-            font-weight: 500;
         }}
-        .back-link:hover {{ text-decoration: underline; }}
         @media (max-width: 768px) {{
             .article-content {{ padding: 20px; }}
             h1 {{ font-size: 24px; }}
-            .article-image {{ height: 250px; }}
-            .content {{ font-size: 16px; }}
         }}
     </style>
 </head>
@@ -452,16 +293,11 @@ def generate_news_html(article):
                 <span>🔗 {source}</span>
                 <span>📖 {len(article.get('content', ''))} символов</span>
             </div>
-            <div class="content">
-                {content}
-            </div>
-            <div class="tags">
-                {tags_html}
-            </div>
+            <div class="content">{content}</div>
+            <div class="tags">{tags_html}</div>
             <a href="/" class="back-link">← Назад к новостям</a>
         </div>
     </div>
-    {json_ld}
 </body>
 </html>'''
     
@@ -474,13 +310,13 @@ def generate_news_html(article):
 
 def generate_sitemap():
     """Генерирует sitemap.xml"""
-    existing = {"articles": []}
+    if not os.path.exists(NEWS_FILE):
+        return
     
-    if os.path.exists(NEWS_FILE):
-        with open(NEWS_FILE, 'r', encoding='utf-8') as f:
-            existing = json.load(f)
+    with open(NEWS_FILE, 'r', encoding='utf-8') as f:
+        data = json.load(f)
     
-    articles = existing.get('articles', [])
+    articles = data.get('articles', [])
     today = datetime.now().strftime("%Y-%m-%d")
     
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -521,7 +357,7 @@ Disallow: /news_generator.py
     print("✅ robots.txt создан")
 
 def generate_rss_feed():
-    """Генерация RSS 2.0 фида"""
+    """Генерация RSS фида"""
     import html
     if not os.path.exists(NEWS_FILE):
         return
@@ -536,24 +372,17 @@ def generate_rss_feed():
     rss += '<channel>\n'
     rss += '    <title>Cognify AI News</title>\n'
     rss += '    <link>https://cognify-ui.github.io/</link>\n'
-    rss += '    <description>Latest AI and technology news generated by AI</description>\n'
+    rss += '    <description>AI news generated by Gemini</description>\n'
     rss += '    <language>ru</language>\n'
     rss += '    <lastBuildDate>' + datetime.now().strftime('%a, %d %b %Y %H:%M:%S +0000') + '</lastBuildDate>\n'
     rss += '    <atom:link href="https://cognify-ui.github.io/rss.xml" rel="self" type="application/rss+xml"/>\n'
     
     for article in articles:
         pub_date = article.get('published_at', '')
-        
-        # Проверяем формат даты
-        if pub_date:
-            try:
-                # Пробуем парсить ISO формат
-                dt = datetime.fromisoformat(pub_date.replace('Z', '+00:00'))
-                rss_date = dt.strftime('%a, %d %b %Y %H:%M:%S +0000')
-            except:
-                # Если не получилось, используем текущую дату
-                rss_date = datetime.now().strftime('%a, %d %b %Y %H:%M:%S +0000')
-        else:
+        try:
+            dt = datetime.fromisoformat(pub_date.replace('Z', '+00:00'))
+            rss_date = dt.strftime('%a, %d %b %Y %H:%M:%S +0000')
+        except:
             rss_date = datetime.now().strftime('%a, %d %b %Y %H:%M:%S +0000')
         
         rss += '    <item>\n'
@@ -569,39 +398,53 @@ def generate_rss_feed():
     with open('rss.xml', 'w', encoding='utf-8') as f:
         f.write(rss)
     
-    print("✅ RSS фид создан: rss.xml")
+    print("✅ RSS фид создан")
 
-def generate_all_news_pages():
-    """Генерирует HTML для всех новостей"""
+def clean_and_fix_news_file():
+    """Очищает и восстанавливает news.json файл"""
     if not os.path.exists(NEWS_FILE):
-        print("❌ news.json не найден")
-        return
+        return {"last_updated": "", "articles": [], "total_articles": 0}
     
-    with open(NEWS_FILE, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    articles = data.get('articles', [])
-    print(f"\n📄 Генерация HTML для {len(articles)} новостей...")
-    
-    for article in articles:
-        generate_news_html(article)
-    
-    generate_sitemap()
-    generate_robots_txt()
-    generate_rss_feed()
-    print(f"✅ Создано {len(articles)} HTML страниц")
+    try:
+        with open(NEWS_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if 'articles' not in data:
+            data = {"last_updated": "", "articles": [], "total_articles": 0}
+        
+        clean_articles = []
+        seen_titles = set()
+        
+        for article in data.get('articles', []):
+            if not all(k in article for k in ['id', 'title', 'published_at']):
+                continue
+            
+            if article['title'] not in seen_titles:
+                seen_titles.add(article['title'])
+                clean_articles.append(article)
+        
+        clean_articles.sort(key=lambda x: x.get('published_at', ''), reverse=True)
+        clean_articles = clean_articles[:MAX_ARTICLES]
+        
+        result = {
+            "last_updated": datetime.now().isoformat(),
+            "articles": clean_articles,
+            "total_articles": len(clean_articles)
+        }
+        
+        with open(NEWS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        
+        print(f"✅ Очищено: {len(clean_articles)} статей")
+        return result
+        
+    except Exception as e:
+        print(f"⚠️ Ошибка: {e}")
+        return {"last_updated": "", "articles": [], "total_articles": 0}
 
 def save_news_article(article):
-    """Сохраняет новость и генерирует HTML"""
-    existing = {"last_updated": "", "articles": []}
-    
-    if os.path.exists(NEWS_FILE):
-        try:
-            with open(NEWS_FILE, 'r', encoding='utf-8') as f:
-                existing = json.load(f)
-                print(f"\n📖 Загружено {len(existing.get('articles', []))} новостей")
-        except Exception as e:
-            print(f"⚠️ Ошибка чтения: {e}")
+    """Сохраняет новость"""
+    existing = clean_and_fix_news_file()
     
     article_id = hashlib.md5(f"{article['title']}{datetime.now()}".encode()).hexdigest()[:12]
     image_url = generate_image_url(article['title'], article.get('tags', []))
@@ -618,12 +461,16 @@ def save_news_article(article):
         "seo_topic": article.get('seo_topic', 'news'),
         "used_model": article.get('used_model', 'unknown'),
         "image_url": image_url,
-        "seo_metadata": generate_seo_metadata(article)
+        "seo_metadata": {
+            "meta_title": f"{article.get('title')} | Cognify AI News",
+            "meta_description": article.get('summary', '')[:160],
+            "meta_keywords": ", ".join(article.get('tags', [])),
+        }
     }
     
     existing_titles = [a.get('title') for a in existing.get('articles', [])]
     if new_article['title'] in existing_titles:
-        print("⚠️ Такая новость уже существует, пропускаем...")
+        print(f"⚠️ Дубликат!")
         return False
     
     existing['articles'].insert(0, new_article)
@@ -639,55 +486,50 @@ def save_news_article(article):
     generate_robots_txt()
     generate_rss_feed()
     
-    print(f"\n✅ Сохранено. Всего новостей: {len(existing['articles'])}")
-    print(f"📏 Длина текста: {len(article.get('content', ''))} символов")
+    print(f"\n✅ Сохранено! Всего: {len(existing['articles'])}")
+    print(f"📰 {new_article['title'][:80]}...")
     return True
 
-def create_seo_demo_news():
+def create_demo_news():
     """Создаёт демо-новость"""
-    demo_article = {
+    demo = {
         "title": "Cognify AI: Бесплатный доступ к 4 мощным AI моделям",
         "summary": "Откройте мир искусственного интеллекта бесплатно! Cognify AI предоставляет доступ к Groq, Cerebras, Cloudflare AI и Google Gemini без ограничений.",
-        "content": "Cognify AI — это инновационная платформа, объединяющая 4 передовые AI модели. Пользователи могут общаться с Groq, Cerebras, Cloudflare AI и Google Gemini абсолютно бесплатно. Сервис предлагает историю чатов, систему аккаунтов и интуитивный интерфейс.",
+        "content": "Cognify AI — инновационная платформа, объединяющая 4 передовые AI модели. Пользователи могут общаться с Groq, Cerebras, Cloudflare AI и Google Gemini абсолютно бесплатно. Сервис предлагает историю чатов, систему аккаунтов и интуитивный интерфейс.",
         "source": "Cognify AI",
         "tags": ["cognify", "бесплатный ai", "groq", "cerebras", "gemini"],
         "seo_topic": "free ai",
         "used_model": "demo"
     }
-    print("📝 Создаём демо-новость...")
-    return save_news_article(demo_article)
+    return save_news_article(demo)
 
 def main():
     print("=" * 60)
     print(f"🚀 ЗАПУСК ГЕНЕРАТОРА НОВОСТЕЙ")
     print(f"🕐 Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"📊 Моделей: {len(FIXED_MODELS)}")
-    print(f"🎨 Всего тем: {len(SEO_TOPICS)}")
     print("=" * 60)
+    
+    clean_and_fix_news_file()
     
     article = generate_news()
     
     if article:
         success = save_news_article(article)
-        if success:
-            print("\n" + "=" * 60)
-            print("📰 СГЕНЕРИРОВАННАЯ НОВОСТЬ:")
-            print(f"   📌 Заголовок: {article.get('title')}")
-            print(f"   📰 Источник: {article.get('source')}")
-            print(f"   🏷️  Тема: {article.get('seo_topic')}")
-            print(f"   🤖 Модель: {article.get('used_model')}")
-            print(f"   📏 Длина: {len(article.get('content', ''))} символов")
-            print("=" * 60)
-        else:
-            print("⚠️ Новость не сохранена (дубликат)")
+        if not success:
+            print("⚠️ Дубликат, пробуем ещё раз...")
+            article = generate_news()
+            if article:
+                save_news_article(article)
     else:
-        print("\n❌ Не удалось сгенерировать новость")
+        print("❌ Не удалось сгенерировать новость")
         
-        if not os.path.exists(NEWS_FILE) or os.path.getsize(NEWS_FILE) < 100:
-            create_seo_demo_news()
+        if os.path.exists(NEWS_FILE):
+            with open(NEWS_FILE, 'r') as f:
+                data = json.load(f)
+                if len(data.get('articles', [])) == 0:
+                    create_demo_news()
         else:
-            generate_all_news_pages()
-            print("📁 Обновлены HTML страницы")
+            create_demo_news()
     
     print("\n" + "=" * 60)
     print("✅ ГОТОВО!")
