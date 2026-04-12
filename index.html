@@ -943,7 +943,7 @@
         const newsListDiv = document.getElementById('newsList');
         newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div></div>';
         try {
-            const response = await fetch('/news.json?t=' + Date.now());
+            const response = await fetch('news.json?t=' + Date.now());
             if (!response.ok) throw new Error();
             const data = await response.json();
             allNews = data.articles || [];
