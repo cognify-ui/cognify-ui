@@ -1,0 +1,8 @@
+/* TEAM */
+Developer: Cognify AI Team
+Website: https://cognify-ui.github.io/
+
+/* SITE */
+Last update: 2026-04-13
+Language: Russian, English
+Stack: HTML, CSS, JavaScript, Python, Gemini API
