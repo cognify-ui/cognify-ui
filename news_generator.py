@@ -34,77 +34,39 @@ FIXED_MODELS = [
     "gemini-2.0-flash-lite-001",
 ]
 
-# ========== РАСШИРЕННЫЕ ТЕМЫ ДЛЯ НОВОСТЕЙ (ВСЕ ПОПУЛЯРНЫЕ ТЕМЫ) ==========
+# ========== РАСШИРЕННЫЕ ТЕМЫ ДЛЯ НОВОСТЕЙ ==========
 SEO_TOPICS = [
-    # === AI и ИСКУССТВЕННЫЙ ИНТЕЛЛЕКТ ===
+    # AI
     "chatgpt", "openai", "google gemini", "microsoft copilot", "claude ai",
     "midjourney", "stable diffusion", "dall-e 3", "ai art", "neural networks",
-    "deep learning", "machine learning", "data science", "nvidia h100", "amd instinct",
-    "ai startup", "ai investment", "ai funding", "eu ai act", "ai safety",
-    "china ai", "us ai", "europe ai", "ai ethics", "artificial general intelligence",
-    "generative ai", "llm", "large language model", "ai agents", "agi",
-    "ai chip", "gpu", "ai hardware", "quantum ai", "edge ai", "cloud ai",
-    "ai healthcare", "ai medicine", "ai finance", "ai education", "humanoid robot",
-    "self-driving car", "autonomous vehicle", "computer vision", "nlp", "speech recognition",
-    "ai video generation", "sora ai", "runway ml", "pika labs", "ai music generation",
-    "ai coding", "github copilot", "cursor ai", "ai programming", "ai cybersecurity",
-    "deepseek", "qwen", "llama 3", "mistral ai", "perplexity ai",
-    
-    # === ТЕХНОЛОГИИ ===
-    "iphone 17", "samsung galaxy s25", "xiaomi 15", "google pixel 10", "oneplus 13",
-    "apple vision pro", "meta quest 4", "playstation 6", "xbox series next",
-    "nintendo switch 2", "steam deck 2", "windows 12", "macos sequoia", "android 16",
-    "ios 19", "telegram update", "whatsapp new features", "instagram updates",
-    "tiktok news", "youtube new features", "spotify ai", "netflix changes",
-    "disney plus updates", "cybersecurity threat", "hacker attack", "data breach",
-    "5g rollout", "6g technology", "wifi 7", "bluetooth 6", "usb c",
-    "foldable phone", "smartwatch", "fitness tracker", "smart home", "iot",
-    "electric car", "tesla", "ev charging", "autonomous driving", "spacex",
-    "starship", "nasa mission", "blue origin", "space news", "rocket launch",
-    
-    # === НАУКА ===
+    "deep learning", "machine learning", "nvidia h100", "ai startup", "ai funding",
+    "ai safety", "generative ai", "llm", "ai agents", "agi", "ai chip", "gpu",
+    "quantum ai", "edge ai", "ai healthcare", "ai medicine", "ai finance",
+    "ai education", "humanoid robot", "self-driving car", "computer vision",
+    "ai video generation", "sora ai", "ai coding", "github copilot", "ai cybersecurity",
+    "deepseek", "llama 3", "mistral ai", "perplexity ai",
+    # Технологии
+    "iphone", "samsung galaxy", "google pixel", "playstation", "xbox",
+    "nintendo switch", "windows", "macos", "android", "ios", "telegram update",
+    "whatsapp new features", "instagram updates", "tiktok news", "youtube new features",
+    "spotify", "netflix", "cybersecurity", "5g", "6g", "wifi 7", "foldable phone",
+    "smartwatch", "smart home", "iot", "electric car", "tesla", "spacex", "nasa",
+    # Наука
     "physics discovery", "quantum computing", "biology breakthrough", "medical research",
-    "vaccine news", "cancer treatment", "gene editing", "crispr", "space telescope",
-    "james webb", "mars mission", "moon landing", "climate change", "renewable energy",
-    "solar power", "fusion energy", "nuclear reactor", "battery technology",
-    "archaeology discovery", "dinosaur fossil", "ancient civilization", "paleontology",
-    "ocean exploration", "deep sea", "volcano eruption", "earthquake prediction",
-    
-    # === БИЗНЕС И ЭКОНОМИКА ===
-    "stock market", "cryptocurrency", "bitcoin news", "ethereum", "blockchain",
-    "real estate", "inflation", "interest rates", "fed decision", "global economy",
-    "china economy", "us economy", "europe economy", "startup funding", "ipo news",
-    "merger acquisition", "billionaire news", "elon musk", "jeff bezos", "mark zuckerberg",
-    "tesla stock", "apple stock", "nvidia stock", "microsoft stock", "amazon stock",
-    "gold price", "oil price", "forex market", "crypto market", "defi",
-    
-    # === ЗДОРОВЬЕ ===
-    "health news", "wellness tips", "nutrition", "fitness trends", "mental health",
-    "covid update", "flu season", "pandemic news", "who announcement", "healthcare reform",
-    "telemedicine", "digital health", "wearable health tech", "sleep science",
-    "longevity", "anti aging", "stem cell research", "personalized medicine",
-    
-    # === СПОРТ ===
-    "football news", "soccer transfer", "premier league", "champions league", "world cup",
-    "basketball nba", "lebron james", "stephen curry", "nba finals", "olympics",
-    "tennis grand slam", "novak djokovic", "carlos alcaraz", "us open", "wimbledon",
-    "formula 1", "max verstappen", "lewis hamilton", "f1 race", "grand prix",
-    "boxing fight", "mma ufc", "conor mcgregor", "heavyweight championship",
-    "hockey nhl", "baseball mlb", "cricket world cup", "rugby championship",
-    
-    # === РАЗВЛЕЧЕНИЯ ===
-    "hollywood news", "blockbuster movie", "oscar winners", "netflix series", "tv show",
-    "marvel movie", "dc universe", "star wars", "game of thrones", "stranger things",
-    "kpop news", "bts comeback", "blackpink", "newjeans", "music release",
-    "concert tour", "taylor swift", "beyonce", "the weeknd", "bad bunny",
-    "celeb gossip", "celebrity news", "royal family", "kardashians", "reality tv",
-    
-    # === ОБЩЕСТВО ===
-    "world news", "politics", "election news", "president news", "government policy",
-    "climate action", "environmental news", "sustainability", "green energy",
-    "education reform", "school news", "university ranking", "student life",
-    "travel news", "tourism trends", "best destinations", "aviation news",
-    "crime news", "legal news", "court ruling", "law changes"
+    "cancer treatment", "gene editing", "crispr", "james webb", "mars mission",
+    "climate change", "renewable energy", "fusion energy", "battery technology",
+    # Бизнес
+    "stock market", "cryptocurrency", "bitcoin", "ethereum", "blockchain",
+    "inflation", "interest rates", "global economy", "startup funding", "ipo",
+    "elon musk", "jeff bezos", "mark zuckerberg",
+    # Здоровье
+    "health news", "fitness trends", "mental health", "covid update", "longevity",
+    # Спорт
+    "football news", "premier league", "champions league", "nba finals",
+    "tennis grand slam", "formula 1", "olympics",
+    # Развлечения
+    "hollywood news", "netflix series", "marvel movie", "star wars", "stranger things",
+    "kpop news", "taylor swift", "beyonce",
 ]
 
 # Конфигурация изображений по темам
@@ -114,11 +76,9 @@ IMAGE_THEMES = {
     'google': {'style': 'identicon', 'color': '4285f4'},
     'gemini': {'style': 'identicon', 'color': '8e6ced'},
     'microsoft': {'style': 'micah', 'color': '00a4ef'},
-    'copilot': {'style': 'micah', 'color': '00a4ef'},
     'claude': {'style': 'adventurer', 'color': 'd97757'},
     'meta': {'style': 'lorelei', 'color': '0064e1'},
     'midjourney': {'style': 'pixel-art', 'color': 'ff6b35'},
-    'stable diffusion': {'style': 'pixel-art', 'color': 'ff6b35'},
     'nvidia': {'style': 'bottts', 'color': '76b900'},
     'robot': {'style': 'bottts', 'color': '6b7280'},
     'autonomous': {'style': 'bottts', 'color': 'ef4444'},
@@ -126,10 +86,8 @@ IMAGE_THEMES = {
     'samsung': {'style': 'bottts', 'color': '1428a0'},
     'playstation': {'style': 'bottts', 'color': '003791'},
     'xbox': {'style': 'bottts', 'color': '107c10'},
-    'nintendo': {'style': 'bottts', 'color': 'e60012'},
     'tesla': {'style': 'bottts', 'color': 'e82127'},
     'spacex': {'style': 'bottts', 'color': '005288'},
-    'nasa': {'style': 'bottts', 'color': '0b3d91'},
     'bitcoin': {'style': 'identicon', 'color': 'f7931a'},
     'health': {'style': 'adventurer', 'color': '2ecc71'},
     'sport': {'style': 'micah', 'color': 'e67e22'},
@@ -175,62 +133,47 @@ def get_available_models():
     return available_models
 
 def get_seo_prompt(topic=None):
-    """Генерирует SEO-оптимизированный промпт для новости с текстом 1500-10000 символов"""
+    """Генерирует SEO-оптимизированный промпт для новости"""
     if not topic:
         topic = random.choice(SEO_TOPICS)
     
-    # Случайная длина текста от 1500 до 10000 символов
     target_length = random.randint(1500, 10000)
     
     sources = [
         "The Verge", "TechCrunch", "Wired", "VentureBeat", "Ars Technica",
-        "MIT Technology Review", "IEEE Spectrum", "Analytics India Magazine",
-        "ZDNet", "CNET", "Engadget", "The Information", "Reuters", "BBC News",
-        "CNN", "The Guardian", "Forbes", "Bloomberg", "Wall Street Journal"
+        "MIT Technology Review", "IEEE Spectrum", "Reuters", "BBC News",
+        "CNN", "The Guardian", "Forbes", "Bloomberg"
     ]
     
     seo_keywords = [
         "искусственный интеллект", "AI", "нейросети", "машинное обучение",
-        "технологии будущего", "инновации", "цифровая трансформация",
-        "прорыв", "открытие", "исследование", "новый стандарт"
+        "технологии будущего", "инновации", "цифровая трансформация"
     ]
     
     prompt = f"""
-Ты — профессиональный журналист, специализирующийся на актуальных новостях. Сгенерируй УНИКАЛЬНУЮ, ИНТЕРЕСНУЮ, ДЕТАЛЬНУЮ новость на тему: {topic}
+Ты — профессиональный журналист. Сгенерируй УНИКАЛЬНУЮ, ДЕТАЛЬНУЮ новость на тему: {topic}
 
-ВАЖНЫЕ ТРЕБОВАНИЯ:
-1. Дата публикации: сегодня или вчера
+ТРЕБОВАНИЯ:
+1. Дата: сегодня или вчера
 2. Источник: {random.choice(sources)}
-3. Язык: русский (качественный, профессиональный, литературный)
-4. Новость должна быть SEO-оптимизирована для поисковых систем
-5. Используй естественные ключевые слова: {', '.join(random.sample(seo_keywords, 3))}
-6. **ДЛИНА ТЕКСТА: от 1500 до 10000 символов (цель - {target_length} символов)**
-7. Добавь цитаты "экспертов" и "аналитиков"
-8. Включи конкретные цифры, даты, статистику
-9. Разбей текст на логические абзацы (3-6 абзацев)
-10. Добавь подзаголовки внутри текста (например: "Что произошло?", "Анализ ситуации", "Мнение экспертов", "Что дальше?")
+3. Язык: русский
+4. ДЛИНА ТЕКСТА: {target_length} символов
+5. Добавь цитаты экспертов, цифры, статистику
 
-СТРУКТУРА НОВОСТИ:
-- Заголовок: привлекательный, с ключевыми словами (60-100 символов)
-- Краткое описание: 2-3 предложения, интригующее, с главной мыслью (до 350 символов)
-- Полный текст: ДЕТАЛЬНЫЙ, ОБЪЕМНЫЙ (1500-10000 символов), раскрывающий:
-  * Что произошло (факты, хронология)
-  * Почему это важно (контекст, значение)
-  * Детали события (технические подробности, участники)
-  * Мнения экспертов (2-3 цитаты)
-  * Прогнозы и последствия (что будет дальше)
-- Теги: 5-7 релевантных тегов (включая {topic})
+СТРУКТУРА:
+- Заголовок (до 100 символов)
+- Краткое описание (до 350 символов)
+- Полный текст (1500-10000 символов) с подзаголовками
+- Теги: 5-7 штук
 
-ФОРМАТ ОТВЕТА - ТОЛЬКО JSON (без лишнего текста):
+ФОРМАТ - ТОЛЬКО JSON:
 {{
-    "title": "Заголовок новости",
-    "summary": "Краткое описание с ключевыми выводами (до 350 символов)",
-    "content": "Полный текст новости. Здесь должно быть {target_length} символов. Подробно, с цитатами экспертов, цифрами, анализом. Например: 'По словам аналитика IDC, этот прорыв изменит рынок. По данным исследования, 78% компаний планируют внедрение...' Текст должен быть информативным, увлекательным и полезным для читателя.",
-    "source": "Название источника",
-    "tags": ["тег1", "тег2", "тег3", "тег4", "тег5", "тег6"]
+    "title": "Заголовок",
+    "summary": "Краткое описание",
+    "content": "Полный текст новости...",
+    "source": "Источник",
+    "tags": ["тег1", "тег2", "тег3", "тег4", "тег5"]
 }}
-
-Убедись, что новость звучит АБСОЛЮТНО РЕАЛИСТИЧНО, АКТУАЛЬНО и ПОЛЕЗНО! Текст должен быть ОБЪЕМНЫМ и ИНФОРМАТИВНЫМ (целевая длина {target_length} символов)!
 """
     return prompt, topic
 
@@ -244,11 +187,9 @@ def generate_news_with_model(model_name, prompt, retry_count=0):
         )
         
         text = response.text
-        # Очистка от markdown
         text = re.sub(r'```json\s*', '', text)
         text = re.sub(r'```\s*', '', text)
         
-        # Находим JSON
         start_idx = text.find('{')
         end_idx = text.rfind('}')
         if start_idx != -1 and end_idx != -1:
@@ -256,14 +197,10 @@ def generate_news_with_model(model_name, prompt, retry_count=0):
         
         article = json.loads(text)
         
-        # Валидация
         required_fields = ['title', 'summary', 'content', 'source', 'tags']
         if all(field in article for field in required_fields):
-            # Проверяем длину текста
             content_length = len(article.get('content', ''))
             print(f"   ✅ УСПЕШНО! Длина текста: {content_length} символов")
-            if content_length < 500:
-                print(f"   ⚠️ Текст коротковат ({content_length} символов), но сохраняем")
             return article
         else:
             print(f"   ⚠️ Не все поля заполнены")
@@ -290,7 +227,7 @@ def generate_news_with_model(model_name, prompt, retry_count=0):
         return None
 
 def generate_news():
-    """Генерирует новость, перебирая все модели из списка"""
+    """Генерирует новость, перебирая все модели"""
     available_models = get_available_models()
     
     if not available_models:
@@ -316,21 +253,17 @@ def generate_news():
                 article['seo_topic'] = selected_topic
                 article['used_model'] = model_name
                 article['generation_time'] = datetime.now().isoformat()
-                print(f"\n🎉 Успех! Новость сгенерирована моделью {model_name}")
-                print(f"📰 Тема: {selected_topic}")
-                print(f"📏 Длина текста: {len(article.get('content', ''))} символов")
+                print(f"\n🎉 Успех! Модель: {model_name}, Тема: {selected_topic}")
                 return article
             
             if i < len(available_models):
-                wait_time = random.randint(3, 7)
-                print(f"   ⏳ Ждём {wait_time} сек перед следующей моделью...")
-                time.sleep(wait_time)
+                time.sleep(random.randint(3, 7))
         
         if attempt < 2:
-            print(f"\n⏰ Пауза 20 сек перед сменой темы...")
+            print(f"\n⏰ Пауза 20 сек...")
             time.sleep(20)
     
-    print("\n❌ Не удалось сгенерировать новость ни одной моделью")
+    print("\n❌ Не удалось сгенерировать новость")
     return None
 
 def generate_image_url(title, tags):
@@ -363,35 +296,45 @@ def generate_seo_metadata(article):
     }
 
 def generate_news_html(article):
-    """Генерирует отдельную HTML-страницу для новости"""
+    """Генерирует отдельную HTML-страницу для новости (ИСПРАВЛЕНО)"""
     os.makedirs('news', exist_ok=True)
     
-    # Обработка контента (перенос строк в HTML)
     content_html = article.get('content', '').replace('\n', '<br>')
+    article_id = article.get('id', '')
+    title = article.get('title', 'Новость')
+    summary = article.get('summary', '')
+    image_url = article.get('image_url', '')
+    source = article.get('source', 'Cognify AI')
+    published_at = article.get('published_at', '')
+    tags = article.get('tags', [])
+    
+    if published_at:
+        pub_date = published_at.split('T')[0]
+    else:
+        pub_date = 'Дата неизвестна'
+    
+    tags_html = ''.join([f'<a href="/?tag={tag}" class="tag">#{tag}</a>' for tag in tags[:5]])
+    
+    image_html = ''
+    if image_url:
+        image_html = f'<img class="article-image" src="{image_url}" alt="{title}">'
     
     html = f'''<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{article.get('title', 'Новость')} | Cognify AI News</title>
-    <meta name="description" content="{article.get('summary', '')[:160]}">
-    <meta name="keywords" content="{', '.join(article.get('tags', []))}">
-    
-    <meta property="og:title" content="{article.get('title', '')}">
-    <meta property="og:description" content="{article.get('summary', '')[:200]}">
-    <meta property="og:image" content="{article.get('image_url', '')}">
-    <meta property="og:url" content="https://cognify-ui.github.io/news/{article.get('id', '')}.html">
+    <title>{title} | Cognify AI News</title>
+    <meta name="description" content="{summary[:160]}">
+    <meta name="keywords" content="{', '.join(tags)}">
+    <meta property="og:title" content="{title}">
+    <meta property="og:description" content="{summary[:200]}">
+    <meta property="og:image" content="{image_url}">
+    <meta property="og:url" content="https://cognify-ui.github.io/news/{article_id}.html">
     <meta property="og:type" content="article">
-    
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{article.get('title', '')}">
-    <meta name="twitter:description" content="{article.get('summary', '')[:200]}">
-    <meta name="twitter:image" content="{article.get('image_url', '')}">
-    
-    <link rel="canonical" href="https://cognify-ui.github.io/news/{article.get('id', '')}.html">
+    <link rel="canonical" href="https://cognify-ui.github.io/news/{article_id}.html">
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
-    
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -427,7 +370,6 @@ def generate_news_html(article):
             flex-wrap: wrap;
         }}
         .content {{ font-size: 18px; line-height: 1.8; color: #333; margin-bottom: 30px; }}
-        .content p {{ margin-bottom: 20px; }}
         .tags {{
             display: flex;
             gap: 10px;
@@ -460,39 +402,38 @@ def generate_news_html(article):
 </head>
 <body>
     <div class="container">
-        {f'<img class="article-image" src="{article.get("image_url", "")}" alt="{article.get("title", "")}">' if article.get('image_url') else ''}
+        {image_html}
         <div class="article-content">
-            <h1>{article.get('title', '')}</h1>
+            <h1>{title}</h1>
             <div class="meta">
-                <span>📅 {article.get('published_at', '').split('T')[0] if article.get('published_at') else 'Дата неизвестна'}</span>
-                <span>🔗 {article.get('source', 'Cognify AI')}</span>
+                <span>📅 {pub_date}</span>
+                <span>🔗 {source}</span>
                 <span>📖 {len(article.get('content', ''))} символов</span>
             </div>
             <div class="content">
                 {content_html}
             </div>
             <div class="tags">
-                {''.join([f'<a href="/?tag={tag}" class="tag">#{tag}</a>' for tag in article.get('tags', [])[:5]])}
+                {tags_html}
             </div>
             <a href="/" class="back-link">← Назад к новостям</a>
         </div>
     </div>
-    
     <script type="application/ld+json">
     {{
         "@context": "https://schema.org",
         "@type": "NewsArticle",
-        "headline": "{article.get('title', '').replace('"', '\\"')}",
-        "description": "{article.get('summary', '').replace('"', '\\"')[:200]}",
-        "datePublished": "{article.get('published_at', '')}",
+        "headline": "{title.replace('"', '\\"')}",
+        "description": "{summary[:200].replace('"', '\\"')}",
+        "datePublished": "{published_at}",
         "author": {{ "@type": "Organization", "name": "Cognify AI" }},
         "publisher": {{ "@type": "Organization", "name": "Cognify AI" }}
     }}
     </script>
 </body>
-</html>
+</html>'''
     
-    html_path = f"news/{article['id']}.html"
+    html_path = f"news/{article_id}.html"
     with open(html_path, 'w', encoding='utf-8') as f:
         f.write(html)
     
@@ -500,7 +441,7 @@ def generate_news_html(article):
     return html_path
 
 def generate_sitemap():
-    """Генерирует sitemap.xml для всех страниц"""
+    """Генерирует sitemap.xml"""
     existing = {"articles": []}
     
     if os.path.exists(NEWS_FILE):
@@ -512,8 +453,6 @@ def generate_sitemap():
     
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n'
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    
-    # Главная страница
     sitemap += f'''  <url>
     <loc>https://cognify-ui.github.io/</loc>
     <lastmod>{today}</lastmod>
@@ -522,7 +461,6 @@ def generate_sitemap():
   </url>
 '''
     
-    # Страницы новостей
     for article in articles:
         pub_date = article.get('published_at', today)[:10]
         sitemap += f'''  <url>
@@ -553,7 +491,7 @@ Disallow: /news_generator.py
     print("✅ robots.txt создан")
 
 def generate_all_news_pages():
-    """Генерирует HTML страницы для всех существующих новостей"""
+    """Генерирует HTML для всех новостей"""
     if not os.path.exists(NEWS_FILE):
         print("❌ news.json не найден")
         return
@@ -562,7 +500,7 @@ def generate_all_news_pages():
         data = json.load(f)
     
     articles = data.get('articles', [])
-    print(f"\n📄 Генерация HTML страниц для {len(articles)} новостей...")
+    print(f"\n📄 Генерация HTML для {len(articles)} новостей...")
     
     for article in articles:
         generate_news_html(article)
@@ -572,7 +510,7 @@ def generate_all_news_pages():
     print(f"✅ Создано {len(articles)} HTML страниц")
 
 def save_news_article(article):
-    """Сохраняет новость и генерирует HTML страницу"""
+    """Сохраняет новость и генерирует HTML"""
     existing = {"last_updated": "", "articles": []}
     
     if os.path.exists(NEWS_FILE):
@@ -583,10 +521,7 @@ def save_news_article(article):
         except Exception as e:
             print(f"⚠️ Ошибка чтения: {e}")
     
-    # Создаём ID
     article_id = hashlib.md5(f"{article['title']}{datetime.now()}".encode()).hexdigest()[:12]
-    
-    # Генерируем изображение
     image_url = generate_image_url(article['title'], article.get('tags', []))
     
     new_article = {
@@ -604,13 +539,11 @@ def save_news_article(article):
         "seo_metadata": generate_seo_metadata(article)
     }
     
-    # Проверка на дубликат
     existing_titles = [a.get('title') for a in existing.get('articles', [])]
     if new_article['title'] in existing_titles:
         print("⚠️ Такая новость уже существует, пропускаем...")
         return False
     
-    # Добавляем в начало
     existing['articles'].insert(0, new_article)
     existing['articles'] = existing['articles'][:MAX_ARTICLES]
     existing['last_updated'] = datetime.now().isoformat()
@@ -619,57 +552,36 @@ def save_news_article(article):
     with open(NEWS_FILE, 'w', encoding='utf-8') as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
     
-    # Генерируем HTML страницу для новой новости
     generate_news_html(new_article)
-    
-    # Обновляем sitemap и robots.txt
     generate_sitemap()
     generate_robots_txt()
     
     print(f"\n✅ Сохранено. Всего новостей: {len(existing['articles'])}")
-    print(f"🖼️  Изображение: {image_url[:80]}...")
-    print(f"🤖 Модель: {article.get('used_model', 'unknown')}")
     print(f"📏 Длина текста: {len(article.get('content', ''))} символов")
     return True
 
 def create_seo_demo_news():
     """Создаёт демо-новость"""
     demo_article = {
-        "title": "Cognify AI: Бесплатный доступ к 4 мощным AI моделям для всех пользователей",
-        "summary": "Откройте мир искусственного интеллекта бесплатно! Cognify AI предоставляет доступ к Groq, Cerebras, Cloudflare AI и Google Gemini без ограничений. Присоединяйтесь к тысячам пользователей уже сегодня.",
-        "content": """Cognify AI — это инновационная платформа, объединяющая 4 передовые AI модели в одном месте. Пользователи могут общаться с Groq (молниеносная скорость), Cerebras (рекордная производительность), Cloudflare AI (глобальная доступность) и Google Gemini (передовые возможности) абсолютно бесплатно.
-
-Сервис предлагает историю чатов, систему аккаунтов, экспорт диалогов и интуитивный интерфейс. По словам основателя проекта, 'Cognify AI создан для демократизации доступа к современным AI технологиям'.
-
-Присоединяйтесь к сообществу, которое уже использует Cognify AI для работы, учёбы и творчества! Платформа постоянно обновляется, добавляются новые функции и модели.
-
-Особенности сервиса:
-- 4 AI модели в одном месте
-- Полностью бесплатно, без лимитов
-- Сохранение истории чатов
-- Система аккаунтов
-- Экспорт диалогов
-- Мобильная адаптация
-
-Cognify AI — ваш личный помощник в мире искусственного интеллекта!""",
-        "source": "Cognify AI Official",
-        "tags": ["cognify", "бесплатный ai", "groq", "cerebras", "cloudflare", "google gemini", "нейросети"],
+        "title": "Cognify AI: Бесплатный доступ к 4 мощным AI моделям",
+        "summary": "Откройте мир искусственного интеллекта бесплатно! Cognify AI предоставляет доступ к Groq, Cerebras, Cloudflare AI и Google Gemini без ограничений.",
+        "content": "Cognify AI — это инновационная платформа, объединяющая 4 передовые AI модели. Пользователи могут общаться с Groq, Cerebras, Cloudflare AI и Google Gemini абсолютно бесплатно. Сервис предлагает историю чатов, систему аккаунтов и интуитивный интерфейс.",
+        "source": "Cognify AI",
+        "tags": ["cognify", "бесплатный ai", "groq", "cerebras", "gemini"],
         "seo_topic": "free ai",
         "used_model": "demo"
     }
-    print("📝 Создаём SEO-демо новость...")
+    print("📝 Создаём демо-новость...")
     return save_news_article(demo_article)
 
 def main():
     print("=" * 60)
     print(f"🚀 ЗАПУСК ГЕНЕРАТОРА НОВОСТЕЙ")
     print(f"🕐 Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"📊 Моделей в очереди: {len(FIXED_MODELS)}")
+    print(f"📊 Моделей: {len(FIXED_MODELS)}")
     print(f"🎨 Всего тем: {len(SEO_TOPICS)}")
-    print(f"📏 Длина текста: 1500-10000 символов")
     print("=" * 60)
     
-    # Генерируем новость
     article = generate_news()
     
     if article:
@@ -681,24 +593,21 @@ def main():
             print(f"   📰 Источник: {article.get('source')}")
             print(f"   🏷️  Тема: {article.get('seo_topic')}")
             print(f"   🤖 Модель: {article.get('used_model')}")
-            print(f"   🔖 Теги: {', '.join(article.get('tags', []))}")
-            print(f"   📏 Длина текста: {len(article.get('content', ''))} символов")
+            print(f"   📏 Длина: {len(article.get('content', ''))} символов")
             print("=" * 60)
         else:
             print("⚠️ Новость не сохранена (дубликат)")
     else:
-        print("\n❌ Не удалось сгенерировать новость через API")
+        print("\n❌ Не удалось сгенерировать новость")
         
-        # Создаём демо-новость если файла нет или он пустой
         if not os.path.exists(NEWS_FILE) or os.path.getsize(NEWS_FILE) < 100:
             create_seo_demo_news()
         else:
-            # Пробуем сгенерировать HTML для существующих новостей
             generate_all_news_pages()
-            print("📁 Обновлены HTML страницы существующих новостей")
+            print("📁 Обновлены HTML страницы")
     
     print("\n" + "=" * 60)
-    print("✅ РАБОТА ЗАВЕРШЕНА!")
+    print("✅ ГОТОВО!")
     print("=" * 60)
 
 if __name__ == "__main__":
