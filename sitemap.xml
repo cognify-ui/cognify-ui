@@ -1,20 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
-  <!-- Главная страница -->
   <url>
     <loc>https://cognify-ui.github.io/</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Для чатов с шерингом (если нужны) -->
   <url>
-    <loc>https://cognify-ui.github.io/?share=example</loc>
+    <loc>https://cognify-ui.github.io/news/7d6d0d94d8bd.html</loc>
     <lastmod>2026-04-12</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
-  
+  <url>
+    <loc>https://cognify-ui.github.io/news/b0be0bfd587b.html</loc>
+    <lastmod>2026-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/273c3fe7ba81.html</loc>
+    <lastmod>2026-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/c6f8811a85b3.html</loc>
+    <lastmod>Wed, 25 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/48227e4cc2c6.html</loc>
+    <lastmod>Wed, 25 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/33b06a637567.html</loc>
+    <lastmod>Wed, 08 Ap</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/36a2eccf90d1.html</loc>
+    <lastmod>Wed, 08 Ap</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/0ef155259089.html</loc>
+    <lastmod>Wed, 04 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/93167e0cfa61.html</loc>
+    <lastmod>Wed, 01 Ap</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/675336bc2a74.html</loc>
+    <lastmod>Wed, 01 Ap</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/a6e2823e605a.html</loc>
+    <lastmod>Wed, 01 Ap</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/7d4268752b84.html</loc>
+    <lastmod>Tue, 17 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/9fcfb27dfae9.html</loc>
+    <lastmod>Tue, 10 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/46fc501dc9c4.html</loc>
+    <lastmod>Tue, 03 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/b6097aee872b.html</loc>
+    <lastmod>Thu, 26 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/f3bf558746c7.html</loc>
+    <lastmod>Thu, 26 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/161f77b8cd23.html</loc>
+    <lastmod>Thu, 26 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/3c4405583f54.html</loc>
+    <lastmod>Thu, 12 Ma</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/2380ccb72e9c.html</loc>
+    <lastmod>Thu, 09 Ap</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://cognify-ui.github.io/news/d3ff1111cec4.html</loc>
+    <lastmod>Thu, 09 Ap</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
