@@ -4,7 +4,7 @@ import os
 import hashlib
 import re
 from datetime import datetime
-from google import genai  # Новый пакет
+from google import genai
 
 NEWS_FILE = "news.json"
 MAX_ARTICLES = 50
@@ -17,11 +17,20 @@ if not GEMINI_API_KEY:
 
 print(f"✅ API ключ найден: {GEMINI_API_KEY[:10]}...")
 
-# Используем новый клиент
 client = genai.Client(api_key=GEMINI_API_KEY)
 
+def list_available_models():
+    """Выводит список доступных моделей (для отладки)"""
+    print("📋 Доступные модели:")
+    try:
+        for model in client.models.list():
+            if 'generateContent' in str(model.supported_methods):
+                print(f"  - {model.name}")
+    except Exception as e:
+        print(f"  ⚠️ Не удалось получить список: {e}")
+
 def generate_news():
-    """Генерирует одну новость с помощью Gemini (новый пакет)"""
+    """Генерирует новость через Gemini"""
     prompt = """
 Ты — журналист AI новостей. Сгенерируй ОДНУ свежую новость из мира искусственного интеллекта.
 
@@ -31,7 +40,7 @@ def generate_news():
 3. Источник: The Verge, TechCrunch, Wired или VentureBeat
 4. Язык: русский
 
-Ответ должен быть строго в формате JSON. НИКАКОГО дополнительного текста, только JSON:
+Ответ должен быть строго в формате JSON:
 {
     "title": "Заголовок новости (до 80 символов)",
     "summary": "Краткое описание (2-3 предложения, до 300 символов)",
@@ -40,35 +49,44 @@ def generate_news():
     "tags": ["тег1", "тег2", "тег3"]
 }
 """
-    try:
-        print("🧠 Запрос к Gemini (новый API)...")
-        response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",  # Новая модель
-            contents=prompt
-        )
-        
-        text = response.text
-        
-        # Ищем JSON в ответе
-        json_match = re.search(r'\{.*\}', text, re.DOTALL)
-        if json_match:
-            article = json.loads(json_match.group())
-            print(f"✅ Получена новость: {article.get('title', 'Без заголовка')[:50]}...")
-            return article
-        else:
-            print(f"⚠️ Не найден JSON. Ответ: {text[:200]}")
-            return None
-    except Exception as e:
-        print(f"❌ Ошибка Gemini: {e}")
-        return None
+    # Список моделей для проб (от самой новой к самой старой)
+    models_to_try = [
+        "gemini-1.5-flash-002",
+        "gemini-1.5-flash",
+        "gemini-1.0-pro",
+        "gemini-pro",
+    ]
+    
+    for model_name in models_to_try:
+        try:
+            print(f"🧠 Пробуем модель: {model_name}...")
+            response = client.models.generate_content(
+                model=model_name,
+                contents=prompt
+            )
+            
+            text = response.text
+            json_match = re.search(r'\{.*\}', text, re.DOTALL)
+            if json_match:
+                article = json.loads(json_match.group())
+                print(f"✅ Успешно! Модель: {model_name}")
+                print(f"   Заголовок: {article.get('title', 'Без заголовка')[:50]}...")
+                return article
+            else:
+                print(f"   ⚠️ Не найден JSON в ответе")
+                
+        except Exception as e:
+            print(f"   ❌ Ошибка: {str(e)[:100]}")
+            continue
+    
+    print("❌ Все модели не сработали")
+    return None
 
 def generate_image_url(title):
-    """Генерирует URL картинки через Unsplash"""
     query = title.replace(' ', '+')[:50]
     return f"https://source.unsplash.com/800x400/?{query},ai,technology"
 
 def save_news_article(article):
-    """Сохраняет новость в news.json"""
     existing = {"last_updated": "", "articles": []}
     
     if os.path.exists(NEWS_FILE):
@@ -76,10 +94,9 @@ def save_news_article(article):
             with open(NEWS_FILE, 'r', encoding='utf-8') as f:
                 existing = json.load(f)
                 print(f"📖 Загружено {len(existing.get('articles', []))} существующих новостей")
-        except Exception as e:
-            print(f"⚠️ Ошибка чтения: {e}")
+        except:
+            pass
     
-    # Создаём ID
     article_id = hashlib.md5(f"{article['title']}{datetime.now()}".encode()).hexdigest()[:12]
     
     new_article = {
@@ -94,7 +111,6 @@ def save_news_article(article):
         "image_url": generate_image_url(article.get('title', 'ai'))
     }
     
-    # Добавляем в начало
     existing['articles'].insert(0, new_article)
     existing['articles'] = existing['articles'][:MAX_ARTICLES]
     existing['last_updated'] = datetime.now().isoformat()
@@ -109,7 +125,9 @@ def main():
     print(f"🚀 Запуск генератора новостей Gemini: {datetime.now()}")
     print("-" * 50)
     
-    # Генерируем новость
+    # Раскомментируйте для отладки:
+    # list_available_models()
+    
     article = generate_news()
     
     if article:
@@ -119,13 +137,12 @@ def main():
     else:
         print("❌ Не удалось сгенерировать новость")
         
-        # Создаём демо-новость, если файла нет
         if not os.path.exists(NEWS_FILE) or os.path.getsize(NEWS_FILE) < 100:
             print("📝 Создаём демо-новость...")
             demo_article = {
                 "title": "Добро пожаловать в Cognify AI!",
                 "summary": "Бесплатный доступ к 4 AI моделям: Groq, Cerebras, Cloudflare и Gemini",
-                "content": "Cognify AI — это бесплатный сервис с 4 мощными AI моделями. Без лимитов, с историей чатов и системой аккаунтов. Просто откройте сайт и начните общение!",
+                "content": "Cognify AI — это бесплатный сервис с 4 мощными AI моделями.",
                 "source": "Cognify AI",
                 "tags": ["cognify", "ai", "бесплатно"]
             }
