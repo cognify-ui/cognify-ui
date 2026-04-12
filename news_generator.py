@@ -19,7 +19,7 @@ print(f"✅ API ключ найден: {GEMINI_API_KEY[:10]}...")
 
 # Используем доступную модель
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')  # ✅ Изменено!
+model = genai.GenerativeModel('gemini-1.5-pro')  # ✅ Изменено!
 
 def generate_news():
     """Генерирует одну новость с помощью Gemini"""
