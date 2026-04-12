@@ -2,7 +2,7 @@ name: Автообновление новостей
 
 on:
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -20,9 +20,12 @@ jobs:
         with:
           python-version: '3.11'
       
-      - run: pip install requests feedparser
+      - name: Install dependencies
+        run: |
+          pip install feedparser
       
-      - run: python news_generator.py
+      - name: Generate news
+        run: python news_generator.py
       
       - name: Commit and push
         run: |
