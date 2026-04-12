@@ -1,6 +1,33 @@
 {
-  "last_updated": "2026-04-12T09:51:15.174281",
+  "last_updated": "2026-04-12T11:40:45.144166",
   "articles": [
+    {
+      "id": "b2b3fb071c09",
+      "title": "Нейросети: Революция в AI Art – когда несовершенство становится новой эстетикой будущего",
+      "summary": "Ars Technica сообщает: последние инновации в мире AI Art переворачивают представление о совершенстве. Новые нейросети целенаправленно генерируют изображения с \"человеческими\" несовершенствами, стремясь к глубокой эмоциональной связи. Это открывает путь к совершенно новой эстетике и переосмыслению роли искусственного интеллекта в творчестве, предвещая технологии будущего.",
+      "content": "Согласно эксклюзивным данным Ars Technica, исследовательская группа \"Cognitive Canvas Labs\" представила прорыв в области AI Art, который вызывает жаркие дискуссии в арт-сообществе. Их новейшая архитектура нейросетей, получившая название \"Imperfecta\", отходит от парадигмы стремления к фотореалистичности или идеальной композиции. Вместо этого, \"Imperfecta\" запрограммирована на введение тонких, но значимых \"артефактов\" – едва заметных искажений, асимметрий или нечеткостей, которые, по словам авторов, имитируют нюансы человеческого восприятия и ручного труда, ранее недоступные алгоритмам.\n\nЭти инновации меняют парадигму: цель не в безупречной имитации, а в создании эмоционального резонанса через контролируемое несовершенство. Художники, уже работающие с \"Imperfecta\", отмечают, что сгенерированные изображения обладают несвойственной ранее машинам глубиной и \"душой\", вызывая у зрителей более сильный эмпатический отклик. Это не просто генерирование изображений; это исследование границ восприятия красоты и эстетики, где изъян перестает быть ошибкой, становясь выразительным элементом.\n\nЭксперты сходятся во мнении, что такие технологии будущего могут существенно расширить диапазон взаимодействия между AI и человеком в творческом процессе, поднимая фундаментальные вопросы об авторстве и аутентичности. Впервые нейросети не просто копируют или комбинируют, но активно участвуют в формировании новой художественной философии, где алгоритмически сгенерированные \"ошибки\" ценятся наравне с отточенным мастерством, открывая беспрецедентные горизонты для развития AI Art как самостоятельного направления.",
+      "source": "Ars Technica",
+      "source_url": "https://cognify-ui.github.io/news/b2b3fb071c09",
+      "published_at": "2026-04-12T11:40:45.144152",
+      "tags": [
+        "ai art",
+        "нейросети",
+        "инновации",
+        "технологии будущего",
+        "AI"
+      ],
+      "seo_topic": "ai art",
+      "used_model": "gemini-2.5-flash",
+      "image_url": "https://api.dicebear.com/7.x/bottts/svg?seed=8cce229028&backgroundColor=6366f1&radius=50",
+      "seo_metadata": {
+        "meta_title": "Нейросети: Революция в AI Art – когда несовершенство становится новой эстетикой будущего | Cognify AI News",
+        "meta_description": "Ars Technica сообщает: последние инновации в мире AI Art переворачивают представление о совершенстве. Новые нейросети целенаправленно генерируют изображения с \"",
+        "meta_keywords": "ai art, нейросети, инновации, технологии будущего, AI, ai art",
+        "og_title": "Нейросети: Революция в AI Art – когда несовершенство становится новой эстетикой будущего",
+        "og_description": "Ars Technica сообщает: последние инновации в мире AI Art переворачивают представление о совершенстве. Новые нейросети целенаправленно генерируют изображения с \"человеческими\" несовершенствами, стремяс",
+        "twitter_card": "summary_large_image"
+      }
+    },
     {
       "id": "dbd3c1a67107",
       "title": "Google представила Gemma Nano: новый сверхэффективный ИИ для локальных задач",
@@ -629,19 +656,7 @@
       "tags": [
         "ai"
       ]
-    },
-    {
-      "id": "34bc94ee1e94",
-      "title": "Fear and loathing at OpenAI",
-      "summary": "Sam Altman's tenure at OpenAI has been… messy. Messy to the point where Altman was briefly fired from his role as CEO, only to be reinstated days later, at which point he began reshaping the organization permanently. This week, The New Yorker published a deep look at Altman, his time at OpenAI, and the questions [&#8230;]",
-      "content": "Sam Altman's tenure at OpenAI has been… messy. Messy to the point where Altman was briefly fired from his role as CEO, only to be reinstated days later, at which point he began reshaping the organization permanently. This week, The New Yorker published a deep look at Altman, his time at OpenAI, and the questions about whether he's the right person to be in charge of a technology as important and transformative as artificial intelligence. Verge subscribers, don't forget you get exclusive access to ad-free Vergecast wherever you get your podcasts. Head here. Not a subscriber? You can sign up here. On this episode of The Vergecast, David … Read the full story at The Verge.",
-      "source": "AI | The Verge",
-      "source_url": "https://www.theverge.com/podcast/909621/openai-sam-altman-drama-vergecast",
-      "published_at": "2026-04-10T08:23:18-04:00",
-      "tags": [
-        "openai",
-        "ai"
-      ]
     }
-  ]
+  ],
+  "total_articles": 50
 }
