@@ -1,6 +1,33 @@
 {
-  "last_updated": "2026-04-12T11:56:24.420769",
+  "last_updated": "2026-04-12T12:00:11.621081",
   "articles": [
+    {
+      "id": "528acf842601",
+      "title": "GPU нового поколения: AI-революция на пороге благодаря инновациям",
+      "summary": "Мир искусственного интеллекта стоит на пороге новой эры.  Последние разработки в области GPU обещают беспрецедентный скачок в производительности, открывая двери для прорывных технологий будущего.",
+      "content": "Analytics India Magazine сообщает о значительных достижениях в разработке графических процессоров (GPU), которые окажут революционное влияние на сферу искусственного интеллекта. Новые архитектуры GPU демонстрируют экспоненциальный рост вычислительной мощности, что критически важно для обучения сложных нейронных сетей и обработки огромных массивов данных.  Эти инновации не просто ускоряют существующие AI-модели, но и делают возможным появление совершенно новых алгоритмов и направлений исследований.  Эксперты полагают, что следующие поколения GPU станут настоящим катализатором для развития технологий будущего, от автономного транспорта до персонализированной медицины, закладывая фундамент для более интеллектуального мира.",
+      "source": "Analytics India Magazine",
+      "source_url": "https://cognify-ui.github.io/news/528acf842601",
+      "published_at": "2026-04-12T12:00:11.621067",
+      "tags": [
+        "gpu",
+        "AI",
+        "инновации",
+        "технологии будущего",
+        "искусственный интеллект"
+      ],
+      "seo_topic": "gpu",
+      "used_model": "gemini-2.5-flash-lite",
+      "image_url": "https://api.dicebear.com/7.x/bottts/svg?seed=14b9125672&backgroundColor=6366f1&radius=50",
+      "seo_metadata": {
+        "meta_title": "GPU нового поколения: AI-революция на пороге благодаря инновациям | Cognify AI News",
+        "meta_description": "Мир искусственного интеллекта стоит на пороге новой эры.  Последние разработки в области GPU обещают беспрецедентный скачок в производительности, открывая двери",
+        "meta_keywords": "gpu, AI, инновации, технологии будущего, искусственный интеллект, gpu",
+        "og_title": "GPU нового поколения: AI-революция на пороге благодаря инновациям",
+        "og_description": "Мир искусственного интеллекта стоит на пороге новой эры.  Последние разработки в области GPU обещают беспрецедентный скачок в производительности, открывая двери для прорывных технологий будущего.",
+        "twitter_card": "summary_large_image"
+      }
+    },
     {
       "id": "b0d3c327e315",
       "title": "Гигант Chronos Ventures переориентирует AI инвестиции: триллион на этический ИИ и цифровую трансформацию",
@@ -644,18 +671,6 @@
       "published_at": "Wed, 07 Jan 2026 20:00:00 GMT",
       "tags": [
         "claude"
-      ]
-    },
-    {
-      "id": "d37289dcfd31",
-      "title": "Gen Z’s love-hate relationship with AI",
-      "summary": "Gen Z is increasingly disillusioned with AI - just not enough to stop using it. A new Gallup report released this week, based on responses from nearly 1,600 people ages 14 to 29 across the US, suggests the hype is wearing off for the digital-native generation as AI becomes more embedded in school and work. [&#8230;]",
-      "content": "Gen Z is increasingly disillusioned with AI - just not enough to stop using it. A new Gallup report released this week, based on responses from nearly 1,600 people ages 14 to 29 across the US, suggests the hype is wearing off for the digital-native generation as AI becomes more embedded in school and work. Enthusiasm is falling and resentment is growing, even as many young people feel they still need to use the technology. Gallup's poll, conducted in February and March this year, found Gen Z's feelings on AI have cooled significantly since last year. Only 18 percent said they were hopeful about the technology and 22 percent said they wer … Read the full story at The Verge.",
-      "source": "AI | The Verge",
-      "source_url": "https://www.theverge.com/ai-artificial-intelligence/909687/gen-z-doesnt-like-ai-gallup",
-      "published_at": "2026-04-10T07:23:28-04:00",
-      "tags": [
-        "ai"
       ]
     }
   ],
