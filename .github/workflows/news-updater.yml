@@ -2,19 +2,11 @@ name: 🤖 Автообновление новостей Cognify AI
 
 on:
   schedule:
-    # Каждый час в 17 минут
-    - cron: '17 * * * *'
-    # Дополнительно в час пик (10:43, 15:43, 20:43)
-    - cron: '43 10,15,20 * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
-  actions: read
-
-concurrency:
-  group: news-generator
-  cancel-in-progress: false
 
 jobs:
   generate-news:
@@ -32,47 +24,51 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
       
       - name: 📦 Install dependencies
         run: |
           pip install --upgrade pip
           pip install google-genai
-          python -c "import google; print('✅ Google GenAI installed')"
       
-      - name: 🚀 Generate news with Gemini
+      - name: 🚀 Generate news
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           echo "🔄 Starting news generation at $(date)"
           python news_generator.py
-          
-          if [ -f news.json ]; then
-            SIZE=$(wc -c < news.json)
-            echo "✅ News generated successfully (${SIZE} bytes)"
-          else
-            echo "❌ news.json not created"
-            exit 1
-          fi
+          echo "✅ Generation completed"
       
       - name: 💾 Commit and push changes
         run: |
           git config user.name "Cognify AI Bot"
           git config user.email "bot@cognify.ai"
           
-          git add news.json
-          
-          if git diff --cached --quiet; then
-            echo "📝 No changes to commit"
+          # Проверяем, изменился ли news.json
+          if git diff --quiet news.json; then
+            echo "📝 news.json hasn't changed"
             exit 0
           fi
           
-          git commit -m "🤖 Auto-update AI news [skip ci]"
+          # Показываем изменения для отладки
+          git diff --stat news.json
           
+          # Добавляем файл
+          git add news.json
+          
+          # Коммитим
+          git commit -m "🤖 Update AI news ($(date +'%Y-%m-%d %H:%M')) [skip ci]"
+          
+          # Пробуем запушить с повторными попытками
           for i in 1 2 3; do
-            if git pull --rebase origin main && git push origin main; then
-              echo "✅ Changes pushed successfully"
-              break
+            echo "Attempt $i to push..."
+            if git push origin main; then
+              echo "✅ Successfully pushed on attempt $i"
+              exit 0
             fi
+            # Если не получилось, обновляем и пробуем снова
+            git pull origin main --rebase
             sleep 5
           done
+          
+          echo "❌ Failed to push after 3 attempts"
+          exit 1
