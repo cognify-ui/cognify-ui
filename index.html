@@ -382,15 +382,14 @@
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
-            cursor: pointer;
             border: 1px solid #e0e0e0;
             transition: all 0.2s;
         }
         .news-card:hover { transform: translateY(-2px); border-color: #667eea; }
-        .news-card h3 { color: #667eea; font-size: 18px; margin-bottom: 10px; }
-        .news-meta { font-size: 12px; color: #999; margin-bottom: 12px; display: flex; gap: 16px; }
-        .news-summary { color: #555; line-height: 1.5; margin-bottom: 12px; }
-        .news-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .news-card h3 { color: #667eea; font-size: 18px; margin-bottom: 10px; cursor: pointer; }
+        .news-meta { font-size: 12px; color: #999; margin-bottom: 12px; display: flex; gap: 16px; flex-wrap: wrap; }
+        .news-summary { color: #555; line-height: 1.5; margin-bottom: 12px; cursor: pointer; }
+        .news-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
         .news-tag { background: #f0f0f0; padding: 4px 10px; border-radius: 20px; font-size: 11px; color: #667eea; }
         .skeleton-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0; }
         .skeleton-title { height: 24px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; width: 70%; margin-bottom: 12px; }
@@ -461,6 +460,99 @@
             padding: 2px 6px;
             border-radius: 10px;
             margin-left: 8px;
+        }
+        /* Дополнительные стили для новостей */
+        .news-stats {
+            display: flex;
+            gap: 16px;
+            margin: 12px 0;
+            padding: 8px 0;
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .news-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .news-stat:hover { color: #667eea; }
+        .news-stat.liked { color: #ff4444; }
+        .news-stat .stat-icon { font-size: 16px; }
+        .comments-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
+            display: none;
+        }
+        .comments-section.show { display: block; }
+        .comment-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .comment-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+        .comment-input button {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+        }
+        .comment-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 10px;
+        }
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        .comment-content { flex: 1; }
+        .comment-author { font-weight: 600; font-size: 13px; color: #333; }
+        .comment-text { font-size: 14px; color: #666; margin-top: 4px; }
+        .comment-date { font-size: 10px; color: #999; margin-top: 4px; }
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .share-btn {
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .share-btn:hover { background: #f0f0f0; }
+        .view-count {
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
     </style>
 </head>
@@ -575,6 +667,11 @@
     let totalMessages = parseInt(localStorage.getItem('totalMessages') || '0');
     document.getElementById('statsCount').innerText = totalMessages;
 
+    // Хранилище для статистики новостей
+    let newsStats = JSON.parse(localStorage.getItem('newsStats') || '{}');
+    let newsComments = JSON.parse(localStorage.getItem('newsComments') || '{}');
+    let allNews = [];
+
     function showToast(message, isError = false) {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -582,6 +679,162 @@
         toast.innerHTML = message;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Форматирование числа (1000 -> 1K)
+    function formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toString();
+    }
+
+    // Форматирование даты
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const diff = now - date;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        if (days === 0) return 'сегодня';
+        if (days === 1) return 'вчера';
+        if (days < 7) return `${days} дня назад`;
+        return date.toLocaleDateString('ru-RU');
+    }
+
+    // Сохранение статистики
+    function saveNewsStats() {
+        localStorage.setItem('newsStats', JSON.stringify(newsStats));
+    }
+
+    // Обновление отображения статистики
+    function updateNewsStatsDisplay(articleId) {
+        const viewsSpan = document.getElementById(`views-${articleId}`);
+        const likesSpan = document.getElementById(`likes-${articleId}`);
+        if (viewsSpan && newsStats[articleId]) {
+            viewsSpan.textContent = formatNumber(newsStats[articleId].views);
+        }
+        if (likesSpan && newsStats[articleId]) {
+            likesSpan.textContent = formatNumber(newsStats[articleId].likes);
+        }
+    }
+
+    // Функция для обновления просмотров
+    function incrementView(articleId) {
+        if (!newsStats[articleId]) {
+            newsStats[articleId] = { views: 0, likes: 0 };
+        }
+        const viewedKey = `viewed_${articleId}`;
+        if (!sessionStorage.getItem(viewedKey)) {
+            newsStats[articleId].views++;
+            sessionStorage.setItem(viewedKey, 'true');
+            saveNewsStats();
+        }
+    }
+
+    // Функция для лайка
+    function likeArticle(articleId, buttonElement) {
+        if (!newsStats[articleId]) {
+            newsStats[articleId] = { views: 0, likes: 0 };
+        }
+        const likedKey = `liked_${articleId}`;
+        const isLiked = localStorage.getItem(likedKey) === 'true';
+        if (isLiked) {
+            newsStats[articleId].likes--;
+            localStorage.removeItem(likedKey);
+            buttonElement.classList.remove('liked');
+        } else {
+            newsStats[articleId].likes++;
+            localStorage.setItem(likedKey, 'true');
+            buttonElement.classList.add('liked');
+        }
+        saveNewsStats();
+        updateNewsStatsDisplay(articleId);
+        showToast(isLiked ? '❤️ Лайк убран' : '👍 Лайк поставлен!');
+    }
+
+    // Загрузка комментариев
+    function loadComments(articleId) {
+        const commentsList = document.getElementById(`comments-list-${articleId}`);
+        if (!commentsList) return;
+        const comments = newsComments[articleId] || [];
+        if (comments.length === 0) {
+            commentsList.innerHTML = '<div style="color:#999; text-align:center; padding:20px;">💬 Нет комментариев. Будьте первым!</div>';
+            return;
+        }
+        commentsList.innerHTML = comments.map(comment => `
+            <div class="comment-item">
+                <div class="comment-avatar">${comment.author.charAt(0).toUpperCase()}</div>
+                <div class="comment-content">
+                    <div class="comment-author">${escapeHtml(comment.author)}</div>
+                    <div class="comment-text">${escapeHtml(comment.text)}</div>
+                    <div class="comment-date">${formatDate(comment.date)}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Добавление комментария
+    function addComment(articleId) {
+        const input = document.getElementById(`comment-input-${articleId}`);
+        const text = input.value.trim();
+        if (!text) {
+            showToast('✏️ Введите комментарий', true);
+            return;
+        }
+        const currentUserName = localStorage.getItem('currentUser') || 'Гость';
+        const comment = {
+            id: Date.now().toString(),
+            author: currentUserName,
+            text: text,
+            date: new Date().toISOString()
+        };
+        if (!newsComments[articleId]) {
+            newsComments[articleId] = [];
+        }
+        newsComments[articleId].unshift(comment);
+        if (newsComments[articleId].length > 50) {
+            newsComments[articleId] = newsComments[articleId].slice(0, 50);
+        }
+        localStorage.setItem('newsComments', JSON.stringify(newsComments));
+        input.value = '';
+        loadComments(articleId);
+        showToast('💬 Комментарий добавлен!');
+    }
+
+    // Поделиться новостью
+    function shareNews(articleId, platform) {
+        const article = allNews.find(a => a.id === articleId);
+        if (!article) return;
+        const url = article.source_url;
+        const title = encodeURIComponent(article.title);
+        const text = encodeURIComponent(article.summary.substring(0, 200));
+        const shareUrls = {
+            telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${title}`,
+            whatsapp: `https://wa.me/?text=${title}%20${encodeURIComponent(url)}`,
+            vk: `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${title}&description=${text}`,
+            twitter: `https://twitter.com/intent/tweet?text=${title}&url=${encodeURIComponent(url)}`,
+            facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+            linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${title}`
+        };
+        if (shareUrls[platform]) {
+            window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+            showToast(`📤 Поделились в ${platform}!`);
+            if (newsStats[articleId]) {
+                newsStats[articleId].views += 2;
+                saveNewsStats();
+                updateNewsStatsDisplay(articleId);
+            }
+        }
+    }
+
+    // Функция для показа/скрытия комментариев
+    function toggleComments(articleId) {
+        const commentsDiv = document.getElementById(`comments-${articleId}`);
+        if (commentsDiv) {
+            commentsDiv.classList.toggle('show');
+            if (commentsDiv.classList.contains('show')) {
+                loadComments(articleId);
+            }
+        }
     }
 
     // User system
@@ -886,7 +1139,7 @@
         saveAndAddMessage(answer, false);
     }
 
-    // Sharing functions (FIXED - now working)
+    // Sharing functions
     function openShareModal(chatId) {
         shareChatId = chatId;
         const chat = chats[chatId];
@@ -938,33 +1191,62 @@
     }
 
     // News functions
-    let allNews = [];
-    async function loadNews() {
-        const newsListDiv = document.getElementById('newsList');
-        newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div></div>';
-        try {
-            const response = await fetch('news.json?t=' + Date.now());
-            if (!response.ok) throw new Error();
-            const data = await response.json();
-            allNews = data.articles || [];
-            renderNewsList();
-        } catch (error) {
-            newsListDiv.innerHTML = '<div class="news-empty">⚠️ Не удалось загрузить новости. Убедитесь, что файл news.json существует.</div>';
-        }
-    }
-
     function renderNewsList() {
         const newsListDiv = document.getElementById('newsList');
         if (allNews.length === 0) {
             newsListDiv.innerHTML = '<div class="news-empty">📭 Новостей пока нет</div>';
             return;
         }
+        
+        // Увеличиваем просмотры для отображаемых новостей
+        allNews.forEach(article => {
+            incrementView(article.id);
+            setTimeout(() => updateNewsStatsDisplay(article.id), 100);
+        });
+        
         newsListDiv.innerHTML = allNews.map(article => `
-            <div class="news-card" onclick="showFullArticle('${article.id}')">
-                <h3>${escapeHtml(article.title)}</h3>
-                <div class="news-meta"><span>📅 ${article.published_at || 'Дата неизвестна'}</span><span>🔗 ${escapeHtml(article.source || 'AI News')}</span></div>
-                <div class="news-summary">${escapeHtml((article.summary || article.content || '').substring(0, 200))}...</div>
-                <div class="news-tags">${(article.tags || []).map(tag => `<span class="news-tag">#${escapeHtml(tag)}</span>`).join('')}</div>
+            <div class="news-card" data-id="${article.id}">
+                <h3 onclick="showFullArticle('${article.id}')">${escapeHtml(article.title)}</h3>
+                <div class="news-meta">
+                    <span>📅 ${article.published_at || 'Дата неизвестна'}</span>
+                    <span>🔗 ${escapeHtml(article.source || 'AI News')}</span>
+                    <span class="view-count">👁️ <span id="views-${article.id}">${formatNumber(newsStats[article.id]?.views || 0)}</span></span>
+                </div>
+                <div class="news-summary" onclick="showFullArticle('${article.id}')">
+                    ${escapeHtml((article.summary || article.content || '').substring(0, 200))}...
+                </div>
+                <div class="news-stats">
+                    <div class="news-stat ${localStorage.getItem(`liked_${article.id}`) === 'true' ? 'liked' : ''}" onclick="likeArticle('${article.id}', this)">
+                        <span class="stat-icon">❤️</span>
+                        <span id="likes-${article.id}">${formatNumber(newsStats[article.id]?.likes || 0)}</span>
+                    </div>
+                    <div class="news-stat" onclick="toggleComments('${article.id}')">
+                        <span class="stat-icon">💬</span>
+                        <span>${newsComments[article.id]?.length || 0}</span>
+                    </div>
+                    <div class="news-stat" onclick="shareNews('${article.id}', 'telegram')">
+                        <span class="stat-icon">📤</span>
+                        <span>Поделиться</span>
+                    </div>
+                </div>
+                <div class="comments-section" id="comments-${article.id}">
+                    <div class="comment-input">
+                        <input type="text" id="comment-input-${article.id}" placeholder="Напишите комментарий...">
+                        <button onclick="addComment('${article.id}')">Отправить</button>
+                    </div>
+                    <div id="comments-list-${article.id}"></div>
+                </div>
+                <div class="news-tags">
+                    ${(article.tags || []).map(tag => `<span class="news-tag">#${escapeHtml(tag)}</span>`).join('')}
+                </div>
+                <div class="share-buttons">
+                    <button class="share-btn" onclick="shareNews('${article.id}', 'telegram')">📱 Telegram</button>
+                    <button class="share-btn" onclick="shareNews('${article.id}', 'whatsapp')">💬 WhatsApp</button>
+                    <button class="share-btn" onclick="shareNews('${article.id}', 'vk')">📘 VK</button>
+                    <button class="share-btn" onclick="shareNews('${article.id}', 'twitter')">🐦 Twitter</button>
+                    <button class="share-btn" onclick="shareNews('${article.id}', 'facebook')">📘 Facebook</button>
+                    <button class="share-btn" onclick="shareNews('${article.id}', 'linkedin')">🔗 LinkedIn</button>
+                </div>
             </div>
         `).join('');
     }
@@ -972,6 +1254,15 @@
     function showFullArticle(articleId) {
         const article = allNews.find(a => a.id === articleId);
         if (!article) return;
+        
+        // Увеличиваем просмотры при открытии статьи
+        if (!newsStats[articleId]) {
+            newsStats[articleId] = { views: 0, likes: 0 };
+        }
+        newsStats[articleId].views++;
+        saveNewsStats();
+        updateNewsStatsDisplay(articleId);
+        
         let modal = document.getElementById('articleModal');
         if (!modal) {
             modal = document.createElement('div');
@@ -980,15 +1271,52 @@
             modal.innerHTML = `<div class="article-modal-content"><button class="close-article-modal" onclick="closeArticleModal()">✖</button><div id="articleModalBody"></div></div>`;
             document.body.appendChild(modal);
         }
+        
         document.getElementById('articleModalBody').innerHTML = `
             <h2 style="color:#667eea;margin-bottom:16px;">${escapeHtml(article.title)}</h2>
-            <div class="news-meta" style="margin-bottom:20px;"><span>📅 ${article.published_at || 'Дата неизвестна'}</span></div>
+            <div class="news-meta" style="margin-bottom:20px;">
+                <span>📅 ${article.published_at || 'Дата неизвестна'}</span>
+                <span>🔗 ${escapeHtml(article.source || 'AI News')}</span>
+                <span>👁️ ${formatNumber(newsStats[articleId]?.views || 1)} просмотров</span>
+                <span>❤️ ${formatNumber(newsStats[articleId]?.likes || 0)} лайков</span>
+            </div>
             <div style="line-height:1.7;">${escapeHtml(article.content || article.summary || '').replace(/\n/g, '<br>')}</div>
+            <div class="share-buttons" style="margin-top: 20px;">
+                <button class="share-btn" onclick="shareNews('${articleId}', 'telegram')">📱 Telegram</button>
+                <button class="share-btn" onclick="shareNews('${articleId}', 'whatsapp')">💬 WhatsApp</button>
+                <button class="share-btn" onclick="shareNews('${articleId}', 'vk')">📘 VK</button>
+                <button class="share-btn" onclick="shareNews('${articleId}', 'twitter')">🐦 Twitter</button>
+            </div>
         `;
         modal.classList.add('show');
     }
 
-    function closeArticleModal() { const modal = document.getElementById('articleModal'); if (modal) modal.classList.remove('show'); }
+    function closeArticleModal() { 
+        const modal = document.getElementById('articleModal'); 
+        if (modal) modal.classList.remove('show'); 
+    }
+
+    async function loadNews() {
+        const newsListDiv = document.getElementById('newsList');
+        newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div></div>';
+        try {
+            const response = await fetch('news.json?t=' + Date.now());
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            allNews = data.articles || [];
+            
+            // Загружаем сохранённые комментарии
+            const savedComments = localStorage.getItem('newsComments');
+            if (savedComments) {
+                newsComments = JSON.parse(savedComments);
+            }
+            
+            renderNewsList();
+        } catch (error) {
+            newsListDiv.innerHTML = '<div class="news-empty">⚠️ Не удалось загрузить новости. Убедитесь, что файл news.json существует.</div>';
+        }
+    }
+
     function showNewsTab() {
         document.getElementById('messagesArea').style.display = 'none';
         document.querySelector('.input-area').style.display = 'none';
@@ -999,6 +1327,7 @@
         if (badge) badge.style.display = 'none';
         if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
     }
+
     function closeNewsTab() {
         document.getElementById('messagesArea').style.display = 'block';
         document.querySelector('.input-area').style.display = 'flex';
@@ -1006,6 +1335,7 @@
         document.getElementById('chatTitle').innerText = chat ? chat.title : 'Новый чат';
         document.getElementById('newsContainer').style.display = 'none';
     }
+
     function refreshNews() { loadNews(); showToast('🔄 Новости обновляются...'); }
 
     // UI Events
