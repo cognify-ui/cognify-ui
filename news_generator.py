@@ -23,12 +23,148 @@ print(f"✅ API ключ найден: {GEMINI_API_KEY[:15]}...")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# Модели для генерации (как было)
+# Модели для генерации текста
 FIXED_MODELS = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
     "gemini-2.0-flash",
 ]
+
+# ==================== ГЕНЕРАЦИЯ ИЗОБРАЖЕНИЙ ====================
+
+def generate_image_for_article(title, summary, tags, seo_topic):
+    """Генерирует уникальное изображение для статьи с помощью Gemini Imagen"""
+    
+    print(f"   🎨 Генерируем изображение для статьи...")
+    
+    # Создаем детальный промпт для генерации изображения
+    image_prompt = f"""Create a professional, high-quality illustration for a tech news article with the following details:
+
+ARTICLE TITLE: {title}
+TOPIC: {seo_topic}
+TAGS: {', '.join(tags[:5])}
+SUMMARY: {summary}
+
+Requirements:
+- Modern, clean, professional style
+- Relevant to the topic
+- Suitable for a tech news website header
+- No text on the image
+- High resolution, vibrant colors
+- Futuristic but realistic style
+- Eye-catching and engaging
+
+Style inspiration: Wired, TechCrunch, MIT Technology Review"""
+
+    try:
+        # Пытаемся использовать Gemini Imagen (если доступно)
+        response = client.models.generate_content(
+            model="imagen-3.0-generate-001",  # Модель для генерации изображений
+            contents=image_prompt,
+            config={
+                "temperature": 0.8,
+                "candidate_count": 1,
+            }
+        )
+        
+        # Проверяем, есть ли сгенерированное изображение
+        if hasattr(response, 'candidates') and response.candidates:
+            # Получаем base64 изображения
+            for part in response.candidates[0].content.parts:
+                if hasattr(part, 'inline_data') and part.inline_data.mime_type.startswith('image/'):
+                    import base64
+                    image_data = part.inline_data.data
+                    
+                    # Сохраняем изображение временно
+                    temp_path = f"/tmp/article_img_{hashlib.md5(title.encode()).hexdigest()[:8]}.png"
+                    with open(temp_path, 'wb') as f:
+                        f.write(image_data)
+                    
+                    # Загружаем на бесплатный хостинг (imgbb или подобный)
+                    image_url = upload_image_to_hosting(temp_path)
+                    
+                    # Удаляем временный файл
+                    os.remove(temp_path)
+                    
+                    if image_url:
+                        print(f"   ✅ Изображение создано и загружено!")
+                        return image_url
+                    
+    except Exception as e:
+        print(f"   ⚠️ Imagen не доступен: {str(e)[:80]}")
+    
+    # Fallback: Генерируем URL через DiceBear с тематическими параметрами
+    print(f"   🎨 Используем стилизованный fallback...")
+    return generate_themed_dicebear_image(title, tags, seo_topic)
+
+def upload_image_to_hosting(image_path):
+    """Загружает изображение на бесплатный хостинг (imgbb)"""
+    
+    # Бесплатный API ключ для ImgBB (можно зарегистрироваться бесплатно)
+    IMGBB_API_KEY = os.environ.get('IMGBB_API_KEY', '6d207e02198a847aa98d0a2a901485a5')  # Демо ключ
+    
+    try:
+        with open(image_path, 'rb') as f:
+            files = {'image': f}
+            data = {'key': IMGBB_API_KEY}
+            
+            response = requests.post(
+                'https://api.imgbb.com/1/upload',
+                files=files,
+                data=data,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                if result.get('success'):
+                    return result['data']['url']
+                    
+    except Exception as e:
+        print(f"   ⚠️ Ошибка загрузки: {str(e)[:50]}")
+    
+    return None
+
+def generate_themed_dicebear_image(title, tags, seo_topic):
+    """Генерирует тематическое изображение через DiceBear API"""
+    
+    # Создаем seed на основе заголовка и тегов
+    seed_text = f"{title} {' '.join(tags[:3])} {seo_topic}"
+    seed = hashlib.md5(seed_text.encode()).hexdigest()[:16]
+    
+    # Выбираем стиль в зависимости от темы
+    styles = {
+        'ai': 'bottts',
+        'tech': 'identicon',
+        'space': 'pixel-art',
+        'science': 'micah',
+        'default': 'adventurer'
+    }
+    
+    style = styles.get(seo_topic, styles['default'])
+    
+    # Определяем тему для цвета
+    if 'ai' in seo_topic or 'нейросеть' in seo_topic:
+        bg_color = '6366f1'  # Индиго
+        icon = 'sparkles'
+    elif 'космос' in seo_topic or 'space' in seo_topic:
+        bg_color = '1e1b4b'  # Темно-синий
+        icon = 'rocket'
+    elif 'робот' in seo_topic:
+        bg_color = '0f766e'  # Тиркуаз
+        icon = 'robot'
+    elif 'биотех' in seo_topic:
+        bg_color = '15803d'  # Зеленый
+        icon = 'leaf'
+    else:
+        bg_color = '7c3aed'  # Фиолетовый
+        icon = 'bulb'
+    
+    # Генерируем URL с кастомными параметрами
+    image_url = f"https://api.dicebear.com/7.x/{style}/png?seed={seed}&backgroundColor={bg_color}&radius=50&size=1200x600"
+    
+    print(f"   ✅ Тематическое изображение: {style} стиль")
+    return image_url
 
 # ==================== СБОР РЕАЛЬНЫХ НОВОСТЕЙ ====================
 
@@ -60,10 +196,9 @@ def fetch_real_news():
             })
             
             if response.status_code == 200:
-                # Простой парсинг RSS (без дополнительных библиотек)
                 items = re.findall(r'<item>(.*?)</item>', response.text, re.DOTALL)
                 
-                for item in items[:5]:  # 5 последних новостей
+                for item in items[:5]:
                     title_match = re.search(r'<title>(.*?)</title>', item)
                     desc_match = re.search(r'<description>(.*?)</description>', item)
                     link_match = re.search(r'<link>(.*?)</link>', item)
@@ -71,7 +206,6 @@ def fetch_real_news():
                     
                     if title_match and link_match:
                         title = title_match.group(1)
-                        # Очищаем HTML из описания
                         description = desc_match.group(1) if desc_match else ""
                         description = re.sub(r'<[^>]+>', '', description)[:300]
                         
@@ -90,9 +224,9 @@ def fetch_real_news():
             print(f"      ⚠️ Ошибка: {str(e)[:50]}")
             continue
         
-        time.sleep(0.5)  # Вежливость к серверам
+        time.sleep(0.5)
     
-    # Hacker News (популярные техно-новости)
+    # Hacker News
     try:
         print(f"   📰 Читаем Hacker News...")
         response = requests.get("https://hacker-news.firebaseio.com/v0/topstories.json", timeout=10)
@@ -124,10 +258,8 @@ def generate_news_from_real_events(real_news):
     if not real_news:
         return None
     
-    # Выбираем топ-3 самых интересных новости
     selected_news = random.sample(real_news, min(3, len(real_news)))
     
-    # Формируем контекст
     context = "Вот реальные новости из интернета за сегодня:\n\n"
     for i, news in enumerate(selected_news, 1):
         context += f"""
@@ -139,7 +271,6 @@ def generate_news_from_real_events(real_news):
 ---
 """
     
-    # ТЕКУЩАЯ ДАТА
     current_date = datetime.now().strftime("%d.%m.%Y")
     current_date_full = datetime.now().strftime("%d %B %Y")
     current_year = datetime.now().strftime("%Y")
@@ -177,11 +308,9 @@ def generate_news_from_real_events(real_news):
             )
             
             text = response.text
-            # Очищаем от markdown
             text = re.sub(r'```json\s*', '', text)
             text = re.sub(r'```\s*', '', text)
             
-            # Ищем JSON
             start = text.find('{')
             end = text.rfind('}')
             if start != -1 and end != -1:
@@ -189,14 +318,11 @@ def generate_news_from_real_events(real_news):
             
             article = json.loads(text)
             
-            # Проверяем поля
             required = ['title', 'summary', 'content', 'source', 'tags']
             if all(k in article for k in required):
-                # Заменяем старые даты на текущую
                 article['content'] = re.sub(r'\d{1,2}\.\d{1,2}\.\d{4}', current_date, article['content'])
                 article['content'] = re.sub(r'\d{1,2} \w+ \d{4}', current_date_full, article['content'])
                 
-                # Добавляем метаданные
                 article['seo_topic'] = "news_digest"
                 article['used_model'] = model
                 article['generated_date'] = current_date
@@ -215,22 +341,18 @@ def generate_news_from_real_events(real_news):
     return None
 
 def generate_news_article():
-    """Генерирует одну новость (основная функция)"""
+    """Генерирует одну новость"""
     
-    # Шаг 1: Собираем реальные новости
     real_news = fetch_real_news()
     
     if real_news:
-        # Шаг 2: Генерируем статью на основе реальных новостей
         print("\n📝 Генерируем уникальную статью на основе реальных новостей...")
         article = generate_news_from_real_events(real_news)
         if article:
             return article
     
-    # Если не удалось собрать новости или сгенерировать - используем старый метод
     print("\n⚠️ Используем резервный метод генерации...")
     
-    # Темы новостей (резервный вариант)
     TOPICS = [
         "искусственный интеллект", "нейросети", "chatgpt", "openai", "google gemini",
         "робототехника", "квантовые вычисления", "биотехнологии", "космос", "IT инновации"
@@ -301,7 +423,7 @@ def generate_news_article():
     
     return None
 
-# ==================== ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ) ====================
+# ==================== ОСТАЛЬНЫЕ ФУНКЦИИ ====================
 
 def load_existing_news():
     """Загружает существующие новости"""
@@ -356,7 +478,7 @@ Disallow: /news_generator.py
     print("   ✅ robots.txt создан")
 
 def generate_news_html(article):
-    """Генерирует HTML страницу для новости"""
+    """Генерирует HTML страницу для новости с красивым изображением"""
     import html
     os.makedirs('news', exist_ok=True)
     
@@ -369,10 +491,9 @@ def generate_news_html(article):
     published_at = article.get('published_at', '')
     tags = article.get('tags', [])
     
-    # Добавляем ссылки на источники, если есть
     sources_html = ""
     if article.get('real_sources'):
-        sources_html = '<div class="sources"><strong>Источники:</strong><br>'
+        sources_html = '<div class="sources"><strong>📚 Источники:</strong><br>'
         for src in article.get('real_sources', []):
             sources_html += f'• {html.escape(src)}<br>'
         sources_html += '</div>'
@@ -386,7 +507,11 @@ def generate_news_html(article):
     
     image_html = ''
     if image_url:
-        image_html = f'<img class="article-image" src="{html.escape(image_url)}" alt="{title}">'
+        image_html = f'''
+        <div class="article-image-container">
+            <img class="article-image" src="{html.escape(image_url)}" alt="{title}" loading="eager">
+            <div class="image-overlay"></div>
+        </div>'''
     
     html_content = f'''<!DOCTYPE html>
 <html lang="ru">
@@ -401,65 +526,129 @@ def generate_news_html(article):
     <meta property="og:image" content="{image_url}">
     <meta property="og:url" content="https://cognify-ui.github.io/news/{article_id}.html">
     <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Cognify AI News">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{image_url}">
     <link rel="canonical" href="https://cognify-ui.github.io/news/{article_id}.html">
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
         }}
         .container {{
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease;
+        }}
+        .container:hover {{
+            transform: translateY(-5px);
+        }}
+        .article-image-container {{
+            position: relative;
+            width: 100%;
+            height: 450px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }}
         .article-image {{
             width: 100%;
-            height: 400px;
+            height: 100%;
             object-fit: cover;
+            transition: transform 0.5s ease;
         }}
-        .article-content {{ padding: 40px; }}
-        h1 {{ font-size: 32px; margin-bottom: 20px; }}
+        .article-image:hover {{
+            transform: scale(1.05);
+        }}
+        .image-overlay {{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }}
+        .article-content {{ padding: 48px; }}
+        h1 {{
+            font-size: 38px;
+            margin-bottom: 24px;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
         .meta {{
             display: flex;
-            gap: 20px;
-            color: #666;
+            gap: 24px;
+            color: #6b7280;
             font-size: 14px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #f3f4f6;
+            flex-wrap: wrap;
         }}
-        .content {{ font-size: 18px; line-height: 1.8; margin-bottom: 30px; }}
+        .meta-item {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+        .content {{
+            font-size: 18px;
+            line-height: 1.8;
+            color: #374151;
+            margin-bottom: 40px;
+        }}
+        .content p {{
+            margin-bottom: 20px;
+        }}
         .sources {{
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 32px 0;
             font-size: 14px;
+            border-left: 4px solid #667eea;
         }}
-        .tags {{ display: flex; gap: 10px; flex-wrap: wrap; margin: 30px 0; }}
+        .tags {{ display: flex; gap: 12px; flex-wrap: wrap; margin: 32px 0; }}
         .tag {{
-            background: #f0f0f0;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            color: white;
             text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }}
+        .tag:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }}
         .back-link {{
-            display: inline-block;
-            margin-top: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 40px;
             color: #667eea;
             text-decoration: none;
+            font-weight: 500;
+            transition: gap 0.3s;
+        }}
+        .back-link:hover {{
+            gap: 12px;
         }}
         @media (max-width: 768px) {{
-            .article-content {{ padding: 20px; }}
-            h1 {{ font-size: 24px; }}
+            .article-content {{ padding: 24px; }}
+            h1 {{ font-size: 28px; }}
+            .article-image-container {{ height: 300px; }}
+            .meta {{ gap: 16px; }}
         }}
     </style>
 </head>
@@ -469,14 +658,15 @@ def generate_news_html(article):
         <div class="article-content">
             <h1>{title}</h1>
             <div class="meta">
-                <span>📅 {pub_date}</span>
-                <span>🔗 {source}</span>
-                <span>📖 {len(article.get('content', ''))} символов</span>
+                <div class="meta-item">📅 {pub_date}</div>
+                <div class="meta-item">🔗 {source}</div>
+                <div class="meta-item">📖 {len(article.get('content', ''))} символов</div>
+                <div class="meta-item">⚡ {article.get('used_model', 'AI').upper()}</div>
             </div>
             <div class="content">{content}</div>
             {sources_html}
             <div class="tags">{tags_html}</div>
-            <a href="/" class="back-link">← Назад к новостям</a>
+            <a href="/" class="back-link">← На главную</a>
         </div>
     </div>
 </body>
@@ -490,11 +680,19 @@ def generate_news_html(article):
     return html_path
 
 def save_news_article(article):
-    """Сохраняет новость"""
+    """Сохраняет новость с генерацией изображения"""
     data = load_existing_news()
     
     article_id = hashlib.md5(f"{article['title']}{datetime.now()}".encode()).hexdigest()[:12]
-    image_url = f"https://api.dicebear.com/7.x/bottts/svg?seed={article_id}&backgroundColor=6366f1&radius=50"
+    
+    # ГЕНЕРИРУЕМ УНИКАЛЬНОЕ ИЗОБРАЖЕНИЕ
+    print("\n🎨 Генерируем тематическое изображение...")
+    image_url = generate_image_for_article(
+        title=article.get('title', ''),
+        summary=article.get('summary', ''),
+        tags=article.get('tags', []),
+        seo_topic=article.get('seo_topic', 'news')
+    )
     
     new_article = {
         "id": article_id,
@@ -516,13 +714,11 @@ def save_news_article(article):
         }
     }
     
-    # Проверяем дубликаты
     existing_titles = [a.get('title') for a in data.get('articles', [])]
     if new_article['title'] in existing_titles:
         print(f"   ⚠️ Дубликат, пропускаем")
         return False
     
-    # Добавляем в начало
     if 'articles' not in data:
         data['articles'] = []
     
@@ -531,32 +727,27 @@ def save_news_article(article):
     data['last_updated'] = datetime.now().isoformat()
     data['total_articles'] = len(data['articles'])
     
-    # Сохраняем JSON
     with open(NEWS_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
-    # Генерируем HTML
     generate_news_html(new_article)
-    
-    # Обновляем sitemap и robots.txt
     generate_sitemap(data['articles'])
     generate_robots_txt()
     
     print(f"\n✅ Сохранено! Всего: {len(data['articles'])}")
     print(f"📰 {new_article['title'][:80]}...")
-    print(f"📅 Дата публикации: {new_article['published_at'][:10]}")
+    print(f"🖼️ Изображение: {image_url[:80]}...")
+    print(f"📅 Дата: {new_article['published_at'][:10]}")
     
     return True
 
 def main():
     print("=" * 60)
-    print(f"🚀 ЗАПУСК ГЕНЕРАТОРА НОВОСТЕЙ (РЕАЛЬНЫЕ ИСТОЧНИКИ)")
+    print(f"🚀 ЗАПУСК ГЕНЕРАТОРА НОВОСТЕЙ (С AI ИЗОБРАЖЕНИЯМИ)")
     print(f"🕐 Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"📅 Сегодня: {datetime.now().strftime('%d.%m.%Y')}")
     print("=" * 60)
     
-    # Генерируем новость
-    print("\n📝 Генерируем новость на основе реальных событий...")
     article = generate_news_article()
     
     if article:
@@ -569,7 +760,6 @@ def main():
     else:
         print("\n❌ Не удалось сгенерировать новость")
         
-        # Если файл пустой, создаем демо
         data = load_existing_news()
         if len(data.get('articles', [])) == 0:
             print("\n📝 Создаём демо-новость...")
@@ -585,7 +775,7 @@ def main():
             save_news_article(demo)
     
     print("\n" + "=" * 60)
-    print("✅ ГОТОВО!")
+    print("✅ ГОТОВО! Все статьи с уникальными AI-изображениями")
     print("=" * 60)
 
 if __name__ == "__main__":
