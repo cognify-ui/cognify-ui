@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RGXJJ2N0ST"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -26,973 +25,137 @@
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-        }
-
-        /* Анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-6px); }
-        }
-
-        /* Основной контейнер */
-        .app {
-            display: flex;
-            height: 100vh;
-            background: #f8f9fa;
-            overflow: hidden;
-        }
-
-        /* ========== САЙДБАР ========== */
-        .sidebar {
-            width: 280px;
-            background: white;
-            border-right: 1px solid #e9ecef;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .new-chat-btn {
-            margin: 16px;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .new-chat-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .news-tab-btn {
-            margin: 0 16px 16px 16px;
-            padding: 12px;
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            color: #495057;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .news-tab-btn:hover {
-            background: #e9ecef;
-            border-color: #667eea;
-        }
-
-        .history-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px;
-        }
-
-        .history-item {
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 4px;
-            cursor: pointer;
-            color: #495057;
-            font-size: 14px;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8f9fa;
-        }
-
-        .history-item:hover {
-            background: #e9ecef;
-        }
-
-        .history-item.active {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-left: 3px solid #667eea;
-            font-weight: 500;
-        }
-
-        .history-title {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .history-actions {
-            display: flex;
-            gap: 4px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .history-item:hover .history-actions {
-            opacity: 1;
-        }
-
-        .history-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 6px;
-            color: #6c757d;
-        }
-
-        .history-btn:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        /* ========== ОСНОВНАЯ ОБЛАСТЬ ========== */
-        .main-chat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: white;
-            position: relative;
-        }
-
-        /* Шапка чата */
-        .chat-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            background: white;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: #f8f9fa;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 10px;
-            width: 36px;
-            height: 36px;
-        }
-
-        .chat-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #212529;
-        }
-
-        /* Бейджи */
-        .current-model-badge {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #495057;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .current-model-badge span {
-            color: #667eea;
-        }
-
-        .stats-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Селекторы */
-        .language-selector, .api-selector {
-            display: flex;
-            gap: 4px;
-            background: #f8f9fa;
-            padding: 4px;
-            border-radius: 30px;
-            border: 1px solid #e9ecef;
-        }
-
-        .lang-btn, .api-btn {
-            padding: 6px 12px;
-            border-radius: 30px;
-            border: none;
-            background: transparent;
-            color: #6c757d;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .lang-btn:hover, .api-btn:hover {
-            background: #e9ecef;
-        }
-
-        .lang-btn.active, .api-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+        
+        .app { display: flex; height: 100vh; background: #f8f9fa; overflow: hidden; }
+        
+        /* Сайдбар */
+        .sidebar { width: 280px; background: white; border-right: 1px solid #e9ecef; display: flex; flex-direction: column; transition: all 0.3s; z-index: 100; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #e9ecef; }
+        .logo { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .new-chat-btn { margin: 16px; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .new-chat-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
+        .news-tab-btn { margin: 0 16px 16px 16px; padding: 12px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
+        .news-tab-btn:hover { background: #e9ecef; border-color: #667eea; }
+        .history-list { flex: 1; overflow-y: auto; padding: 8px; }
+        .history-item { padding: 12px; border-radius: 10px; margin-bottom: 4px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; }
+        .history-item:hover { background: #e9ecef; }
+        .history-item.active { background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%); border-left: 3px solid #667eea; }
+        .history-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .history-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+        .history-item:hover .history-actions { opacity: 1; }
+        .history-btn { background: transparent; border: none; cursor: pointer; padding: 4px 6px; border-radius: 6px; color: #6c757d; }
+        
+        /* Основная область */
+        .main-chat { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        .chat-header { padding: 16px 24px; border-bottom: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: white; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .menu-toggle { display: none; background: #f8f9fa; border: none; font-size: 20px; cursor: pointer; padding: 8px; border-radius: 10px; width: 36px; height: 36px; }
+        .chat-title { font-size: 18px; font-weight: 600; color: #212529; }
+        .current-model-badge { background: #f8f9fa; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .current-model-badge span { color: #667eea; }
+        .stats-badge { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: white; display: flex; align-items: center; gap: 6px; }
+        .language-selector, .api-selector { display: flex; gap: 4px; background: #f8f9fa; padding: 4px; border-radius: 30px; border: 1px solid #e9ecef; }
+        .lang-btn, .api-btn { padding: 6px 12px; border-radius: 30px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; }
+        .lang-btn.active, .api-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        
         /* Пользовательское меню */
-        .user-info {
-            position: relative;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.05);
-        }
-
-        .user-menu {
-            position: absolute;
-            top: 48px;
-            right: 0;
-            background: white;
-            border-radius: 12px;
-            min-width: 220px;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            border: 1px solid #e9ecef;
-        }
-
-        .user-menu.show {
-            display: block;
-        }
-
-        .user-menu-item {
-            padding: 12px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
-        }
-
-        .user-menu-item:hover {
-            background: #f8f9fa;
-        }
-
-        .user-menu-item:first-child {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            cursor: default;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .user-menu-divider {
-            height: 1px;
-            background: #e9ecef;
-            margin: 4px 0;
-        }
-
-        .logout-item {
-            color: #dc3545;
-        }
-
-        /* Область сообщений */
-        .messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-        }
-
-        .message {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .message.user .message-avatar {
-            background: #e9ecef;
-        }
-
-        .message.bot .message-avatar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .message-content {
-            flex: 1;
-            line-height: 1.5;
-            font-size: 15px;
-            color: #212529;
-        }
-
-        .message-content p {
-            margin-bottom: 8px;
-        }
-
-        .message-content pre {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 10px;
-            overflow-x: auto;
-            margin: 8px 0;
-        }
-
-        .message-content code {
-            background: #f8f9fa;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 13px;
-        }
-
+        .user-info { position: relative; }
+        .user-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; color: white; transition: all 0.3s; }
+        .user-avatar:hover { transform: scale(1.05); }
+        .user-menu { position: absolute; top: 48px; right: 0; background: white; border-radius: 12px; min-width: 220px; z-index: 1000; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 1px solid #e9ecef; }
+        .user-menu.show { display: block; }
+        .user-menu-item { padding: 12px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+        .user-menu-item:hover { background: #f8f9fa; }
+        .user-menu-item:first-child { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: default; border-radius: 12px 12px 0 0; }
+        .user-menu-divider { height: 1px; background: #e9ecef; margin: 4px 0; }
+        .logout-item { color: #dc3545; }
+        
+        /* Сообщения */
+        .messages-area { flex: 1; overflow-y: auto; padding: 24px; }
+        .message { display: flex; gap: 12px; margin-bottom: 24px; animation: fadeIn 0.3s; }
+        .message-avatar { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .message.user .message-avatar { background: #e9ecef; }
+        .message.bot .message-avatar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .message-content { flex: 1; line-height: 1.5; font-size: 15px; color: #212529; }
+        .message-content pre { background: #f8f9fa; padding: 12px; border-radius: 10px; overflow-x: auto; margin: 8px 0; }
+        .message-content code { background: #f8f9fa; padding: 2px 6px; border-radius: 6px; font-family: monospace; font-size: 13px; }
+        
+        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ УЛУЧШЕНИЙ */
+        .prompt-chip { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 20px; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .prompt-chip:hover { background: #667eea; color: white; border-color: #667eea; transform: translateY(-2px); }
+        .message-actions { display: flex; gap: 8px; margin-top: 8px; opacity: 0.7; transition: opacity 0.2s; }
+        .action-btn { background: transparent; border: none; cursor: pointer; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
+        .action-btn:hover { background: rgba(0,0,0,0.05); }
+        .theme-toggle { cursor: pointer; padding: 8px; border-radius: 50%; background: #f8f9fa; margin-left: 8px; transition: all 0.3s; }
+        
         /* Индикатор печати */
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            padding: 8px 0;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #667eea;
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
+        .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 8px 0; }
+        .typing-dot { width: 8px; height: 8px; background: #667eea; border-radius: 50%; animation: typing 1.4s infinite ease-in-out; }
         .typing-dot:nth-child(1) { animation-delay: 0s; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
+        
         /* Поле ввода */
-        .input-area {
-            padding: 20px 24px;
-            border-top: 1px solid #e9ecef;
-            background: white;
-        }
-
-        .input-container {
-            display: flex;
-            gap: 12px;
-            background: #f8f9fa;
-            border-radius: 30px;
-            padding: 8px 16px;
-            align-items: flex-end;
-            border: 1px solid #e9ecef;
-            transition: all 0.3s;
-        }
-
-        .input-container:focus-within {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        textarea {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #212529;
-            font-size: 15px;
-            font-family: inherit;
-            resize: none;
-            outline: none;
-            padding: 8px 0;
-            min-height: 40px;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        textarea::placeholder {
-            color: #adb5bd;
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 30px;
-            padding: 8px 24px;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .send-btn:hover:not(:disabled) {
-            transform: scale(1.02);
-        }
-
-        .send-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
+        .input-area { padding: 20px 24px; border-top: 1px solid #e9ecef; background: white; }
+        .input-container { display: flex; gap: 12px; background: #f8f9fa; border-radius: 30px; padding: 8px 16px; align-items: flex-end; border: 1px solid #e9ecef; transition: all 0.3s; }
+        .input-container:focus-within { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        textarea { flex: 1; background: transparent; border: none; font-size: 15px; font-family: inherit; resize: none; outline: none; padding: 8px 0; min-height: 40px; max-height: 120px; }
+        .send-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 30px; padding: 8px 24px; color: white; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
         /* Новости */
-        .news-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            z-index: 50;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .news-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .news-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #212529;
-        }
-
-        .news-action-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid #e9ecef;
-            background: white;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-
-        .news-action-btn:hover {
-            background: #f8f9fa;
-            border-color: #667eea;
-        }
-
-        .news-list {
-            padding: 20px;
-        }
-
-        .news-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #e9ecef;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .news-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            border-color: #667eea;
-        }
-
-        .news-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            background: #f0f0f0;
-        }
-
-        .news-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #212529;
-        }
-
-        .news-meta {
-            font-size: 12px;
-            color: #6c757d;
-            margin-bottom: 8px;
-            display: flex;
-            gap: 12px;
-        }
-
-        .news-summary {
-            color: #495057;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        .news-stats {
-            display: flex;
-            gap: 16px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .news-stat {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: #6c757d;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 16px;
-            min-width: 70px;
-            justify-content: center;
-        }
-
-        .news-stat:hover {
-            background: #f8f9fa;
-        }
-
-        .news-stat.liked {
-            color: #dc3545;
-        }
-
-        .news-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-
-        .news-tag {
-            background: #f8f9fa;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 11px;
-            color: #667eea;
-        }
-
-        .comments-section {
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #e9ecef;
-            display: none;
-        }
-
-        .comments-section.show {
-            display: block;
-        }
-
-        .comment-input {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .comment-input input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #e9ecef;
-            border-radius: 20px;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .comment-input input:focus {
-            border-color: #667eea;
-        }
-
-        .comment-input button {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .comment-item {
-            padding: 10px 0;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            gap: 10px;
-        }
-
-        .comment-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .comment-content {
-            flex: 1;
-        }
-
-        .comment-author {
-            font-weight: 600;
-            font-size: 12px;
-        }
-
-        .comment-text {
-            font-size: 13px;
-            color: #495057;
-            margin-top: 4px;
-        }
-
-        .comment-date {
-            font-size: 10px;
-            color: #adb5bd;
-            margin-top: 4px;
-        }
-
-        .share-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-
-        .share-btn {
-            padding: 4px 12px;
-            border-radius: 16px;
-            border: 1px solid #e9ecef;
-            background: white;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.2s;
-        }
-
-        .share-btn:hover {
-            background: #f8f9fa;
-            border-color: #667eea;
-        }
-
+        .news-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 50; overflow-y: auto; display: none; }
+        .news-header { padding: 16px 24px; border-bottom: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; background: white; position: sticky; top: 0; }
+        .news-list { padding: 20px; }
+        .news-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #e9ecef; transition: all 0.3s; cursor: pointer; }
+        .news-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #667eea; }
+        .news-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .news-meta { font-size: 12px; color: #6c757d; margin-bottom: 8px; display: flex; gap: 12px; }
+        .news-summary { color: #495057; line-height: 1.5; font-size: 14px; }
+        .news-stats { display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e9ecef; }
+        .news-stat { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6c757d; cursor: pointer; padding: 8px 12px; border-radius: 16px; }
+        .news-stat:hover { background: #f8f9fa; }
+        .news-stat.liked { color: #dc3545; }
+        .skeleton-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #e0e0e0; }
+        .skeleton-title { height: 20px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; width: 70%; margin-bottom: 10px; }
+        .skeleton-meta { height: 14px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; width: 40%; margin-bottom: 10px; }
+        .skeleton-text { height: 12px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; margin-bottom: 6px; }
+        .badge-new { background: #dc3545; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 6px; }
+        
         /* Модальные окна */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-
-        .modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 28px;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .modal-content h2, .modal-content h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #212529;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .modal-content input:focus {
-            border-color: #667eea;
-        }
-
-        .modal-content button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .modal-switch {
-            text-align: center;
-            color: #667eea;
-            cursor: pointer;
-            margin-top: 12px;
-            font-size: 13px;
-        }
-
-        .article-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .article-modal.show {
-            display: flex;
-        }
-
-        .article-modal-content {
-            background: white;
-            border-radius: 20px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 24px;
-            position: relative;
-        }
-
-        .close-article-modal {
-            position: sticky;
-            top: 0;
-            float: right;
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 8px;
-        }
-
-        /* Toast уведомления */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #212529;
-            border-radius: 30px;
-            padding: 10px 20px;
-            color: white;
-            font-size: 13px;
-            z-index: 1100;
-            animation: fadeIn 0.3s ease;
-        }
-
-        /* Скелетон */
-        .skeleton-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .skeleton-title {
-            height: 20px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 6px;
-            width: 70%;
-            margin-bottom: 10px;
-        }
-
-        .skeleton-meta {
-            height: 14px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 6px;
-            width: 40%;
-            margin-bottom: 10px;
-        }
-
-        .skeleton-text {
-            height: 12px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 6px;
-            margin-bottom: 6px;
-        }
-
-        .news-empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-
-        .badge-new {
-            background: #dc3545;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-left: 6px;
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 99;
-        }
-
-        /* Скроллбар */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-
-        /* Адаптивность */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal.show { opacity: 1; visibility: visible; }
+        .modal-content { background: white; border-radius: 20px; padding: 28px; max-width: 400px; width: 90%; }
+        .modal-content h2, .modal-content h3 { text-align: center; margin-bottom: 20px; }
+        .modal-content input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #e9ecef; border-radius: 12px; }
+        .modal-content button { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; }
+        .modal-switch { text-align: center; color: #667eea; cursor: pointer; margin-top: 12px; font-size: 13px; }
+        .article-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; }
+        .article-modal.show { display: flex; }
+        .article-modal-content { background: white; border-radius: 20px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 24px; position: relative; }
+        
+        /* Toast */
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #212529; border-radius: 30px; padding: 10px 20px; color: white; font-size: 13px; z-index: 1100; animation: fadeIn 0.3s; }
+        
+        /* Тёмная тема */
+        body.dark .app { background: #1a1a2e; }
+        body.dark .sidebar, body.dark .main-chat, body.dark .chat-header, body.dark .input-area { background: #16213e; border-color: #2c3e50; }
+        body.dark .history-item, body.dark .lang-btn, body.dark .api-btn, body.dark .current-model-badge, body.dark .prompt-chip { background: #1f2a44; color: #e0e0e0; }
+        body.dark .message-content, body.dark .chat-title, body.dark .news-card h3, body.dark .news-summary { color: #e0e0e0; }
+        body.dark .news-card, body.dark .modal-content, body.dark .article-modal-content { background: #1f2a44; border-color: #2c3e50; }
+        body.dark .news-header, body.dark .skeleton-card { background: #16213e; }
+        
         @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -280px;
-                height: 100vh;
-            }
-
-            .sidebar.open {
-                left: 0;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .sidebar-overlay.show {
-                display: block;
-            }
-
-            .header-right {
-                flex-wrap: wrap;
-            }
+            .sidebar { position: fixed; left: -280px; height: 100vh; }
+            .sidebar.open { left: 0; }
+            .menu-toggle { display: block; }
         }
     </style>
 </head>
@@ -1000,9 +163,7 @@
 <div class="app">
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="window.closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">🧠 Cognify AI</div>
-        </div>
+        <div class="sidebar-header"><div class="logo">🧠 Cognify AI</div></div>
         <button class="new-chat-btn" id="newChatBtn">✨ Новый чат</button>
         <button class="news-tab-btn" id="newsTabBtn">📰 Новости AI <span id="newsBadge" class="badge-new" style="display:none;">New</span></button>
         <div class="history-list" id="historyList"></div>
@@ -1015,10 +176,8 @@
                 <div class="chat-title" id="chatTitle">Новый чат</div>
             </div>
             <div class="header-right">
-                <div class="current-model-badge" id="currentModelBadge">
-                    🤖 <span id="currentModelName">Gemini</span>
-                </div>
-                <div class="stats-badge" id="statsBadge">📊 <span id="statsCount">0</span></div>
+                <div class="current-model-badge">🤖 <span id="currentModelName">Gemini</span></div>
+                <div class="stats-badge">📊 <span id="statsCount">0</span></div>
                 <div class="language-selector" id="languageSelector"></div>
                 <div class="api-selector" id="apiSelector"></div>
                 <div class="user-info">
@@ -1085,613 +244,376 @@
             <input type="text" id="shareLinkInput" readonly style="flex:1; padding:10px; border-radius:10px; border:1px solid #e0e0e0;">
             <button id="copyLinkBtn" style="padding:10px 20px; background:#667eea; color:white; border:none; border-radius:10px; cursor:pointer;">Копировать</button>
         </div>
-        <button id="closeShareBtn" style="margin-top: 16px; background:#f0f0f0; border:none; padding:10px; border-radius:10px; cursor:pointer;">Закрыть</button>
+        <button id="closeShareBtn" style="margin-top:16px; background:#f0f0f0; border:none; padding:10px; border-radius:10px; cursor:pointer;">Закрыть</button>
+    </div>
+</div>
+
+<div class="modal" id="customConfirmModal">
+    <div class="modal-content">
+        <h3 id="confirmTitle">⚠️ Подтверждение</h3>
+        <p id="confirmMessage"></p>
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button id="confirmYesBtn" style="flex:1; padding:10px; background:#dc3545; color:white; border:none; border-radius:10px;">Да</button>
+            <button id="confirmNoBtn" style="flex:1; padding:10px; background:#6c757d; color:white; border:none; border-radius:10px;">Нет</button>
+        </div>
     </div>
 </div>
 
 <script>
-    (function() {
-        const WORKER_URL = 'https://groq-proxy.playgame8987.workers.dev';
-        let currentChatId = Date.now().toString();
+(function() {
+    const WORKER_URL = 'https://groq-proxy.playgame8987.workers.dev';
+    let currentChatId = Date.now().toString();
+    let currentApi = localStorage.getItem('currentApi') || 'gemini';
+    if (!['groq', 'cerebras', 'cloudflare', 'gemini'].includes(currentApi)) currentApi = 'gemini';
+    
+    let currentUser = localStorage.getItem('currentUser') || null;
+    let chats = {};
+    let shareChatId = null;
+    let authMode = 'login';
+    let totalMessages = parseInt(localStorage.getItem('totalMessages') || '0');
+    let newsStats = JSON.parse(localStorage.getItem('newsStats') || '{}');
+    let allNews = [];
+    let currentLang = localStorage.getItem('language') || 'ru';
+    let isLoading = false;
+    let abortController = null;
+
+    const modelNames = { groq: '🚀 Groq', cerebras: '⚡ Cerebras', cloudflare: '☁️ Cloudflare', gemini: '🤖 Gemini' };
+    const translations = {
+        ru: { welcome_title: 'Привет! Я Cognify AI', welcome_context: 'Задай любой вопрос, и я отвечу с использованием контекста диалога.', models_title: 'Доступные модели:', model_groq: '🚀 Groq — самый быстрый', model_cerebras: '⚡ Cerebras — 14,400 запросов/день', model_cloudflare: '☁️ Cloudflare — глобальная сеть', model_gemini: '🤖 Gemini — мультимодальная', news_hint: '📰 Нажми «Новости AI» в меню, чтобы читать свежие новости', placeholder: 'Напиши свой вопрос...', send: 'Отправить', guest: 'Гость', login: 'Войти', export_chats: 'Экспорт чатов', clear_all: 'Очистить всё', logout: 'Выйти', today: 'сегодня', yesterday: 'вчера', days_ago: 'дня назад', unknown_date: 'Дата неизвестна', like_added: 'Лайк поставлен!', like_removed: 'Лайк убран', share: 'Поделиться', no_news: 'Новостей пока нет', load_error: 'Не удалось загрузить новости' },
+        en: { welcome_title: 'Hi! I am Cognify AI', welcome_context: 'Ask any question, I will answer using conversation context.', models_title: 'Available models:', model_groq: '🚀 Groq — fastest', model_cerebras: '⚡ Cerebras — 14,400 requests/day', model_cloudflare: '☁️ Cloudflare — global network', model_gemini: '🤖 Gemini — multimodal', news_hint: '📰 Click "AI News" in the menu to read latest news', placeholder: 'Write your question...', send: 'Send', guest: 'Guest', login: 'Login', export_chats: 'Export chats', clear_all: 'Clear all', logout: 'Logout', today: 'today', yesterday: 'yesterday', days_ago: 'days ago', unknown_date: 'Date unknown', like_added: 'Liked!', like_removed: 'Like removed', share: 'Share', no_news: 'No news yet', load_error: 'Failed to load news' }
+    };
+    const languages = { ru: '🇷🇺 Русский', en: '🇬🇧 English' };
+    
+    function t(key) { return translations[currentLang]?.[key] || translations.ru[key] || key; }
+    function showToast(msg, isError) { const toast = document.createElement('div'); toast.className = 'toast'; toast.style.background = isError ? '#dc3545' : '#212529'; toast.innerHTML = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2500); }
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    function formatMessage(text) { if (!text) return ''; return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); }
+    function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано!')); }
+    function formatNumber(num) { if (num >= 1000000) return (num/1000000).toFixed(1)+'M'; if (num>=1000) return (num/1000).toFixed(1)+'K'; return num.toString(); }
+    function formatDate(dateStr) { if (!dateStr) return t('unknown_date'); const date = new Date(dateStr); if (isNaN(date.getTime())) return t('unknown_date'); const now = new Date(), diff = now - date, days = Math.floor(diff / (1000*60*60*24)); if (days === 0) return t('today'); if (days === 1) return t('yesterday'); if (days < 7) return `${days} ${t('days_ago')}`; return date.toLocaleDateString(); }
+    
+    function updateWelcomeMessage() {
+        const welcomeDiv = document.getElementById('welcomeMessage');
+        if (welcomeDiv) welcomeDiv.innerHTML = marked.parse(`<p><strong>${t('welcome_title')}</strong></p><p>${t('welcome_context')}</p><p><strong>${t('models_title')}</strong><br>• ${t('model_groq')}<br>• ${t('model_cerebras')}<br>• ${t('model_cloudflare')}<br>• ${t('model_gemini')}</p><p>${t('news_hint')}</p>`);
+    }
+    function updateUILanguage() { document.getElementById('userInput').placeholder = t('placeholder'); document.getElementById('sendBtn').innerHTML = t('send'); updateWelcomeMessage(); }
+    function switchLanguage(lang) { currentLang = lang; localStorage.setItem('language', lang); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); updateUILanguage(); }
+    
+    // Чат
+    function loadUserData() {
+        const key = currentUser ? `chats_${currentUser}` : 'chats_guest';
+        const saved = localStorage.getItem(key);
+        chats = saved ? JSON.parse(saved) : {};
+        if (Object.keys(chats).length === 0) createNewChat();
+        else { const lastKey = currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest'; const lastId = localStorage.getItem(lastKey); if (lastId && chats[lastId]) currentChatId = lastId; else currentChatId = Object.keys(chats)[0]; loadChat(currentChatId); }
+        renderHistory();
+    }
+    function saveUserData() { const key = currentUser ? `chats_${currentUser}` : 'chats_guest'; localStorage.setItem(key, JSON.stringify(chats)); localStorage.setItem(currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest', currentChatId); }
+    function updateUserUI() {
+        const avatar = document.getElementById('userAvatar');
+        const nameSpan = document.querySelector('#userNameDisplay');
+        if (currentUser) { avatar.innerHTML = currentUser.charAt(0).toUpperCase(); if (nameSpan) nameSpan.innerHTML = `👤 ${currentUser}`; }
+        else { avatar.innerHTML = '👤'; if (nameSpan) nameSpan.innerHTML = `👤 ${t('guest')}`; }
+        document.getElementById('logoutMenuItem').style.display = currentUser ? 'flex' : 'none';
+    }
+    function createNewChat() { currentChatId = Date.now().toString(); chats[currentChatId] = { id: currentChatId, title: 'Новый чат', messages: [{ role: 'bot', content: 'Привет! Я Cognify AI. Задай любой вопрос!' }], createdAt: new Date().toISOString() }; saveUserData(); renderHistory(); loadChat(currentChatId); showToast('✨ Новый чат'); }
+    function loadChat(chatId) { currentChatId = chatId; const chat = chats[chatId]; if (!chat) return; document.getElementById('chatTitle').innerText = chat.title; const messagesArea = document.getElementById('messagesArea'); messagesArea.innerHTML = ''; chat.messages.forEach(msg => addMessageToUI(msg.content, msg.role === 'user')); document.querySelectorAll('.history-item').forEach(el => { el.classList.remove('active'); if (el.dataset.id === chatId) el.classList.add('active'); }); }
+    
+    // ОСНОВНАЯ ФУНКЦИЯ addMessageToUI С КНОПКОЙ КОПИРОВАНИЯ
+    async function addMessageToUI(text, isUser) {
+        const messagesArea = document.getElementById('messagesArea');
+        const div = document.createElement('div');
+        div.className = `message ${isUser ? 'user' : 'bot'}`;
+        let content = text;
+        if (!isUser) { try { content = await marked.parse(text); } catch(e) { content = formatMessage(text); } }
+        else { content = formatMessage(text); }
+        div.innerHTML = `<div class="message-avatar">${isUser ? '👤' : '🧠'}</div><div class="message-content">${content}</div>`;
         
-        // Загружаем сохранённую модель
-        let currentApi = localStorage.getItem('currentApi') || 'gemini';
-        if (!['groq', 'cerebras', 'cloudflare', 'gemini'].includes(currentApi)) {
-            currentApi = 'gemini';
+        // Кнопка копирования для ответов бота
+        if (!isUser) {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'message-actions';
+            actionsDiv.innerHTML = `<button class="action-btn">📋 Копировать</button>`;
+            actionsDiv.querySelector('.action-btn').onclick = () => { navigator.clipboard.writeText(text); showToast('Скопировано!'); };
+            div.querySelector('.message-content').appendChild(actionsDiv);
+            div.addEventListener('mouseenter', () => actionsDiv.style.opacity = '1');
+            div.addEventListener('mouseleave', () => actionsDiv.style.opacity = '0.7');
         }
         
-        let currentUser = localStorage.getItem('currentUser') || null;
-        let chats = {};
-        let shareChatId = null;
-        let authMode = 'login';
-        let totalMessages = parseInt(localStorage.getItem('totalMessages') || '0');
-        let newsStats = JSON.parse(localStorage.getItem('newsStats') || '{}');
-        let newsComments = JSON.parse(localStorage.getItem('newsComments') || '{}');
-        let allNews = [];
-        let currentLang = localStorage.getItem('language') || 'ru';
-        let isLoading = false;
-        let abortController = null;
-
-        const modelNames = { groq: '🚀 Groq', cerebras: '⚡ Cerebras', cloudflare: '☁️ Cloudflare', gemini: '🤖 Gemini' };
-
-        const translations = {
-            ru: { welcome_title: 'Привет! Я Cognify AI', welcome_context: 'Задай любой вопрос, и я отвечу с использованием контекста диалога.', models_title: 'Доступные модели:', model_groq: '🚀 Groq — самый быстрый', model_cerebras: '⚡ Cerebras — 14,400 запросов/день', model_cloudflare: '☁️ Cloudflare — глобальная сеть', model_gemini: '🤖 Gemini — мультимодальная', news_hint: '📰 Нажми «Новости AI» в меню, чтобы читать свежие новости', placeholder: 'Напиши свой вопрос...', send: 'Отправить', thinking: 'Думаю...', news_title: 'Новости AI', refresh: 'Обновить', close: 'Закрыть', no_news: 'Новостей пока нет', load_error: 'Не удалось загрузить новости', view: 'просмотров', likes: 'лайков', share: 'Поделиться', write_comment: 'Напишите комментарий...', send_comment: 'Отправить', no_comments: 'Нет комментариев', like_added: 'Лайк поставлен!', like_removed: 'Лайк убран', comment_added: 'Комментарий добавлен!', guest: 'Гость', login: 'Войти', export_chats: 'Экспорт чатов', clear_all: 'Очистить всё', logout: 'Выйти', today: 'сегодня', yesterday: 'вчера', days_ago: 'дня назад', unknown_date: 'Дата неизвестна' },
-            en: { welcome_title: 'Hi! I am Cognify AI', welcome_context: 'Ask any question, I will answer using conversation context.', models_title: 'Available models:', model_groq: '🚀 Groq — fastest', model_cerebras: '⚡ Cerebras — 14,400 requests/day', model_cloudflare: '☁️ Cloudflare — global network', model_gemini: '🤖 Gemini — multimodal', news_hint: '📰 Click "AI News" in the menu to read latest news', placeholder: 'Write your question...', send: 'Send', thinking: 'Thinking...', news_title: 'AI News', refresh: 'Refresh', close: 'Close', no_news: 'No news yet', load_error: 'Failed to load news', view: 'views', likes: 'likes', share: 'Share', write_comment: 'Write a comment...', send_comment: 'Send', no_comments: 'No comments yet', like_added: 'Liked!', like_removed: 'Like removed', comment_added: 'Comment added!', guest: 'Guest', login: 'Login', export_chats: 'Export chats', clear_all: 'Clear all', logout: 'Logout', today: 'today', yesterday: 'yesterday', days_ago: 'days ago', unknown_date: 'Date unknown' }
-        };
-
-        const languages = { ru: '🇷🇺 Русский', en: '🇬🇧 English' };
-
-        function t(key) { return (translations[currentLang]?.[key] || translations.ru[key] || key); }
-
-        function showToast(msg, isError = false) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.style.background = isError ? '#dc3545' : '#212529';
-            toast.innerHTML = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
-        }
-
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-
-        function formatMessage(text) { if (!text) return ''; return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); }
-
-        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано!')); }
-
-        function formatNumber(num) { if (num >= 1000000) return (num/1000000).toFixed(1)+'M'; if (num>=1000) return (num/1000).toFixed(1)+'K'; return num.toString(); }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return t('unknown_date');
-            const date = new Date(dateStr);
-            if (isNaN(date.getTime())) return t('unknown_date');
-            const now = new Date(), diff = now - date, days = Math.floor(diff / (1000*60*60*24));
-            if (days === 0) return t('today');
-            if (days === 1) return t('yesterday');
-            if (days < 7) return `${days} ${t('days_ago')}`;
-            return date.toLocaleDateString();
-        }
-
-        function updateWelcomeMessage() {
-            const welcomeDiv = document.getElementById('welcomeMessage');
-            if (welcomeDiv) {
-                welcomeDiv.innerHTML = marked.parse(`
-                    <p><strong>${t('welcome_title')}</strong></p>
-                    <p>${t('welcome_context')}</p>
-                    <p><strong>${t('models_title')}</strong><br>
-                    • ${t('model_groq')}<br>
-                    • ${t('model_cerebras')}<br>
-                    • ${t('model_cloudflare')}<br>
-                    • ${t('model_gemini')}</p>
-                    <p>${t('news_hint')}</p>
-                `);
+        messagesArea.appendChild(div);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+    
+    function saveAndAddMessage(text, isUser) {
+        const chat = chats[currentChatId];
+        if (chat) {
+            chat.messages.push({ role: isUser ? 'user' : 'bot', content: text });
+            if (chat.messages.filter(m => m.role === 'user').length === 1 && isUser) {
+                chat.title = text.slice(0, 30) + (text.length > 30 ? '...' : '');
+                document.getElementById('chatTitle').innerText = chat.title;
             }
-        }
-
-        function updateUILanguage() {
-            document.getElementById('userInput').placeholder = t('placeholder');
-            document.getElementById('sendBtn').innerHTML = t('send');
-            updateWelcomeMessage();
-        }
-
-        function switchLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('language', lang);
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-            updateUILanguage();
-        }
-
-        // Чат
-        function loadUserData() {
-            const key = currentUser ? `chats_${currentUser}` : 'chats_guest';
-            const saved = localStorage.getItem(key);
-            chats = saved ? JSON.parse(saved) : {};
-            if (Object.keys(chats).length === 0) createNewChat();
-            else {
-                const lastKey = currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest';
-                const lastId = localStorage.getItem(lastKey);
-                if (lastId && chats[lastId]) currentChatId = lastId;
-                else currentChatId = Object.keys(chats)[0];
-                loadChat(currentChatId);
-            }
-            renderHistory();
-        }
-
-        function saveUserData() {
-            const key = currentUser ? `chats_${currentUser}` : 'chats_guest';
-            localStorage.setItem(key, JSON.stringify(chats));
-            localStorage.setItem(currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest', currentChatId);
-        }
-
-        function updateUserUI() {
-            const avatar = document.getElementById('userAvatar');
-            const nameSpan = document.querySelector('#userNameDisplay');
-            if (currentUser) {
-                avatar.innerHTML = currentUser.charAt(0).toUpperCase();
-                if (nameSpan) nameSpan.innerHTML = `👤 ${currentUser}`;
-            } else {
-                avatar.innerHTML = '👤';
-                if (nameSpan) nameSpan.innerHTML = `👤 ${t('guest')}`;
-            }
-            const logoutItem = document.getElementById('logoutMenuItem');
-            if (logoutItem) logoutItem.style.display = currentUser ? 'flex' : 'none';
-        }
-
-        function createNewChat() {
-            currentChatId = Date.now().toString();
-            chats[currentChatId] = {
-                id: currentChatId, title: 'Новый чат',
-                messages: [{ role: 'bot', content: 'Привет! Я Cognify AI. Задай любой вопрос!' }],
-                createdAt: new Date().toISOString()
-            };
             saveUserData();
             renderHistory();
-            loadChat(currentChatId);
-            showToast('✨ Новый чат');
+            if (isUser) { totalMessages++; localStorage.setItem('totalMessages', totalMessages); document.getElementById('statsCount').innerText = totalMessages; }
         }
-
-        function loadChat(chatId) {
-            currentChatId = chatId;
-            const chat = chats[chatId];
-            if (!chat) return;
-            document.getElementById('chatTitle').innerText = chat.title;
-            const messagesArea = document.getElementById('messagesArea');
-            messagesArea.innerHTML = '';
-            chat.messages.forEach(msg => addMessageToUI(msg.content, msg.role === 'user'));
-            document.querySelectorAll('.history-item').forEach(el => {
-                el.classList.remove('active');
-                if (el.dataset.id === chatId) el.classList.add('active');
-            });
-        }
-
-        async function addMessageToUI(text, isUser) {
-            const messagesArea = document.getElementById('messagesArea');
-            const div = document.createElement('div');
-            div.className = `message ${isUser ? 'user' : 'bot'}`;
-            let content = text;
-            if (!isUser) {
-                try {
-                    content = await marked.parse(text);
-                } catch(e) {
-                    content = formatMessage(text);
-                }
-            } else {
-                content = formatMessage(text);
-            }
-            div.innerHTML = `<div class="message-avatar">${isUser ? '👤' : '🧠'}</div><div class="message-content">${content}</div>`;
-            messagesArea.appendChild(div);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-
-        function saveAndAddMessage(text, isUser) {
-            const chat = chats[currentChatId];
-            if (chat) {
-                chat.messages.push({ role: isUser ? 'user' : 'bot', content: text });
-                if (chat.messages.filter(m => m.role === 'user').length === 1 && isUser) {
-                    chat.title = text.slice(0, 30) + (text.length > 30 ? '...' : '');
-                    document.getElementById('chatTitle').innerText = chat.title;
-                }
-                saveUserData();
-                renderHistory();
-                if (isUser) {
-                    totalMessages++;
-                    localStorage.setItem('totalMessages', totalMessages);
-                    document.getElementById('statsCount').innerText = totalMessages;
-                }
-            }
-            addMessageToUI(text, isUser);
-        }
-
-        function renderHistory() {
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
-            const sorted = Object.values(chats).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            sorted.forEach(chat => {
-                const item = document.createElement('div');
-                item.className = 'history-item' + (chat.id === currentChatId ? ' active' : '');
-                item.dataset.id = chat.id;
-                item.innerHTML = `
-                    <span class="history-title">${escapeHtml(chat.title)}</span>
-                    <div class="history-actions">
-                        <button class="history-btn" onclick="event.stopPropagation(); window.openShareModal('${chat.id}')">🔗</button>
-                        <button class="history-btn" onclick="event.stopPropagation(); window.deleteChat('${chat.id}')">🗑️</button>
-                    </div>
-                `;
-                item.onclick = () => loadChat(chat.id);
-                historyList.appendChild(item);
-            });
-        }
-
-        window.deleteChat = function(chatId) {
-            if (confirm('Удалить чат?')) {
-                delete chats[chatId];
-                saveUserData();
-                const remaining = Object.keys(chats);
-                if (remaining.length === 0) createNewChat();
-                else loadChat(remaining[0]);
-                renderHistory();
-                showToast('Чат удален');
-            }
-        };
-
-        function updateCurrentModelBadge() {
-            const span = document.getElementById('currentModelName');
-            if (span) span.innerHTML = modelNames[currentApi] || currentApi;
-        }
-
-        function switchApi(api) {
-            currentApi = api;
-            localStorage.setItem('currentApi', api);
-            document.querySelectorAll('.api-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.api === api) btn.classList.add('active');
-            });
-            updateCurrentModelBadge();
-            saveAndAddMessage(`Переключено на ${modelNames[api]}`, false);
-        }
-
-        function showTypingIndicator() {
-            const messagesArea = document.getElementById('messagesArea');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot';
-            typingDiv.id = 'typing-indicator';
-            typingDiv.innerHTML = `<div class="message-avatar">🧠</div><div class="message-content"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
-            messagesArea.appendChild(typingDiv);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-
-        function hideTypingIndicator() {
-            const el = document.getElementById('typing-indicator');
-            if (el) el.remove();
-        }
-
-        async function sendMessage() {
-            if (isLoading) return;
-            const input = document.getElementById('userInput');
-            const question = input.value.trim();
-            if (!question) return;
-            
-            saveAndAddMessage(question, true);
-            input.value = '';
-            input.style.height = 'auto';
-            
-            const chat = chats[currentChatId];
-            if (!chat) return;
-            
-            const conversationHistory = [];
-            const lastMessages = chat.messages.slice(-10);
-            for (const msg of lastMessages) {
-                if (msg.role === 'user') conversationHistory.push({ role: 'user', content: msg.content });
-                else if (msg.role === 'bot' && !msg.content.includes('Переключено на')) conversationHistory.push({ role: 'assistant', content: msg.content });
-            }
-            conversationHistory.push({ role: 'user', content: question });
-            
-            showTypingIndicator();
-            isLoading = true;
-            const sendBtn = document.getElementById('sendBtn');
-            sendBtn.disabled = true;
-            
-            if (abortController) {
-                abortController.abort();
-            }
-            abortController = new AbortController();
-            
-            let answer;
-            try {
-                const timeoutId = setTimeout(() => abortController.abort(), 60000);
-                const response = await fetch(`${WORKER_URL}/chat`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: conversationHistory, api: currentApi }),
-                    signal: abortController.signal
-                });
-                clearTimeout(timeoutId);
-                const data = await response.json();
-                answer = data.answer || data.error || 'Ошибка API';
-            } catch (err) {
-                if (err.name === 'AbortError') {
-                    answer = '⏹️ Запрос был прерван.';
-                } else {
-                    answer = `Ошибка: ${err.message}`;
-                }
-            }
-            
-            abortController = null;
-            hideTypingIndicator();
-            saveAndAddMessage(answer, false);
-            isLoading = false;
-            sendBtn.disabled = false;
-        }
-
-        // Новости
-        function saveNewsStats() { localStorage.setItem('newsStats', JSON.stringify(newsStats)); }
-        
-        window.likeArticle = function(articleId, btn) {
-            if (!newsStats[articleId]) newsStats[articleId] = { views: 0, likes: 0 };
-            const likedKey = `liked_${articleId}`;
-            const isLiked = localStorage.getItem(likedKey) === 'true';
-            if (isLiked) {
-                newsStats[articleId].likes--;
-                localStorage.removeItem(likedKey);
-                btn.classList.remove('liked');
-                showToast(t('like_removed'));
-            } else {
-                newsStats[articleId].likes++;
-                localStorage.setItem(likedKey, 'true');
-                btn.classList.add('liked');
-                showToast(t('like_added'));
-            }
-            saveNewsStats();
-            const likesSpan = document.getElementById(`likes-${articleId}`);
-            if (likesSpan) likesSpan.textContent = formatNumber(newsStats[articleId].likes);
-        };
-
-        function renderNewsList() {
-            const newsListDiv = document.getElementById('newsList');
-            if (!newsListDiv) return;
-            if (allNews.length === 0) { newsListDiv.innerHTML = `<div class="news-empty">${t('no_news')}</div>`; return; }
-            newsListDiv.innerHTML = allNews.map(article => `
-                <div class="news-card" onclick="window.showFullArticle('${article.id}')">
-                    ${article.image_url ? `<img class="news-image" src="${escapeHtml(article.image_url)}" onerror="this.style.display='none'">` : ''}
-                    <h3>${escapeHtml(article.title)}</h3>
-                    <div class="news-meta"><span>📅 ${formatDate(article.published_at)}</span><span>🔗 ${escapeHtml(article.source || 'AI News')}</span></div>
-                    <div class="news-summary">${escapeHtml((article.summary || article.content || '').substring(0, 150))}...</div>
-                    <div class="news-stats">
-                        <div class="news-stat ${localStorage.getItem(`liked_${article.id}`) === 'true' ? 'liked' : ''}" onclick="event.stopPropagation(); window.likeArticle('${article.id}', this)">❤️ <span id="likes-${article.id}">${formatNumber(newsStats[article.id]?.likes || 0)}</span></div>
-                        <div class="news-stat" onclick="event.stopPropagation(); window.shareNews('${article.id}', 'telegram')">📤 ${t('share')}</div>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Отмечаем новости как прочитанные
-            const lastVisit = localStorage.getItem('lastNewsVisit') || 0;
-            const newCount = allNews.filter(n => new Date(n.published_at) > new Date(lastVisit)).length;
-            if (newCount > 0) {
-                document.getElementById('newsBadge').textContent = newCount;
-                document.getElementById('newsBadge').style.display = 'inline';
-            }
-            localStorage.setItem('lastNewsVisit', new Date().toISOString());
-        }
-
-        window.shareNews = function(articleId, platform) {
-            const article = allNews.find(a => a.id === articleId);
-            if (!article) return;
-            const url = article.source_url || window.location.href;
-            const title = encodeURIComponent(article.title);
-            const shareUrls = { telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${title}`, whatsapp: `https://wa.me/?text=${title}%20${encodeURIComponent(url)}`, vk: `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${title}`, twitter: `https://twitter.com/intent/tweet?text=${title}&url=${encodeURIComponent(url)}` };
-            if (shareUrls[platform]) window.open(shareUrls[platform], '_blank');
-        };
-
-        window.showFullArticle = function(articleId) {
-            const article = allNews.find(a => a.id === articleId);
-            if (!article) return;
-            let modal = document.getElementById('articleModal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'articleModal';
-                modal.className = 'article-modal';
-                modal.innerHTML = `<div class="article-modal-content"><button class="close-article-modal" onclick="window.closeArticleModal()">✖</button><div id="articleModalBody"></div></div>`;
-                document.body.appendChild(modal);
-            }
-            document.getElementById('articleModalBody').innerHTML = `<h2>${escapeHtml(article.title)}</h2><div style="margin:16px 0">${escapeHtml(article.content || article.summary || '')}</div>`;
-            modal.classList.add('show');
-        };
-
-        window.closeArticleModal = function() { const modal = document.getElementById('articleModal'); if (modal) modal.classList.remove('show'); };
-
-        async function loadNews() {
-            const newsListDiv = document.getElementById('newsList');
-            if (newsListDiv) newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div></div>';
-            try {
-                const response = await fetch('news.json?t=' + Date.now());
-                if (!response.ok) throw new Error();
-                const data = await response.json();
-                allNews = (data.articles || []).map(a => ({ ...a, id: a.id || Date.now() + Math.random().toString(36) }));
-                renderNewsList();
-            } catch (error) {
-                if (newsListDiv) newsListDiv.innerHTML = `<div class="news-empty">${t('load_error')}</div>`;
-            }
-        }
-
-        // UI
-        window.toggleSidebar = function() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('show');
-        };
-        window.closeSidebar = function() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('show');
-        };
-        window.toggleUserMenu = function() { document.getElementById('userMenu').classList.toggle('show'); };
-        window.showNewsTab = function() {
-            document.getElementById('messagesArea').style.display = 'none';
-            document.querySelector('.input-area').style.display = 'none';
-            document.getElementById('newsContainer').style.display = 'block';
-            loadNews();
-            // Скрываем бейдж после открытия
-            document.getElementById('newsBadge').style.display = 'none';
-            if (window.innerWidth <= 768) window.closeSidebar();
-        };
-        window.closeNewsTab = function() {
-            document.getElementById('messagesArea').style.display = 'block';
-            document.querySelector('.input-area').style.display = 'flex';
-            document.getElementById('newsContainer').style.display = 'none';
-        };
-        window.openShareModal = function(chatId) {
-            shareChatId = chatId;
-            const shareUrl = window.location.origin + window.location.pathname + '?share=' + chatId;
-            document.getElementById('shareLinkInput').value = shareUrl;
-            document.getElementById('shareModal').classList.add('show');
-        };
-        function closeShareModal() { document.getElementById('shareModal').classList.remove('show'); }
-        function copyChatLink() { copyToClipboard(document.getElementById('shareLinkInput').value); }
-        function getChatText() { const chat = chats[shareChatId]; if (!chat) return ''; return chat.messages.map(m => `${m.role === 'user' ? '👤' : '🧠'}: ${m.content}`).join('\n\n').substring(0, 2000); }
-        function shareToTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getChatText())}`, '_blank'); }
-        function shareToWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(getChatText() + '\n\n' + window.location.href)}`, '_blank'); }
-        function shareToVK() { window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI&description=${encodeURIComponent(getChatText())}`, '_blank'); }
-        function shareToTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getChatText().substring(0, 280))}&url=${encodeURIComponent(window.location.href)}`, '_blank'); }
-
-        // Авторизация
-        function showAuthModal() {
-            authMode = 'login';
-            document.getElementById('authTitle').innerHTML = '🔐 Вход';
-            document.getElementById('authSubmitBtn').innerHTML = 'Войти';
-            document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться';
-            document.getElementById('authModal').classList.add('show');
-        }
-        function toggleAuthMode() {
-            if (authMode === 'login') {
-                authMode = 'register';
-                document.getElementById('authTitle').innerHTML = '📝 Регистрация';
-                document.getElementById('authSubmitBtn').innerHTML = 'Зарегистрироваться';
-                document.getElementById('authSwitch').innerHTML = 'Уже есть аккаунт? Войти';
-            } else {
-                authMode = 'login';
-                document.getElementById('authTitle').innerHTML = '🔐 Вход';
-                document.getElementById('authSubmitBtn').innerHTML = 'Войти';
-                document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться';
-            }
-        }
-        function authSubmit() {
-            const username = document.getElementById('authUsername').value.trim();
-            const password = document.getElementById('authPassword').value;
-            if (!username || !password) { showToast('Заполните все поля', true); return; }
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-            if (authMode === 'register') {
-                if (users[username]) { showToast('Пользователь существует', true); return; }
-                if (password.length < 4) { showToast('Пароль минимум 4 символа', true); return; }
-                users[username] = password;
-                localStorage.setItem('users', JSON.stringify(users));
-                showToast('Регистрация успешна!');
-                toggleAuthMode();
-            } else {
-                if (users[username] !== password) { showToast('Неверный логин или пароль', true); return; }
-                currentUser = username;
-                localStorage.setItem('currentUser', username);
-                updateUserUI();
-                loadUserData();
-                showToast(`Добро пожаловать, ${username}!`);
-                document.getElementById('authModal').classList.remove('show');
-            }
-            document.getElementById('authUsername').value = '';
-            document.getElementById('authPassword').value = '';
-        }
-        function logout() {
-            if (confirm('Выйти из аккаунта?')) {
-                currentUser = null;
-                localStorage.removeItem('currentUser');
-                updateUserUI();
-                loadUserData();
-                showToast('Вы вышли');
-            }
-        }
-        function clearAllData() {
-            if (confirm('⚠️ ВНИМАНИЕ: Все чаты и история будут удалены без возможности восстановления. Продолжить?')) {
-                chats = {};
-                createNewChat();
-                saveUserData();
-                renderHistory();
-                totalMessages = 0;
-                localStorage.setItem('totalMessages', '0');
-                document.getElementById('statsCount').innerText = '0';
-                showToast('Все данные очищены');
-            }
-        }
-        function exportAllChats() {
-            const data = JSON.stringify(chats, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `cognify-chats-${Date.now()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Экспорт завершен');
-        }
-
-        // Инициализация селекторов
-        function initLanguageSelector() {
-            const selector = document.getElementById('languageSelector');
-            selector.innerHTML = '';
-            for (const [code, name] of Object.entries(languages)) {
-                const btn = document.createElement('button');
-                btn.className = 'lang-btn' + (code === currentLang ? ' active' : '');
-                btn.textContent = name;
-                btn.dataset.lang = code;
-                btn.onclick = () => switchLanguage(code);
-                selector.appendChild(btn);
-            }
-        }
-        function initApiSelector() {
-            const selector = document.getElementById('apiSelector');
-            selector.innerHTML = '';
-            const apis = ['groq', 'cerebras', 'cloudflare', 'gemini'];
-            const icons = { groq: '🚀', cerebras: '⚡', cloudflare: '☁️', gemini: '🤖' };
-            const names = { groq: 'Groq', cerebras: 'Cerebras', cloudflare: 'Cloudflare', gemini: 'Gemini' };
-            apis.forEach(api => {
-                const btn = document.createElement('button');
-                btn.className = 'api-btn' + (api === currentApi ? ' active' : '');
-                btn.innerHTML = `${icons[api]} ${names[api]}`;
-                btn.dataset.api = api;
-                btn.onclick = () => switchApi(api);
-                selector.appendChild(btn);
-            });
-        }
-
-        // События
-        document.getElementById('sendBtn').addEventListener('click', sendMessage);
-        document.getElementById('newChatBtn').addEventListener('click', createNewChat);
-        document.getElementById('newsTabBtn').addEventListener('click', window.showNewsTab);
-        document.getElementById('refreshNewsBtn').addEventListener('click', () => loadNews());
-        document.getElementById('closeNewsBtn').addEventListener('click', window.closeNewsTab);
-        document.getElementById('loginMenuItem').addEventListener('click', showAuthModal);
-        document.getElementById('exportMenuItem').addEventListener('click', exportAllChats);
-        document.getElementById('clearMenuItem').addEventListener('click', clearAllData);
-        document.getElementById('logoutMenuItem').addEventListener('click', logout);
-        document.getElementById('authSubmitBtn').addEventListener('click', authSubmit);
-        document.getElementById('authSwitch').addEventListener('click', toggleAuthMode);
-        document.getElementById('shareTelegramBtn').addEventListener('click', shareToTelegram);
-        document.getElementById('shareWhatsAppBtn').addEventListener('click', shareToWhatsApp);
-        document.getElementById('ShareVKBtn').addEventListener('click', shareToVK);
-        document.getElementById('shareTwitterBtn').addEventListener('click', shareToTwitter);
-        document.getElementById('copyLinkBtn').addEventListener('click', copyChatLink);
-        document.getElementById('closeShareBtn').addEventListener('click', closeShareModal);
-
-        const textarea = document.getElementById('userInput');
-        textarea.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
-        textarea.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-        document.addEventListener('click', (e) => {
-            const menu = document.getElementById('userMenu');
-            const avatar = document.getElementById('userAvatar');
-            if (menu && !menu.contains(e.target) && !avatar.contains(e.target)) menu.classList.remove('show');
+        addMessageToUI(text, isUser);
+    }
+    
+    function renderHistory() {
+        const historyList = document.getElementById('historyList');
+        historyList.innerHTML = '';
+        const sorted = Object.values(chats).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        sorted.forEach(chat => {
+            const item = document.createElement('div');
+            item.className = 'history-item' + (chat.id === currentChatId ? ' active' : '');
+            item.dataset.id = chat.id;
+            item.innerHTML = `<span class="history-title">${escapeHtml(chat.title)}</span><div class="history-actions"><button class="history-btn" onclick="event.stopPropagation(); window.openShareModal('${chat.id}')">🔗</button><button class="history-btn" onclick="event.stopPropagation(); window.deleteChat('${chat.id}')">🗑️</button></div>`;
+            item.onclick = () => loadChat(chat.id);
+            historyList.appendChild(item);
         });
-
-        document.getElementById('statsCount').innerText = totalMessages;
-        initLanguageSelector();
-        initApiSelector();
-        updateUserUI();
-        loadUserData();
-        updateUILanguage();
-        updateCurrentModelBadge();
-        updateWelcomeMessage();
-
-        window.createNewChat = createNewChat;
-        window.deleteChat = window.deleteChat;
-        window.openShareModal = window.openShareModal;
-        window.showNewsTab = window.showNewsTab;
-        window.closeNewsTab = window.closeNewsTab;
-        window.showAuthModal = showAuthModal;
-        window.toggleAuthMode = toggleAuthMode;
-        window.authSubmit = authSubmit;
-        window.logout = logout;
-        window.clearAllData = clearAllData;
-        window.exportAllChats = exportAllChats;
-        window.shareToTelegram = shareToTelegram;
-        window.shareToWhatsApp = shareToWhatsApp;
-        window.shareToVK = shareToVK;
-        window.shareToTwitter = shareToTwitter;
-        window.copyChatLink = copyChatLink;
-        window.closeShareModal = closeShareModal;
-    })();
+    }
+    
+    // Модальное подтверждение
+    function showConfirmModal(title, message, onConfirm) {
+        const modal = document.getElementById('customConfirmModal');
+        document.getElementById('confirmTitle').innerText = title;
+        document.getElementById('confirmMessage').innerText = message;
+        window._confirmCallback = onConfirm;
+        modal.classList.add('show');
+    }
+    
+    window.deleteChat = function(chatId) {
+        showConfirmModal('Удалить чат', 'Вы уверены, что хотите удалить этот чат?', () => {
+            delete chats[chatId];
+            saveUserData();
+            const remaining = Object.keys(chats);
+            if (remaining.length === 0) createNewChat();
+            else loadChat(remaining[0]);
+            renderHistory();
+            showToast('Чат удалён');
+        });
+    };
+    
+    function updateCurrentModelBadge() { document.getElementById('currentModelName').innerHTML = modelNames[currentApi] || currentApi; }
+    function switchApi(api) { currentApi = api; localStorage.setItem('currentApi', api); document.querySelectorAll('.api-btn').forEach(btn => { btn.classList.remove('active'); if (btn.dataset.api === api) btn.classList.add('active'); }); updateCurrentModelBadge(); saveAndAddMessage(`Переключено на ${modelNames[api]}`, false); }
+    function showTypingIndicator() { const messagesArea = document.getElementById('messagesArea'); const typingDiv = document.createElement('div'); typingDiv.className = 'message bot'; typingDiv.id = 'typing-indicator'; typingDiv.innerHTML = `<div class="message-avatar">🧠</div><div class="message-content"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`; messagesArea.appendChild(typingDiv); messagesArea.scrollTop = messagesArea.scrollHeight; }
+    function hideTypingIndicator() { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
+    
+    async function sendMessage() {
+        if (isLoading) return;
+        const input = document.getElementById('userInput');
+        const question = input.value.trim();
+        if (!question) return;
+        saveAndAddMessage(question, true);
+        input.value = '';
+        input.style.height = 'auto';
+        const chat = chats[currentChatId];
+        if (!chat) return;
+        const conversationHistory = [];
+        const lastMessages = chat.messages.slice(-10);
+        for (const msg of lastMessages) {
+            if (msg.role === 'user') conversationHistory.push({ role: 'user', content: msg.content });
+            else if (msg.role === 'bot' && !msg.content.includes('Переключено на')) conversationHistory.push({ role: 'assistant', content: msg.content });
+        }
+        conversationHistory.push({ role: 'user', content: question });
+        showTypingIndicator();
+        isLoading = true;
+        const sendBtn = document.getElementById('sendBtn');
+        sendBtn.disabled = true;
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+        let answer;
+        try {
+            const timeoutId = setTimeout(() => abortController.abort(), 60000);
+            const response = await fetch(`${WORKER_URL}/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: conversationHistory, api: currentApi }), signal: abortController.signal });
+            clearTimeout(timeoutId);
+            const data = await response.json();
+            answer = data.answer || data.error || 'Ошибка API';
+        } catch (err) { answer = err.name === 'AbortError' ? '⏹️ Запрос прерван.' : `Ошибка: ${err.message}`; }
+        abortController = null;
+        hideTypingIndicator();
+        saveAndAddMessage(answer, false);
+        isLoading = false;
+        sendBtn.disabled = false;
+    }
+    
+    // Новости
+    function saveNewsStats() { localStorage.setItem('newsStats', JSON.stringify(newsStats)); }
+    window.likeArticle = function(articleId, btn) {
+        if (!newsStats[articleId]) newsStats[articleId] = { views: 0, likes: 0 };
+        const likedKey = `liked_${articleId}`;
+        const isLiked = localStorage.getItem(likedKey) === 'true';
+        if (isLiked) { newsStats[articleId].likes--; localStorage.removeItem(likedKey); btn.classList.remove('liked'); showToast(t('like_removed')); }
+        else { newsStats[articleId].likes++; localStorage.setItem(likedKey, 'true'); btn.classList.add('liked'); showToast(t('like_added')); }
+        saveNewsStats();
+        const likesSpan = document.getElementById(`likes-${articleId}`);
+        if (likesSpan) likesSpan.textContent = formatNumber(newsStats[articleId].likes);
+    };
+    function renderNewsList() {
+        const newsListDiv = document.getElementById('newsList');
+        if (!newsListDiv) return;
+        if (allNews.length === 0) { newsListDiv.innerHTML = `<div class="news-empty">${t('no_news')}</div>`; return; }
+        newsListDiv.innerHTML = allNews.map(article => `<div class="news-card" onclick="window.showFullArticle('${article.id}')"><h3>${escapeHtml(article.title)}</h3><div class="news-meta"><span>📅 ${formatDate(article.published_at)}</span></div><div class="news-summary">${escapeHtml((article.summary || article.content || '').substring(0, 150))}...</div><div class="news-stats"><div class="news-stat ${localStorage.getItem(`liked_${article.id}`) === 'true' ? 'liked' : ''}" onclick="event.stopPropagation(); window.likeArticle('${article.id}', this)">❤️ <span id="likes-${article.id}">${formatNumber(newsStats[article.id]?.likes || 0)}</span></div></div></div>`).join('');
+        const lastVisit = localStorage.getItem('lastNewsVisit') || 0;
+        const newCount = allNews.filter(n => new Date(n.published_at) > new Date(lastVisit)).length;
+        if (newCount > 0) { document.getElementById('newsBadge').textContent = newCount; document.getElementById('newsBadge').style.display = 'inline'; }
+        localStorage.setItem('lastNewsVisit', new Date().toISOString());
+    }
+    window.shareNews = function(articleId, platform) { const article = allNews.find(a => a.id === articleId); if (article) navigator.clipboard.writeText(article.source_url || window.location.href); showToast('Ссылка скопирована!'); };
+    window.showFullArticle = function(articleId) { const article = allNews.find(a => a.id === articleId); if (!article) return; let modal = document.getElementById('articleModal'); if (!modal) { modal = document.createElement('div'); modal.id = 'articleModal'; modal.className = 'article-modal'; modal.innerHTML = `<div class="article-modal-content"><button class="close-article-modal" onclick="window.closeArticleModal()">✖</button><div id="articleModalBody"></div></div>`; document.body.appendChild(modal); } document.getElementById('articleModalBody').innerHTML = `<h2>${escapeHtml(article.title)}</h2><div style="margin:16px 0">${escapeHtml(article.content || article.summary || '')}</div>`; modal.classList.add('show'); };
+    window.closeArticleModal = function() { const modal = document.getElementById('articleModal'); if (modal) modal.classList.remove('show'); };
+    async function loadNews() {
+        const newsListDiv = document.getElementById('newsList');
+        if (newsListDiv) newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div></div>';
+        try {
+            const response = await fetch('news.json?t=' + Date.now());
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            allNews = (data.articles || []).map(a => ({ ...a, id: a.id || Date.now() + Math.random().toString(36) }));
+            renderNewsList();
+        } catch(error) { if (newsListDiv) newsListDiv.innerHTML = `<div class="news-empty">${t('load_error')}</div>`; }
+    }
+    
+    // UI функции
+    window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); };
+    window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); };
+    window.toggleUserMenu = function() { document.getElementById('userMenu').classList.toggle('show'); };
+    window.showNewsTab = function() { document.getElementById('messagesArea').style.display = 'none'; document.querySelector('.input-area').style.display = 'none'; document.getElementById('newsContainer').style.display = 'block'; loadNews(); document.getElementById('newsBadge').style.display = 'none'; if (window.innerWidth <= 768) window.closeSidebar(); };
+    window.closeNewsTab = function() { document.getElementById('messagesArea').style.display = 'block'; document.querySelector('.input-area').style.display = 'flex'; document.getElementById('newsContainer').style.display = 'none'; };
+    window.openShareModal = function(chatId) { shareChatId = chatId; document.getElementById('shareLinkInput').value = window.location.origin + window.location.pathname + '?share=' + chatId; document.getElementById('shareModal').classList.add('show'); };
+    function closeShareModal() { document.getElementById('shareModal').classList.remove('show'); }
+    function copyChatLink() { copyToClipboard(document.getElementById('shareLinkInput').value); }
+    function getChatText() { const chat = chats[shareChatId]; if (!chat) return ''; return chat.messages.map(m => `${m.role === 'user' ? '👤' : '🧠'}: ${m.content}`).join('\n\n').substring(0, 2000); }
+    function shareToTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getChatText())}`, '_blank'); }
+    function shareToWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(getChatText() + '\n\n' + window.location.href)}`, '_blank'); }
+    function shareToVK() { window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI`, '_blank'); }
+    function shareToTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getChatText().substring(0, 280))}&url=${encodeURIComponent(window.location.href)}`, '_blank'); }
+    
+    // Авторизация
+    function showAuthModal() { authMode = 'login'; document.getElementById('authTitle').innerHTML = '🔐 Вход'; document.getElementById('authSubmitBtn').innerHTML = 'Войти'; document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться'; document.getElementById('authModal').classList.add('show'); }
+    function toggleAuthMode() { if (authMode === 'login') { authMode = 'register'; document.getElementById('authTitle').innerHTML = '📝 Регистрация'; document.getElementById('authSubmitBtn').innerHTML = 'Зарегистрироваться'; document.getElementById('authSwitch').innerHTML = 'Уже есть аккаунт? Войти'; } else { authMode = 'login'; document.getElementById('authTitle').innerHTML = '🔐 Вход'; document.getElementById('authSubmitBtn').innerHTML = 'Войти'; document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться'; } }
+    function authSubmit() {
+        const username = document.getElementById('authUsername').value.trim();
+        const password = document.getElementById('authPassword').value;
+        if (!username || !password) { showToast('Заполните все поля', true); return; }
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (authMode === 'register') {
+            if (users[username]) { showToast('Пользователь существует', true); return; }
+            if (password.length < 4) { showToast('Пароль минимум 4 символа', true); return; }
+            users[username] = password;
+            localStorage.setItem('users', JSON.stringify(users));
+            showToast('Регистрация успешна!');
+            toggleAuthMode();
+        } else {
+            if (users[username] !== password) { showToast('Неверный логин или пароль', true); return; }
+            currentUser = username;
+            localStorage.setItem('currentUser', username);
+            updateUserUI();
+            loadUserData();
+            showToast(`Добро пожаловать, ${username}!`);
+            document.getElementById('authModal').classList.remove('show');
+        }
+        document.getElementById('authUsername').value = '';
+        document.getElementById('authPassword').value = '';
+    }
+    function logout() { showConfirmModal('Выход', 'Вы уверены, что хотите выйти?', () => { currentUser = null; localStorage.removeItem('currentUser'); updateUserUI(); loadUserData(); showToast('Вы вышли'); }); }
+    function clearAllData() { showConfirmModal('⚠️ Очистка всех данных', 'Все чаты и история будут удалены без возможности восстановления. Продолжить?', () => { chats = {}; createNewChat(); saveUserData(); renderHistory(); totalMessages = 0; localStorage.setItem('totalMessages', '0'); document.getElementById('statsCount').innerText = '0'; showToast('Все данные очищены'); }); }
+    function exportAllChats() { const data = JSON.stringify(chats, null, 2); const blob = new Blob([data], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `cognify-chats-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url); showToast('Экспорт завершен'); }
+    function importChats() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'application/json'; input.onchange = (e) => { const file = e.target.files[0]; const reader = new FileReader(); reader.onload = (event) => { try { const imported = JSON.parse(event.target.result); chats = imported; saveUserData(); renderHistory(); loadChat(Object.keys(chats)[0]); showToast('Импорт завершён'); } catch(err) { showToast('Ошибка импорта', true); } }; reader.readAsText(file); }; input.click(); }
+    
+    // Инициализация
+    function initLanguageSelector() { const selector = document.getElementById('languageSelector'); selector.innerHTML = ''; for (const [code, name] of Object.entries(languages)) { const btn = document.createElement('button'); btn.className = 'lang-btn' + (code === currentLang ? ' active' : ''); btn.textContent = name; btn.dataset.lang = code; btn.onclick = () => switchLanguage(code); selector.appendChild(btn); } }
+    function initApiSelector() { const selector = document.getElementById('apiSelector'); selector.innerHTML = ''; const apis = ['groq', 'cerebras', 'cloudflare', 'gemini']; const icons = { groq: '🚀', cerebras: '⚡', cloudflare: '☁️', gemini: '🤖' }; const names = { groq: 'Groq', cerebras: 'Cerebras', cloudflare: 'Cloudflare', gemini: 'Gemini' }; apis.forEach(api => { const btn = document.createElement('button'); btn.className = 'api-btn' + (api === currentApi ? ' active' : ''); btn.innerHTML = `${icons[api]} ${names[api]}`; btn.dataset.api = api; btn.onclick = () => switchApi(api); selector.appendChild(btn); }); }
+    
+    // Тёмная тема
+    function initDarkTheme() {
+        const themeToggle = document.createElement('div');
+        themeToggle.className = 'theme-toggle';
+        themeToggle.innerHTML = localStorage.getItem('theme') === 'dark' ? '☀️' : '🌙';
+        themeToggle.onclick = () => { document.body.classList.toggle('dark'); const isDark = document.body.classList.contains('dark'); localStorage.setItem('theme', isDark ? 'dark' : 'light'); themeToggle.innerHTML = isDark ? '☀️' : '🌙'; };
+        const headerRight = document.querySelector('.header-right');
+        if (headerRight && !document.querySelector('.theme-toggle')) headerRight.appendChild(themeToggle);
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+    }
+    
+    // Примеры промптов
+    function addPromptExamples() {
+        const inputArea = document.querySelector('.input-area');
+        if (document.querySelector('.prompt-examples')) return;
+        const examplesDiv = document.createElement('div');
+        examplesDiv.className = 'prompt-examples';
+        examplesDiv.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap; padding: 0 24px 12px;';
+        examplesDiv.innerHTML = `<div class="prompt-chip" data-prompt="Напиши код на Python для сортировки массива">💻 Код</div><div class="prompt-chip" data-prompt="Объясни квантовую физику простыми словами">🔬 Наука</div><div class="prompt-chip" data-prompt="Придумай креативный бизнес-план">💡 Бизнес</div><div class="prompt-chip" data-prompt="Переведи на английский: Привет, как дела?">🌐 Перевод</div>`;
+        inputArea.parentNode.insertBefore(examplesDiv, inputArea);
+        document.querySelectorAll('.prompt-chip').forEach(chip => { chip.onclick = () => { document.getElementById('userInput').value = chip.dataset.prompt; sendMessage(); }; });
+    }
+    
+    // Добавляем импорт в меню
+    const exportMenuItem = document.getElementById('exportMenuItem');
+    if (exportMenuItem && !document.getElementById('importMenuItem')) {
+        const importMenuItem = document.createElement('div');
+        importMenuItem.id = 'importMenuItem';
+        importMenuItem.className = 'user-menu-item';
+        importMenuItem.innerHTML = '📤 Импорт чатов';
+        importMenuItem.onclick = importChats;
+        exportMenuItem.parentNode.insertBefore(importMenuItem, exportMenuItem.nextSibling);
+    }
+    
+    // События
+    document.getElementById('sendBtn').addEventListener('click', sendMessage);
+    document.getElementById('newChatBtn').addEventListener('click', createNewChat);
+    document.getElementById('newsTabBtn').addEventListener('click', window.showNewsTab);
+    document.getElementById('refreshNewsBtn').addEventListener('click', () => loadNews());
+    document.getElementById('closeNewsBtn').addEventListener('click', window.closeNewsTab);
+    document.getElementById('loginMenuItem').addEventListener('click', showAuthModal);
+    document.getElementById('exportMenuItem').addEventListener('click', exportAllChats);
+    document.getElementById('clearMenuItem').addEventListener('click', clearAllData);
+    document.getElementById('logoutMenuItem').addEventListener('click', logout);
+    document.getElementById('authSubmitBtn').addEventListener('click', authSubmit);
+    document.getElementById('authSwitch').addEventListener('click', toggleAuthMode);
+    document.getElementById('shareTelegramBtn').addEventListener('click', shareToTelegram);
+    document.getElementById('shareWhatsAppBtn').addEventListener('click', shareToWhatsApp);
+    document.getElementById('ShareVKBtn').addEventListener('click', shareToVK);
+    document.getElementById('shareTwitterBtn').addEventListener('click', shareToTwitter);
+    document.getElementById('copyLinkBtn').addEventListener('click', copyChatLink);
+    document.getElementById('closeShareBtn').addEventListener('click', closeShareModal);
+    document.getElementById('confirmYesBtn').onclick = () => { if (window._confirmCallback) { window._confirmCallback(); } document.getElementById('customConfirmModal').classList.remove('show'); };
+    document.getElementById('confirmNoBtn').onclick = () => document.getElementById('customConfirmModal').classList.remove('show');
+    
+    const textarea = document.getElementById('userInput');
+    textarea.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
+    textarea.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+    document.addEventListener('click', (e) => { const menu = document.getElementById('userMenu'); const avatar = document.getElementById('userAvatar'); if (menu && !menu.contains(e.target) && !avatar.contains(e.target)) menu.classList.remove('show'); });
+    
+    document.getElementById('statsCount').innerText = totalMessages;
+    initLanguageSelector();
+    initApiSelector();
+    updateUserUI();
+    loadUserData();
+    updateUILanguage();
+    updateCurrentModelBadge();
+    updateWelcomeMessage();
+    initDarkTheme();
+    addPromptExamples();
+    
+    window.createNewChat = createNewChat;
+    window.deleteChat = window.deleteChat;
+    window.openShareModal = window.openShareModal;
+    window.showNewsTab = window.showNewsTab;
+    window.closeNewsTab = window.closeNewsTab;
+    window.showAuthModal = showAuthModal;
+    window.toggleAuthMode = toggleAuthMode;
+    window.authSubmit = authSubmit;
+    window.logout = logout;
+    window.clearAllData = clearAllData;
+    window.exportAllChats = exportAllChats;
+    window.shareToTelegram = shareToTelegram;
+    window.shareToWhatsApp = shareToWhatsApp;
+    window.shareToVK = shareToVK;
+    window.shareToTwitter = shareToTwitter;
+    window.copyChatLink = copyChatLink;
+    window.closeShareModal = closeShareModal;
+})();
 </script>
 </body>
 </html>
