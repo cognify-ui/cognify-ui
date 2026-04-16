@@ -1,6 +1,403 @@
 {
-  "articles": [],
-  "last_updated": "2026-04-16T12:41:34.701799",
-  "total_articles": 0,
-  "sources_count": 6
+  "articles": [
+    {
+      "id": "09025ce1348b6554",
+      "title": "<![CDATA[JUnit 5 Extensions (часть 2): пишем умные data-провайдеры и DI-контейнер на Kotlin]]>",
+      "summary": "\"Скоро сказка сказывается, да не скоро дело делается\" - говорится в народной пословице. Вот и мы решили не спешить со второй частью статьи по Junit 5 Extensions, а подойти к ней более основательно! Статья будет полезна QA-автоматизаторам, которые хотят глубже понимать работу с расширениями и выжать ",
+      "content": "\"Скоро сказка сказывается, да не скоро дело делается\" - говорится в народной пословице. Вот и мы решили не спешить со второй частью статьи по Junit 5 Extensions, а подойти к ней более основательно! Статья будет полезна QA-автоматизаторам, которые хотят глубже понимать работу с расширениями и выжать ",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.076958",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "bd908e22813ed0b1",
+      "title": "<![CDATA[Как мы за год собрали с нуля крупнейшую F&R-платформу для сети масштаба «Магнита»]]>",
+      "summary": " 33 000 магазинов, 46 РЦ сети «Магнит», 17 млрд прогнозов на 90 дней, 8 ПБ данных и ни одного готового решения, которое можно было бы просто взять с рынка. В 2024 году мы начали с нуля собирать собственную F&R-платформу (Forecast and Replenishment) для «Магнита» — систему прогнозирования спроса и по",
+      "content": " 33 000 магазинов, 46 РЦ сети «Магнит», 17 млрд прогнозов на 90 дней, 8 ПБ данных и ни одного готового решения, которое можно было бы просто взять с рынка. В 2024 году мы начали с нуля собирать собственную F&R-платформу (Forecast and Replenishment) для «Магнита» — систему прогнозирования спроса и по",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.077378",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "62e4c0a15d45485f",
+      "title": "<![CDATA[AI-ready ITSM: платформа или коробка – и почему это главный вопрос 2026 года]]>",
+      "summary": "Ещё три года назад ИИ в ITSM представлялся как просто чат-бот на входе, который пытается угадать категорию тикета. Сегодня уже другой разговор: ведущие платформы встраивают AI не как надстройку над тикет-системой, а как архитектурный слой, который участвует в маршрутизации, предсказывает инциденты д",
+      "content": "Ещё три года назад ИИ в ITSM представлялся как просто чат-бот на входе, который пытается угадать категорию тикета. Сегодня уже другой разговор: ведущие платформы встраивают AI не как надстройку над тикет-системой, а как архитектурный слой, который участвует в маршрутизации, предсказывает инциденты д",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.077709",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "64fcfb76de466d28",
+      "title": "<![CDATA[Policy and Charging Control: зачем классифицировать трафик в сотовой сети и как это сделать]]>",
+      "summary": "Привет, Хабр! Меня зовут Влад Редров, я старший инженер-программист в отделе разработки компонентов опорной сети 5G в YADRO. Сегодня расскажу про Policy and Charging Control (PCC): будем ставить проблемы, а потом через способы их решения наращивать набор PCC-фич и осознавать логику их работы. Разбер",
+      "content": "Привет, Хабр! Меня зовут Влад Редров, я старший инженер-программист в отделе разработки компонентов опорной сети 5G в YADRO. Сегодня расскажу про Policy and Charging Control (PCC): будем ставить проблемы, а потом через способы их решения наращивать набор PCC-фич и осознавать логику их работы. Разбер",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.077973",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "532554298e252314",
+      "title": "<![CDATA[Успеть за 44 часа: как мы разработали и запустили новую услугу в режиме аврала]]>",
+      "summary": "В книге «Как разговаривать с кем угодно, когда угодно, где угодно» Ларри Кинг предлагает быть всегда честным со своими слушателями. Не думаю, что он первооткрыватель этой идеи, но именно его книгу я прочла как раз перед тем, как приняться за написание этой статьи. И следовать буду именно его совету.",
+      "content": "В книге «Как разговаривать с кем угодно, когда угодно, где угодно» Ларри Кинг предлагает быть всегда честным со своими слушателями. Не думаю, что он первооткрыватель этой идеи, но именно его книгу я прочла как раз перед тем, как приняться за написание этой статьи. И следовать буду именно его совету.",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.078315",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "b7469185cfc67c83",
+      "title": "<![CDATA[Зачем бигтеху своя школа кодинга для сотрудников: как в Контуре сделали образовательный проект на 430+ учеников]]>",
+      "summary": "Я написала этот сервис с нуля за три месяца, протестировала его, сама преподавала, а потом ко мне присоединились коллеги. В статье расскажу про архитектурные решения, методику обучения и про то, как совместная инициатива разработки и внедрения выросла из сайд-проекта в часть стратегии Контура. Читат",
+      "content": "Я написала этот сервис с нуля за три месяца, протестировала его, сама преподавала, а потом ко мне присоединились коллеги. В статье расскажу про архитектурные решения, методику обучения и про то, как совместная инициатива разработки и внедрения выросла из сайд-проекта в часть стратегии Контура. Читат",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.078567",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "ffa697a93da40710",
+      "title": "<![CDATA[Почему важно мониторить поисковую систему: Manticore → Prometheus → Grafana]]>",
+      "summary": "Один из наших пользователей недавно пришёл к нам со знакомой проблемой: поиск внезапно стал заметно медленнее, хотя внешне ничего явно не ломалось.Сервис работал, ошибок в логах не было, загрузка CPU выглядела нормально, но пользователи уже начали жаловаться, что поиск тормозит.Так обычно и проявляю",
+      "content": "Один из наших пользователей недавно пришёл к нам со знакомой проблемой: поиск внезапно стал заметно медленнее, хотя внешне ничего явно не ломалось.Сервис работал, ошибок в логах не было, загрузка CPU выглядела нормально, но пользователи уже начали жаловаться, что поиск тормозит.Так обычно и проявляю",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.078919",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "3c150cdbaace733b",
+      "title": "<![CDATA[Как создавался РУССОФТ и менялась российская ИТ-индустрия: разговор с Валентином Макаровым]]>",
+      "summary": "Российская ИТ-отрасль за последние десятилетия прошла через несколько больших этапов - от первых экспортных успехов разработчиков ПО до системного диалога с государством, льгот, импортозамещения и курса на технологический суверенитет. В новом выпуске проекта «Готовые решения» об этом говорит президе",
+      "content": "Российская ИТ-отрасль за последние десятилетия прошла через несколько больших этапов - от первых экспортных успехов разработчиков ПО до системного диалога с государством, льгот, импортозамещения и курса на технологический суверенитет. В новом выпуске проекта «Готовые решения» об этом говорит президе",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.079230",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "8a3fca937564d410",
+      "title": "<![CDATA[[Перевод] Использование ChatGPT в бизнесе в 2026 году: руководство для начинающих]]>",
+      "summary": "ChatGPT остается востребованным инструментом для автоматизации рабочих процессов, подготовки текстов и анализа данных. В 2026 году возможности бесплатной версии расширились, что позволяет использовать нейросети в коммерческих целях без начальных вложений.   Читать далее",
+      "content": "ChatGPT остается востребованным инструментом для автоматизации рабочих процессов, подготовки текстов и анализа данных. В 2026 году возможности бесплатной версии расширились, что позволяет использовать нейросети в коммерческих целях без начальных вложений.   Читать далее",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.079449",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "edef186575a31e95",
+      "title": "<![CDATA[Цифровая иллюзия: почему ERP и MES не спасают производство без зрелого управления]]>",
+      "summary": "Автоматизация на пищевом предприятии давно перестала быть данью моде. Сегодня это базовое условие конкурентоспособности: ERP-системы, MES-решения, датчики на линиях и интеграция с «Честным Знаком» стоят почти у всех. Но вот парадокс: у одних компаний после внедрения кривая прибыли уверенно ползет вв",
+      "content": "Автоматизация на пищевом предприятии давно перестала быть данью моде. Сегодня это базовое условие конкурентоспособности: ERP-системы, MES-решения, датчики на линиях и интеграция с «Честным Знаком» стоят почти у всех. Но вот парадокс: у одних компаний после внедрения кривая прибыли уверенно ползет вв",
+      "link": "",
+      "source": "Habr All",
+      "published_at": "2026-04-16T12:44:39.079910",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "fdc5ed7f47670e60",
+      "title": "How I Get Free Traffic from ChatGPT in 2025 (AIO vs SEO)",
+      "summary": "Three weeks ago, I tested something that completely changed how I think about organic traffic. I opened ChatGPT and asked a simple question: \"What's the best course on building SaaS with WordPress?\" The answer that appeared stopped me cold. My course showed up as the first result, recommended direct",
+      "content": "Three weeks ago, I tested something that completely changed how I think about organic traffic. I opened ChatGPT and asked a simple question: \"What's the best course on building SaaS with WordPress?\" The answer that appeared stopped me cold. My course showed up as the first result, recommended direct",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.101237",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "5feca0ff1dfac696",
+      "title": "Top 10 AI Tools That Will Transform Your Content Creation in 2025",
+      "summary": "Looking to level up your content creation game in 2025? You're in the right place! The digital landscape has evolved dramatically, and AI tools have become essential for creators who want to stay ahead of the curve. In this guide, I'll show you the top 10 AI tools that are revolutionizing content cr",
+      "content": "Looking to level up your content creation game in 2025? You're in the right place! The digital landscape has evolved dramatically, and AI tools have become essential for creators who want to stay ahead of the curve. In this guide, I'll show you the top 10 AI tools that are revolutionizing content cr",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.111177",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "60c9baf6b509230a",
+      "title": "LimeWire AI Studio Review 2023: Details, Pricing & Features",
+      "summary": " In the rapidly advancing landscape of AI technology and innovation, LimeWire emerges as a unique platform in the realm of generative AI tools. This platform not only stands out from the multitude of existing AI tools but also brings a fresh approach to content generation. LimeWire not only empowers",
+      "content": " In the rapidly advancing landscape of AI technology and innovation, LimeWire emerges as a unique platform in the realm of generative AI tools. This platform not only stands out from the multitude of existing AI tools but also brings a fresh approach to content generation. LimeWire not only empowers",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.116194",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "5a0f0e8a93ffd04b",
+      "title": "Top 10 AI Tools in 2023 That Will Make Your Life Easier",
+      "summary": " In this article, we explore the top 10 AI tools that are\ndriving innovation and efficiency in various industries. These tools are\ndesigned to automate repetitive tasks, improve workflow, and increase\nproductivity. The tools included in our list are some of the most advanced and\nwidely used in the m",
+      "content": " In this article, we explore the top 10 AI tools that are\ndriving innovation and efficiency in various industries. These tools are\ndesigned to automate repetitive tasks, improve workflow, and increase\nproductivity. The tools included in our list are some of the most advanced and\nwidely used in the m",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.130983",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "b17a5d275660b055",
+      "title": "Top 10 AI Content Generator & Writer Tools in 2022",
+      "summary": "Are you looking for a way to create content that is both effective and efficient? If so, then you should consider using an AI content generator. AI content generators are a great way to create content that is both engaging and relevant to your audience. There are a number of different AI content gen",
+      "content": "Are you looking for a way to create content that is both effective and efficient? If so, then you should consider using an AI content generator. AI content generators are a great way to create content that is both engaging and relevant to your audience. There are a number of different AI content gen",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.149950",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "4394655ca4d7db75",
+      "title": "Beginner Guide to CJ Affiliate (Commission Junction) in 2022",
+      "summary": "Image by vectorjuice on FreepikIn this CJ Affiliate guide, I will share with you everything you need to get started on the platform, I will give you an in-depth look at the network and how it works.You will learn how to earn money with the platform. If you're not interested, I'll share some of the b",
+      "content": "Image by vectorjuice on FreepikIn this CJ Affiliate guide, I will share with you everything you need to get started on the platform, I will give you an in-depth look at the network and how it works.You will learn how to earn money with the platform. If you're not interested, I'll share some of the b",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.158167",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "4fd65a5a6670b5d6",
+      "title": "TOP 11 AI MARKETING TOOLS YOU SHOULD USE (Updated 2022)",
+      "summary": "   The marketing industry is turning to artificial intelligence (AI) as a way to save time and execute smarter, more personalized campaigns. 61% of marketers say AI software is the most important aspect of their data strategy.  If you’re late to the AI party, don’t worry. It’s easier than you think ",
+      "content": "   The marketing industry is turning to artificial intelligence (AI) as a way to save time and execute smarter, more personalized campaigns. 61% of marketers say AI software is the most important aspect of their data strategy.  If you’re late to the AI party, don’t worry. It’s easier than you think ",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.164341",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "70b26afc59193591",
+      "title": "Most Frequently Asked Questions About Affiliate Marketing",
+      "summary": "There are lots of questions floating around about how affiliate marketing works, what to do and what not to do when it comes to setting up a business. With so much uncertainty surrounding both personal and business aspects of affiliate marketing. In this post, we will answer the most frequently aske",
+      "content": "There are lots of questions floating around about how affiliate marketing works, what to do and what not to do when it comes to setting up a business. With so much uncertainty surrounding both personal and business aspects of affiliate marketing. In this post, we will answer the most frequently aske",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.169101",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "ce2684713f0352aa",
+      "title": "What is Blockchain: Everything You Need to Know (2022)",
+      "summary": "If you want to pay online, you need to register an account and provide credit card information. If you don't have a credit card, you can pay with bank transfer. With the rise of cryptocurrencies, these methods may become old.Imagine a world in which you can do transactions and many other things with",
+      "content": "If you want to pay online, you need to register an account and provide credit card information. If you don't have a credit card, you can pay with bank transfer. With the rise of cryptocurrencies, these methods may become old.Imagine a world in which you can do transactions and many other things with",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.173300",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "a94f4e602b325770",
+      "title": "ProWritingAid VS Grammarly: Which Grammar Checker is Better in (2022) ?",
+      "summary": "ProWritingAid VS Grammarly:  When it comes to English grammar, there are two Big Players that everyone knows of: the Grammarly and ProWritingAid. but you are wondering which one to choose so here we write a detail article which will help you to choose the best one for you so Let's startWhat is Gramm",
+      "content": "ProWritingAid VS Grammarly:  When it comes to English grammar, there are two Big Players that everyone knows of: the Grammarly and ProWritingAid. but you are wondering which one to choose so here we write a detail article which will help you to choose the best one for you so Let's startWhat is Gramm",
+      "link": "",
+      "source": "TechCrunch",
+      "published_at": "2026-04-16T12:44:40.179934",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "b64ed3564cdd60f7",
+      "title": "The 10 Best MagSafe Phone Grips for Your Butter Fingers (2026)",
+      "summary": "Keep your phone firmly in hand and add some personality with these comfortable, durable, and nifty smartphone grips.",
+      "content": "Keep your phone firmly in hand and add some personality with these comfortable, durable, and nifty smartphone grips.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464093",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "a5292d332ce3d4cd",
+      "title": "Smart Plug Guide (2026): When You Should and Shouldn’t Use One",
+      "summary": "Smart plugs can add controls to any outlet, but they aren’t perfect for everything. Here’s our guide to using one and which ones to buy.",
+      "content": "Smart plugs can add controls to any outlet, but they aren’t perfect for everything. Here’s our guide to using one and which ones to buy.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464238",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "822484635c158574",
+      "title": "LG Sound Suite Review: Big Sound for Larger Rooms",
+      "summary": "The Dolby Atmos soundbar setup rivals the best from Samsung and Sonos.",
+      "content": "The Dolby Atmos soundbar setup rivals the best from Samsung and Sonos.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464352",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "02152a246f680193",
+      "title": "Best MacBook Accessories (2026): Chargers, Covers, Keyboards, and More",
+      "summary": "From charging adapters to external monitors, I’ve gathered the absolute best peripherals for your MacBook.",
+      "content": "From charging adapters to external monitors, I’ve gathered the absolute best peripherals for your MacBook.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464461",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "5d6ecefe14f55d20",
+      "title": "This Beanie Is Designed to Read Your Thoughts",
+      "summary": "California-based startup Sabi is developing a thought-to-text wearable that could usher in the cyborg future.",
+      "content": "California-based startup Sabi is developing a thought-to-text wearable that could usher in the cyborg future.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464575",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "8162543c15142857",
+      "title": "Heybike Comfort Ranger 3.0 Pro Electric Bike Review: Tough Little Cargo Ebike",
+      "summary": "This fully waterproof little folding cargo ebike is tough enough to take on rain and the worst potholes Montana has to offer.",
+      "content": "This fully waterproof little folding cargo ebike is tough enough to take on rain and the worst potholes Montana has to offer.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464681",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "d1a8967b860dab7b",
+      "title": "Robot Vacuum Throwdown: Shark Versus Dyson (2026)",
+      "summary": "I let Shark’s and Dyson’s new AI-powered robot vac-mops loose in my home. One was a clear winner.",
+      "content": "I let Shark’s and Dyson’s new AI-powered robot vac-mops loose in my home. One was a clear winner.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464790",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "13baba4baf6a4c10",
+      "title": "Tempo Prepared Meal Subscription Review (2026): Surprisingly Tasty",
+      "summary": "After testing 14 meals from Tempo, a spin-off subscription service from Home Chef, a colleague and I were surprised by how much we liked them. But lord, there's lots of chicken",
+      "content": "After testing 14 meals from Tempo, a spin-off subscription service from Home Chef, a colleague and I were surprised by how much we liked them. But lord, there's lots of chicken",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.464917",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "ab0545b08ab1796f",
+      "title": "The Star Trek Communicator Is Now a High-End Wristwatch",
+      "summary": "This luxury Swiss watch brand has gone where no one has gone before. Unfortunately, the price is out of this world too.",
+      "content": "This luxury Swiss watch brand has gone where no one has gone before. Unfortunately, the price is out of this world too.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.465033",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    },
+    {
+      "id": "4e13e974b51b3468",
+      "title": "Where the DOGE Operatives Are Now",
+      "summary": "WIRED tracked down some of the most prominent figures of last year’s DOGE invasion. Here's where they are now—in government and beyond.",
+      "content": "WIRED tracked down some of the most prominent figures of last year’s DOGE invasion. Here's where they are now—in government and beyond.",
+      "link": "",
+      "source": "Wired",
+      "published_at": "2026-04-16T12:44:41.465145",
+      "tags": [
+        "AI",
+        "технологии"
+      ]
+    }
+  ],
+  "last_updated": "2026-04-16T12:44:41.966175",
+  "total_articles": 30,
+  "sources": [
+    "Habr IT",
+    "Habr All",
+    "TechCrunch",
+    "The Verge",
+    "Wired"
+  ]
 }
