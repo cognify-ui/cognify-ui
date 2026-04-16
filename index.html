@@ -1,597 +1,770 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RGXJJ2N0ST"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-RGXJJ2N0ST');
-    </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Cognify AI | Нейросеть с контекстом диалога + Новости AI</title>
-    <meta name="description" content="Cognify AI — бесплатная нейросеть с доступом к 4 AI моделям">
-    <meta name="keywords" content="нейросеть, искусственный интеллект, ChatGPT, Google Gemini, AI новости">
-    <meta name="author" content="Cognify AI">
-    <meta name="robots" content="index, follow">
-    <meta property="og:title" content="Cognify AI - Free AI Chatbot">
-    <meta property="og:description" content="Free access to 4 AI models">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://cognify-ui.github.io">
-    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Актуальные новости | Cognify AI</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-        
-        .app { display: flex; height: 100vh; background: #f8f9fa; overflow: hidden; }
-        
-        /* Сайдбар */
-        .sidebar { width: 280px; background: white; border-right: 1px solid #e9ecef; display: flex; flex-direction: column; transition: all 0.3s; z-index: 100; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #e9ecef; }
-        .logo { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .new-chat-btn { margin: 16px; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .new-chat-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
-        .news-tab-btn { margin: 0 16px 16px 16px; padding: 12px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; }
-        .news-tab-btn:hover { background: #e9ecef; border-color: #667eea; }
-        .history-list { flex: 1; overflow-y: auto; padding: 8px; }
-        .history-item { padding: 12px; border-radius: 10px; margin-bottom: 4px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; }
-        .history-item:hover { background: #e9ecef; }
-        .history-item.active { background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%); border-left: 3px solid #667eea; }
-        .history-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .history-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
-        .history-item:hover .history-actions { opacity: 1; }
-        .history-btn { background: transparent; border: none; cursor: pointer; padding: 4px 6px; border-radius: 6px; color: #6c757d; }
-        
-        /* Основная область */
-        .main-chat { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
-        .chat-header { padding: 16px 24px; border-bottom: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: white; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .menu-toggle { display: none; background: #f8f9fa; border: none; font-size: 20px; cursor: pointer; padding: 8px; border-radius: 10px; width: 36px; height: 36px; }
-        .chat-title { font-size: 18px; font-weight: 600; color: #212529; }
-        .current-model-badge { background: #f8f9fa; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .current-model-badge span { color: #667eea; }
-        .stats-badge { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: white; display: flex; align-items: center; gap: 6px; }
-        .language-selector, .api-selector { display: flex; gap: 4px; background: #f8f9fa; padding: 4px; border-radius: 30px; border: 1px solid #e9ecef; }
-        .lang-btn, .api-btn { padding: 6px 12px; border-radius: 30px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; }
-        .lang-btn.active, .api-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        
-        /* Пользовательское меню */
-        .user-info { position: relative; }
-        .user-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; color: white; transition: all 0.3s; }
-        .user-avatar:hover { transform: scale(1.05); }
-        .user-menu { position: absolute; top: 48px; right: 0; background: white; border-radius: 12px; min-width: 220px; z-index: 1000; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 1px solid #e9ecef; }
-        .user-menu.show { display: block; }
-        .user-menu-item { padding: 12px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
-        .user-menu-item:hover { background: #f8f9fa; }
-        .user-menu-item:first-child { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: default; border-radius: 12px 12px 0 0; }
-        .user-menu-divider { height: 1px; background: #e9ecef; margin: 4px 0; }
-        .logout-item { color: #dc3545; }
-        
-        /* Сообщения */
-        .messages-area { flex: 1; overflow-y: auto; padding: 24px; }
-        .message { display: flex; gap: 12px; margin-bottom: 24px; animation: fadeIn 0.3s; }
-        .message-avatar { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-        .message.user .message-avatar { background: #e9ecef; }
-        .message.bot .message-avatar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .message-content { flex: 1; line-height: 1.5; font-size: 15px; color: #212529; }
-        .message-content pre { background: #f8f9fa; padding: 12px; border-radius: 10px; overflow-x: auto; margin: 8px 0; }
-        .message-content code { background: #f8f9fa; padding: 2px 6px; border-radius: 6px; font-family: monospace; font-size: 13px; }
-        .message-actions { display: flex; gap: 8px; margin-top: 8px; opacity: 0.7; transition: opacity 0.2s; }
-        .action-btn { background: transparent; border: none; cursor: pointer; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
-        .action-btn:hover { background: rgba(0,0,0,0.05); }
-        
-        .prompt-chip { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 20px; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
-        .prompt-chip:hover { background: #667eea; color: white; border-color: #667eea; transform: translateY(-2px); }
-        .theme-toggle { cursor: pointer; padding: 8px; border-radius: 50%; background: #f8f9fa; margin-left: 8px; transition: all 0.3s; }
-        
-        /* Индикатор печати */
-        .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 8px 0; }
-        .typing-dot { width: 8px; height: 8px; background: #667eea; border-radius: 50%; animation: typing 1.4s infinite ease-in-out; }
-        .typing-dot:nth-child(1) { animation-delay: 0s; }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
-        /* Поле ввода */
-        .input-area { padding: 20px 24px; border-top: 1px solid #e9ecef; background: white; }
-        .input-container { display: flex; gap: 12px; background: #f8f9fa; border-radius: 30px; padding: 8px 16px; align-items: flex-end; border: 1px solid #e9ecef; transition: all 0.3s; }
-        .input-container:focus-within { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
-        textarea { flex: 1; background: transparent; border: none; font-size: 15px; font-family: inherit; resize: none; outline: none; padding: 8px 0; min-height: 40px; max-height: 120px; }
-        .send-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 30px; padding: 8px 24px; color: white; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        
-        /* Новости */
-        .news-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 50; overflow-y: auto; display: none; }
-        .news-header { padding: 16px 24px; border-bottom: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; background: white; position: sticky; top: 0; }
-        .news-list { padding: 20px; }
-        .news-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #e9ecef; transition: all 0.3s; cursor: pointer; }
-        .news-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #667eea; }
-        .news-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-        .news-meta { font-size: 12px; color: #6c757d; margin-bottom: 8px; display: flex; gap: 12px; }
-        .news-summary { color: #495057; line-height: 1.5; font-size: 14px; }
-        .news-stats { display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e9ecef; }
-        .news-stat { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6c757d; cursor: pointer; padding: 8px 12px; border-radius: 16px; }
-        .news-stat:hover { background: #f8f9fa; }
-        .news-stat.liked { color: #dc3545; }
-        .skeleton-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #e0e0e0; }
-        .skeleton-title { height: 20px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; width: 70%; margin-bottom: 10px; }
-        .skeleton-meta { height: 14px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; width: 40%; margin-bottom: 10px; }
-        .skeleton-text { height: 12px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; margin-bottom: 6px; }
-        .badge-new { background: #dc3545; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 6px; }
-        
-        /* Модальные окна */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; }
-        .modal.show { opacity: 1; visibility: visible; }
-        .modal-content { background: white; border-radius: 20px; padding: 28px; max-width: 400px; width: 90%; }
-        .modal-content h2, .modal-content h3 { text-align: center; margin-bottom: 20px; }
-        .modal-content input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #e9ecef; border-radius: 12px; }
-        .modal-content button { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; }
-        .modal-switch { text-align: center; color: #667eea; cursor: pointer; margin-top: 12px; font-size: 13px; }
-        .article-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; }
-        .article-modal.show { display: flex; }
-        .article-modal-content { background: white; border-radius: 20px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 24px; position: relative; }
-        .close-article-modal { position: absolute; top: 12px; right: 20px; font-size: 24px; background: none; border: none; cursor: pointer; }
-        
-        /* Toast */
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #212529; border-radius: 30px; padding: 10px 20px; color: white; font-size: 13px; z-index: 1100; animation: fadeIn 0.3s; }
-        
-        /* Тёмная тема */
-        body.dark .app { background: #1a1a2e; }
-        body.dark .sidebar, body.dark .main-chat, body.dark .chat-header, body.dark .input-area { background: #16213e; border-color: #2c3e50; }
-        body.dark .history-item, body.dark .lang-btn, body.dark .api-btn, body.dark .current-model-badge, body.dark .prompt-chip { background: #1f2a44; color: #e0e0e0; }
-        body.dark .message-content, body.dark .chat-title, body.dark .news-card h3, body.dark .news-summary { color: #e0e0e0; }
-        body.dark .news-card, body.dark .modal-content, body.dark .article-modal-content { background: #1f2a44; border-color: #2c3e50; }
-        body.dark .news-header, body.dark .skeleton-card { background: #16213e; }
-        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 3rem; margin-bottom: 10px; }
+        .stats { display: flex; justify-content: center; gap: 30px; margin-top: 20px; font-size: 0.9rem; }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 25px; }
+        .news-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        .news-card:hover { transform: translateY(-5px); }
+        .card-content { padding: 20px; }
+        .source {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 12px;
+        }
+        .title { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+        .title a { color: #333; text-decoration: none; }
+        .title a:hover { color: #667eea; }
+        .summary { color: #666; line-height: 1.5; margin-bottom: 15px; font-size: 0.95rem; }
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        .tag { background: #f0f0f0; padding: 3px 10px; border-radius: 15px; font-size: 0.7rem; color: #666; }
+        .meta { font-size: 0.8rem; color: #999; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+        .footer { text-align: center; margin-top: 50px; color: white; opacity: 0.8; }
         @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -280px; height: 100vh; }
-            .sidebar.open { left: 0; }
-            .menu-toggle { display: block; }
-            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 90; }
-            .sidebar-overlay.show { display: block; }
+            .news-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-<div class="app">
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="window.closeSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header"><div class="logo">🧠 Cognify AI</div></div>
-        <button class="new-chat-btn" id="newChatBtn">✨ Новый чат</button>
-        <button class="news-tab-btn" id="newsTabBtn">📰 Новости AI <span id="newsBadge" class="badge-new" style="display:none;">New</span></button>
-        <div class="history-list" id="historyList"></div>
-    </div>
-
-    <div class="main-chat">
-        <div class="chat-header">
-            <div class="header-left">
-                <button class="menu-toggle" onclick="window.toggleSidebar()">☰</button>
-                <div class="chat-title" id="chatTitle">Новый чат</div>
+    <div class="container">
+        <div class="header">
+            <h1>📰 Актуальные новости</h1>
+            <div class="stats">
+                <span>📊 Новостей: 56</span>
+                <span>📡 Источников: 10</span>
+                <span>🕐 Обновлено: 16.04.2026 12:32</span>
             </div>
-            <div class="header-right">
-                <div class="current-model-badge">🤖 <span id="currentModelName">Gemini</span></div>
-                <div class="stats-badge">📊 <span id="statsCount">0</span></div>
-                <div class="language-selector" id="languageSelector"></div>
-                <div class="api-selector" id="apiSelector"></div>
-                <div class="user-info">
-                    <div class="user-avatar" onclick="window.toggleUserMenu()" id="userAvatar">👤</div>
-                    <div class="user-menu" id="userMenu">
-                        <div class="user-menu-item" id="userNameDisplay">👤 Гость</div>
-                        <div class="user-menu-item" id="loginMenuItem">🔑 Войти / Регистрация</div>
-                        <div class="user-menu-item" id="exportMenuItem">📥 Экспорт чатов</div>
-                        <div class="user-menu-item" id="importMenuItem">📤 Импорт чатов</div>
-                        <div class="user-menu-item" id="clearMenuItem">🗑️ Очистить всё</div>
-                        <div class="user-menu-divider"></div>
-                        <div class="user-menu-item logout-item" id="logoutMenuItem">🚪 Выйти</div>
+        </div>
+        <div class="news-grid">
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/companies/chestnyznak/articles/1024120/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1024120" target="_blank">JUnit 5 Extensions (часть 2): пишем умные data-провайдеры и DI-контейнер на Kotlin</a>
                     </div>
+                    <div class="summary">"Скоро сказка сказывается, да не скоро дело делается" - говорится в народной пословице. Вот и мы решили не спешить со второй частью статьи по Junit 5 Extensions, а подойти к ней более основательно! Ст...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:31</div>
                 </div>
             </div>
-        </div>
 
-        <div class="messages-area" id="messagesArea">
-            <div class="message bot">
-                <div class="message-avatar">🧠</div>
-                <div class="message-content" id="welcomeMessage"></div>
-            </div>
-        </div>
-
-        <div class="input-area">
-            <div class="input-container">
-                <textarea id="userInput" placeholder="Напиши свой вопрос..." rows="1"></textarea>
-                <button class="send-btn" id="sendBtn">Отправить</button>
-            </div>
-        </div>
-
-        <div class="news-container" id="newsContainer">
-            <div class="news-header">
-                <h2>📰 Новости искусственного интеллекта</h2>
-                <div>
-                    <button class="news-action-btn" id="refreshNewsBtn">🔄 Обновить</button>
-                    <button class="news-action-btn" id="closeNewsBtn">✖ Закрыть</button>
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/putin-2087378484.html" target="_blank">Эрдоган ждет Путина с визитом в Турции, заявила Матвиенко</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:30</div>
                 </div>
             </div>
-            <div class="news-list" id="newsList"></div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/nazvany-priznaki-otsutstviya-serieznyh-namereniy-u-partnera/" target="_blank">Названы признаки отсутствия серьезных намерений у партнера</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:27</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/podeshevel/" target="_blank">iPhone 17 подешевел в России</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#AI</span><span class="tag">#технологии</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:27</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/companies/magnit/articles/1023866/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1023866" target="_blank">Как мы за год собрали с нуля крупнейшую F&amp;R-платформу для сети масштаба «Магнита»</a>
+                    </div>
+                    <div class="summary"> 33 000 магазинов, 46 РЦ сети «Магнит», 17 млрд прогнозов на 90 дней, 8 ПБ данных и ни одного готового решения, которое можно было бы просто взять с рынка. В 2024 году мы начали с нуля собирать собств...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:26</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/zadolzhennosti-2087376394.html" target="_blank">Правительство спишет задолженности по бюджетным кредитам 16 регионам</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:25</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/tjumen-2087376062.html" target="_blank">В Тюмени пожарный откачал двух кошек, пострадавших при пожаре</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:25</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/articles/1024216/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1024216" target="_blank">AI-ready ITSM: платформа или коробка – и почему это главный вопрос 2026 года</a>
+                    </div>
+                    <div class="summary">Ещё три года назад ИИ в ITSM представлялся как просто чат-бот на входе, который пытается угадать категорию тикета. Сегодня уже другой разговор: ведущие платформы встраивают AI не как надстройку над ти...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:25</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/vzyatka-2087375645.html" target="_blank">Экс-замглавы Сочи Горобца обвинили в получении взяток</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:24</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/blokada-2087375513.html" target="_blank">В Пентагоне заявили, что блокада США не охватывает весь Ормузский пролив</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:24</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/nauka-2087373420.html" target="_blank">Генетик рассказала о "семенах-наследниках" древних культур Тульской области</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:23</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/iran-2087374189.html" target="_blank">США сохранят морскую блокаду, если Иран откажется от сделки, заявил Хегсет</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:20</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 РИА Новости</span>
+                    <div class="title">
+                        <a href="https://ria.ru/20260416/ssha-2087374007.html" target="_blank">Пентагон готов возобновить боевые действия против Ирана</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:20</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/tysyacheletnee-muzhskoe-ukrashenie-vpervye-nashli-v-drevnem-russkom-gorode/" target="_blank">Тысячелетнее мужское украшение впервые нашли в древнем русском городе</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:19</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/glava-mok-obratilas-s-prizyvom-k-stranam-es/" target="_blank">Глава МОК обратилась с призывом к странам ЕС</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:15</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/blizhnevostochnaya-strana-vydvinula-uslovie-izrailyu/" target="_blank">Ближневосточная страна выдвинула условие Израилю</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:15</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/neobhodimost-bolee-bystrogo-snizheniya-klyuchevoy-stavki-svyazali-s-situatsiey-v-ekonomike/" target="_blank">Необходимость более быстрого снижения ключевой ставки связали с ситуацией в экономике</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:15</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/companies/yadro/articles/1023672/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1023672" target="_blank">Policy and Charging Control: зачем классифицировать трафик в сотовой сети и как это сделать</a>
+                    </div>
+                    <div class="summary">Привет, Хабр! Меня зовут Влад Редров, я старший инженер-программист в отделе разработки компонентов опорной сети 5G в YADRO. Сегодня расскажу про Policy and Charging Control (PCC): будем ставить пробл...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:13</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/u-rossiyskogo-energetika-iz-yali-v-dohod-gosudarstva-imuschestvo-na-sotni-millionov/" target="_blank">У российского энергетика изъяли в доход государства имущество на сотни миллионов</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:13</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Lenta.ru</span>
+                    <div class="title">
+                        <a href="https://lenta.ru/news/2026/04/16/oglasheno-nakazanie-za-rastratu-na-oboronnom-zavode-rossii/" target="_blank">Оглашено наказание за растрату на оборонном заводе России</a>
+                    </div>
+                    <div class="summary">...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:13</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/companies/rtlabs/articles/1023420/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1023420" target="_blank">Успеть за 44 часа: как мы разработали и запустили новую услугу в режиме аврала</a>
+                    </div>
+                    <div class="summary">В книге «Как разговаривать с кем угодно, когда угодно, где угодно» Ларри Кинг предлагает быть всегда честным со своими слушателями. Не думаю, что он первооткрыватель этой идеи, но именно его книгу я п...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:10</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/companies/skbkontur/articles/1023444/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1023444" target="_blank">Зачем бигтеху своя школа кодинга для сотрудников: как в Контуре сделали образовательный проект на 430+ учеников</a>
+                    </div>
+                    <div class="summary">Я написала этот сервис с нуля за три месяца, протестировала его, сама преподавала, а потом ко мне присоединились коллеги. В статье расскажу про архитектурные решения, методику обучения и про то, как с...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:04</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/articles/1023608/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1023608" target="_blank">Почему важно мониторить поисковую систему: Manticore → Prometheus → Grafana</a>
+                    </div>
+                    <div class="summary">Один из наших пользователей недавно пришёл к нам со знакомой проблемой: поиск внезапно стал заметно медленнее, хотя внешне ничего явно не ломалось.Сервис работал, ошибок в логах не было, загрузка CPU ...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:03</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/tech/912381/dji-osmo-pocket-4-camera-stabilizied-gimbal-4k-slow-motion" target="_blank">DJI’s Osmo Pocket 4 camera is better at capturing slo-mo footage and photos</a>
+                    </div>
+                    <div class="summary">Following months of leaks, DJI has announced the fourth version of its handheld stabilized vlogger camera. Unlike the Osmo Pocket 3 that debuted way back in September 2023 with major upgrades like a 1...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:00</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/tech/912668/govee-lightwall-color-changing-led-aluminum-frame-smart-home" target="_blank">Govee’s new LED Lightwall comes with its own self-standing frame</a>
+                    </div>
+                    <div class="summary">Govee has announced an upgraded version of its hanging Curtain Lights Pro that can instead be used nearly anywhere you have access to an outlet or large battery. At $449.99, Govee's new Lightwall is m...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:00</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/story/do-you-need-a-smart-plug/" target="_blank">Smart Plug Guide (2026): When You Should and Shouldn’t Use One</a>
+                    </div>
+                    <div class="summary">Smart plugs can add controls to any outlet, but they aren’t perfect for everything. Here’s our guide to using one and which ones to buy....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 12:00</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Habr (все)</span>
+                    <div class="title">
+                        <a href="https://habr.com/ru/companies/infostart/articles/1024200/?utm_source=habrahabr&utm_medium=rss&utm_campaign=1024200" target="_blank">Как создавался РУССОФТ и менялась российская ИТ-индустрия: разговор с Валентином Макаровым</a>
+                    </div>
+                    <div class="summary">Российская ИТ-отрасль за последние десятилетия прошла через несколько больших этапов - от первых экспортных успехов разработчиков ПО до системного диалога с государством, льгот, импортозамещения и кур...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 11:47</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/review/lg-sound-suite-2026/" target="_blank">LG Sound Suite Review: Big Sound for Larger Rooms</a>
+                    </div>
+                    <div class="summary">The Dolby Atmos soundbar setup rivals the best from Samsung and Sonos....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 11:33</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/gallery/best-macbook-accessories/" target="_blank">Best MacBook Accessories (2026): Chargers, Covers, Keyboards, and More</a>
+                    </div>
+                    <div class="summary">From charging adapters to external monitors, I’ve gathered the absolute best peripherals for your MacBook....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 11:30</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/policy/913007/spotify-annas-archive-music-scraping-lawsuit-judgement" target="_blank">Spotify just won $322 million from music pirates it can&#8217;t find</a>
+                    </div>
+                    <div class="summary">Spotify and the three major labels have won a $322 million default judgement against Anna's Archive, the open-source library and pirate activist group that planned to publicly release millions of musi...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 11:27</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/space/2026/04/the-race-to-shackleton-crater-is-on-will-jeff-bezos-or-china-get-there-first/" target="_blank">The race to Shackleton Crater is on—will Jeff Bezos or China get there first?</a>
+                    </div>
+                    <div class="summary">US and Chinese landers could be operating in close proximity on the Moon later this year....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 11:00</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/story/this-beanie-is-designed-to-read-your-thoughts/" target="_blank">This Beanie Is Designed to Read Your Thoughts</a>
+                    </div>
+                    <div class="summary">California-based startup Sabi is developing a thought-to-text wearable that could usher in the cyborg future....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 11:00</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/review/heybike-comfort-ranger-30-pro/" target="_blank">Heybike Comfort Ranger 3.0 Pro Electric Bike Review: Tough Little Cargo Ebike</a>
+                    </div>
+                    <div class="summary">This fully waterproof little folding cargo ebike is tough enough to take on rain and the worst potholes Montana has to offer....</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 11:00</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/story/dyson-shark-robot-vacuum-comparison/" target="_blank">Robot Vacuum Throwdown: Shark Versus Dyson (2026)</a>
+                    </div>
+                    <div class="summary">I let Shark’s and Dyson’s new AI-powered robot vac-mops loose in my home. One was a clear winner....</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 10:34</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/review/tempo-prepared-meal-delivery-subscription/" target="_blank">Tempo Prepared Meal Subscription Review (2026): Surprisingly Tasty</a>
+                    </div>
+                    <div class="summary">After testing 14 meals from Tempo, a spin-off subscription service from Home Chef, a colleague and I were surprised by how much we liked them. But lord, there's lots of chicken...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 10:33</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Wired</span>
+                    <div class="title">
+                        <a href="https://www.wired.com/story/the-star-trek-communicator-is-now-a-high-end-wristwatch/" target="_blank">The Star Trek Communicator Is Now a High-End Wristwatch</a>
+                    </div>
+                    <div class="summary">This luxury Swiss watch brand has gone where no one has gone before. Unfortunately, the price is out of this world too....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 16.04.2026 10:30</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/health/2026/04/florida-surgeon-charged-with-killing-man-after-removing-liver-instead-of-spleen/" target="_blank">Florida surgeon charged with killing man after removing liver instead of spleen</a>
+                    </div>
+                    <div class="summary">It wasn't the first time the surgeon cut out the wrong organ....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 22:25</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/streaming/912898/youtube-shorts-feed-limit-zero-minutes" target="_blank">YouTube now lets you turn off Shorts</a>
+                    </div>
+                    <div class="summary">YouTube's time management settings now have an option to put a zero-minute time limit on Shorts, effectively removing them from your app in Android and iOS. The option is an update to the Shorts timer...</div>
+                    <div class="tags">
+<span class="tag">#технологии</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 22:18</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/tech-policy/2026/04/jury-finds-live-nation-ticketmaster-is-illegal-monopoly-that-overcharged-fans/" target="_blank">Jury finds Live Nation/Ticketmaster is illegal monopoly that overcharged fans</a>
+                    </div>
+                    <div class="summary">Trump administration dropped out of the trial, but 33 states kept fighting....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 22:06</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/gadgets/2026/04/totalrecall-reloaded-tool-finds-a-side-entrance-to-windows-11s-recall-database/" target="_blank">"TotalRecall Reloaded" tool finds a side entrance to Windows 11's Recall database</a>
+                    </div>
+                    <div class="summary">"The vault is solid. The delivery truck is not."...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 20:36</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/transportation/912647/ford-doug-field-leaving-ev-software" target="_blank">Ford’s EV and software chief Doug Field is leaving the company</a>
+                    </div>
+                    <div class="summary">Ford is shaking things up as it relates to its EV and software teams. Doug Field, who left Apple five years ago to helm Ford's multibillion-dollar bet on electric vehicles and software, is stepping do...</div>
+                    <div class="tags">
+<span class="tag">#технологии</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 20:05</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/column/912627/trump-jesus-ai-whcd-penguin-meme" target="_blank">Trump’s posting even more AI-generated Trump-Jesus fan art</a>
+                    </div>
+                    <div class="summary">Hello and welcome to Regulator, a newsletter for Verge subscribers about Big Tech power plays in Washington and beyond. (And when I say beyond, I mean the great beyond, like Heaven, maybe.) If you've ...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 19:50</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/gadgets/2026/04/google-launches-search-app-for-windows-gemini-app-for-mac/" target="_blank">Google releases new apps for Windows and MacOS</a>
+                    </div>
+                    <div class="summary">Google mostly creates products for the web, but it has some new desktop apps today....</div>
+                    <div class="tags">
+<span class="tag">#технологии</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 19:46</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/ai/2026/04/robot-dogs-now-read-gauges-and-thermometers-using-google-gemini/" target="_blank">Boston Dynamics’ robot dog now reads gauges and thermometers with Google's AI</a>
+                    </div>
+                    <div class="summary">Google's AI enables robots to read gauges while inspecting industrial facilities....</div>
+                    <div class="tags">
+<span class="tag">#AI</span><span class="tag">#технологии</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 19:34</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/gadgets/2026/04/nba-fans-cry-foul-as-prime-video-cuts-out-during-overtime-fails-to-sync-audio/" target="_blank">Prime Video shows “technical difficulties” sign instead of NBA game in overtime</a>
+                    </div>
+                    <div class="summary">"Am I trippin??" asks LeBron James....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 19:16</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/policy/912689/live-nation-ticketmaster-antitrust-monopoly-trial-verdict" target="_blank">Ticketmaster is an illegal monopoly, jury finds</a>
+                    </div>
+                    <div class="summary">Live Nation-Ticketmaster is an illegal monopolist, a Manhattan jury found, according to Bloomberg. The jury found the company liable on three counts: illegally monopolizing the market for live event t...</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 19:09</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 The Verge</span>
+                    <div class="title">
+                        <a href="https://www.theverge.com/policy/912680/ftc-ad-agency-settlement-trust-safety" target="_blank">FTC pushes ad agencies into dropping brand safety rules</a>
+                    </div>
+                    <div class="summary">The Federal Trade Commission (FTC) and a group of eight states have announced a proposed settlement with big ad agencies that will prevent them from working together to avoid certain platforms like X ...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 19:00</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 Ars Technica</span>
+                    <div class="title">
+                        <a href="https://arstechnica.com/culture/2026/04/new-teaser-gives-us-first-look-at-godzilla-minus-zero/" target="_blank">New teaser gives us first look at Godzilla Minus Zero</a>
+                    </div>
+                    <div class="summary">Director Takashi Yamazaki told Cinemacon attendees that sequel is first Japanese film shot for IMAX....</div>
+                    <div class="tags">
+<span class="tag">#новости</span>
+                    </div>
+                    <div class="meta">🕐 15.04.2026 18:50</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 TechCrunch</span>
+                    <div class="title">
+                        <a href="https://techncruncher.blogspot.com/2025/12/how-i-get-free-traffic-from-chatgpt-in.html" target="_blank">How I Get Free Traffic from ChatGPT in 2025 (AIO vs SEO)</a>
+                    </div>
+                    <div class="summary">Three weeks ago, I tested something that completely changed how I think about organic traffic. I opened ChatGPT and asked a simple question: "What's the best course on building SaaS with WordPress?" T...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 04.12.2025 05:37</div>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <div class="card-content">
+                    <span class="source">📌 TechCrunch</span>
+                    <div class="title">
+                        <a href="https://techncruncher.blogspot.com/2025/01/top-10-ai-tools-that-will-transform.html" target="_blank">Top 10 AI Tools That Will Transform Your Content Creation in 2025</a>
+                    </div>
+                    <div class="summary">Looking to level up your content creation game in 2025? You're in the right place! The digital landscape has evolved dramatically, and AI tools have become essential for creators who want to stay ahea...</div>
+                    <div class="tags">
+<span class="tag">#AI</span>
+                    </div>
+                    <div class="meta">🕐 02.01.2025 09:26</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="footer">
+            <p>© 2026 Cognify AI — Реальные новости из RSS-лент</p>
         </div>
     </div>
-</div>
-
-<div class="modal" id="authModal">
-    <div class="modal-content">
-        <h2 id="authTitle">🔐 Вход</h2>
-        <input type="text" id="authUsername" placeholder="Имя пользователя">
-        <input type="password" id="authPassword" placeholder="Пароль">
-        <button id="authSubmitBtn">Войти</button>
-        <div class="modal-switch" id="authSwitch">Нет аккаунта? Зарегистрироваться</div>
-    </div>
-</div>
-
-<div class="modal" id="shareModal">
-    <div class="modal-content">
-        <h3>📤 Поделиться чатом</h3>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
-            <button id="shareTelegramBtn" style="padding:8px 14px; border-radius:20px; border:1px solid #e0e0e0; background:white; cursor:pointer;">📱 Telegram</button>
-            <button id="shareWhatsAppBtn" style="padding:8px 14px; border-radius:20px; border:1px solid #e0e0e0; background:white; cursor:pointer;">💬 WhatsApp</button>
-            <button id="ShareVKBtn" style="padding:8px 14px; border-radius:20px; border:1px solid #e0e0e0; background:white; cursor:pointer;">📘 VK</button>
-            <button id="shareTwitterBtn" style="padding:8px 14px; border-radius:20px; border:1px solid #e0e0e0; background:white; cursor:pointer;">🐦 Twitter</button>
-        </div>
-        <div style="display: flex; gap: 8px;">
-            <input type="text" id="shareLinkInput" readonly style="flex:1; padding:10px; border-radius:10px; border:1px solid #e0e0e0;">
-            <button id="copyLinkBtn" style="padding:10px 20px; background:#667eea; color:white; border:none; border-radius:10px; cursor:pointer;">Копировать</button>
-        </div>
-        <button id="closeShareBtn" style="margin-top:16px; background:#f0f0f0; border:none; padding:10px; border-radius:10px; cursor:pointer;">Закрыть</button>
-    </div>
-</div>
-
-<div class="modal" id="customConfirmModal">
-    <div class="modal-content">
-        <h3 id="confirmTitle">⚠️ Подтверждение</h3>
-        <p id="confirmMessage"></p>
-        <div style="display: flex; gap: 12px; margin-top: 20px;">
-            <button id="confirmYesBtn" style="flex:1; padding:10px; background:#dc3545; color:white; border:none; border-radius:10px;">Да</button>
-            <button id="confirmNoBtn" style="flex:1; padding:10px; background:#6c757d; color:white; border:none; border-radius:10px;">Нет</button>
-        </div>
-    </div>
-</div>
-
-<script>
-(function() {
-    const WORKER_URL = 'https://groq-proxy.playgame8987.workers.dev';
-    let currentChatId = Date.now().toString();
-    let currentApi = localStorage.getItem('currentApi') || 'gemini';
-    if (!['groq', 'cerebras', 'cloudflare', 'gemini'].includes(currentApi)) currentApi = 'gemini';
-    
-    let currentUser = localStorage.getItem('currentUser') || null;
-    let chats = {};
-    let shareChatId = null;
-    let authMode = 'login';
-    let totalMessages = parseInt(localStorage.getItem('totalMessages') || '0');
-    let newsStats = JSON.parse(localStorage.getItem('newsStats') || '{}');
-    let allNews = [];
-    let currentLang = localStorage.getItem('language') || 'ru';
-    let isLoading = false;
-    let abortController = null;
-
-    const modelNames = { groq: '🚀 Groq', cerebras: '⚡ Cerebras', cloudflare: '☁️ Cloudflare', gemini: '🤖 Gemini' };
-    const translations = {
-        ru: { welcome_title: 'Привет! Я Cognify AI', welcome_context: 'Задай любой вопрос, и я отвечу с использованием контекста диалога.', models_title: 'Доступные модели:', model_groq: '🚀 Groq — самый быстрый', model_cerebras: '⚡ Cerebras — 14,400 запросов/день', model_cloudflare: '☁️ Cloudflare — глобальная сеть', model_gemini: '🤖 Gemini — мультимодальная', news_hint: '📰 Нажми «Новости AI» в меню, чтобы читать свежие новости', placeholder: 'Напиши свой вопрос...', send: 'Отправить', guest: 'Гость', login: 'Войти', export_chats: 'Экспорт чатов', clear_all: 'Очистить всё', logout: 'Выйти', today: 'сегодня', yesterday: 'вчера', days_ago: 'дня назад', unknown_date: 'Дата неизвестна', like_added: 'Лайк поставлен!', like_removed: 'Лайк убран', share: 'Поделиться', no_news: 'Новостей пока нет', load_error: 'Не удалось загрузить новости' },
-        en: { welcome_title: 'Hi! I am Cognify AI', welcome_context: 'Ask any question, I will answer using conversation context.', models_title: 'Available models:', model_groq: '🚀 Groq — fastest', model_cerebras: '⚡ Cerebras — 14,400 requests/day', model_cloudflare: '☁️ Cloudflare — global network', model_gemini: '🤖 Gemini — multimodal', news_hint: '📰 Click "AI News" in the menu to read latest news', placeholder: 'Write your question...', send: 'Send', guest: 'Guest', login: 'Login', export_chats: 'Export chats', clear_all: 'Clear all', logout: 'Logout', today: 'today', yesterday: 'yesterday', days_ago: 'days ago', unknown_date: 'Date unknown', like_added: 'Liked!', like_removed: 'Like removed', share: 'Share', no_news: 'No news yet', load_error: 'Failed to load news' }
-    };
-    const languages = { ru: '🇷🇺 Русский', en: '🇬🇧 English' };
-    
-    function t(key) { return translations[currentLang]?.[key] || translations.ru[key] || key; }
-    function showToast(msg, isError) { const toast = document.createElement('div'); toast.className = 'toast'; toast.style.background = isError ? '#dc3545' : '#212529'; toast.innerHTML = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2500); }
-    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-    function formatMessage(text) { if (!text) return ''; return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); }
-    function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано!')); }
-    function formatNumber(num) { if (num >= 1000000) return (num/1000000).toFixed(1)+'M'; if (num>=1000) return (num/1000).toFixed(1)+'K'; return num.toString(); }
-    function formatDate(dateStr) { if (!dateStr) return t('unknown_date'); const date = new Date(dateStr); if (isNaN(date.getTime())) return t('unknown_date'); const now = new Date(), diff = now - date, days = Math.floor(diff / (1000*60*60*24)); if (days === 0) return t('today'); if (days === 1) return t('yesterday'); if (days < 7) return `${days} ${t('days_ago')}`; return date.toLocaleDateString(); }
-    
-    function updateWelcomeMessage() {
-        const welcomeDiv = document.getElementById('welcomeMessage');
-        if (welcomeDiv) welcomeDiv.innerHTML = marked.parse(`<p><strong>${t('welcome_title')}</strong></p><p>${t('welcome_context')}</p><p><strong>${t('models_title')}</strong><br>• ${t('model_groq')}<br>• ${t('model_cerebras')}<br>• ${t('model_cloudflare')}<br>• ${t('model_gemini')}</p><p>${t('news_hint')}</p>`);
-    }
-    function updateUILanguage() { document.getElementById('userInput').placeholder = t('placeholder'); document.getElementById('sendBtn').innerHTML = t('send'); updateWelcomeMessage(); }
-    function switchLanguage(lang) { currentLang = lang; localStorage.setItem('language', lang); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); updateUILanguage(); }
-    
-    function loadUserData() {
-        const key = currentUser ? `chats_${currentUser}` : 'chats_guest';
-        const saved = localStorage.getItem(key);
-        chats = saved ? JSON.parse(saved) : {};
-        if (Object.keys(chats).length === 0) createNewChat();
-        else { const lastKey = currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest'; const lastId = localStorage.getItem(lastKey); if (lastId && chats[lastId]) currentChatId = lastId; else currentChatId = Object.keys(chats)[0]; loadChat(currentChatId); }
-        renderHistory();
-    }
-    function saveUserData() { const key = currentUser ? `chats_${currentUser}` : 'chats_guest'; localStorage.setItem(key, JSON.stringify(chats)); localStorage.setItem(currentUser ? `lastChatId_${currentUser}` : 'lastChatId_guest', currentChatId); }
-    function updateUserUI() {
-        const avatar = document.getElementById('userAvatar');
-        const nameSpan = document.querySelector('#userNameDisplay');
-        if (currentUser) { avatar.innerHTML = currentUser.charAt(0).toUpperCase(); if (nameSpan) nameSpan.innerHTML = `👤 ${currentUser}`; }
-        else { avatar.innerHTML = '👤'; if (nameSpan) nameSpan.innerHTML = `👤 ${t('guest')}`; }
-        document.getElementById('logoutMenuItem').style.display = currentUser ? 'flex' : 'none';
-    }
-    function createNewChat() { currentChatId = Date.now().toString(); chats[currentChatId] = { id: currentChatId, title: 'Новый чат', messages: [{ role: 'bot', content: 'Привет! Я Cognify AI. Задай любой вопрос!' }], createdAt: new Date().toISOString() }; saveUserData(); renderHistory(); loadChat(currentChatId); showToast('✨ Новый чат'); }
-    function loadChat(chatId) { currentChatId = chatId; const chat = chats[chatId]; if (!chat) return; document.getElementById('chatTitle').innerText = chat.title; const messagesArea = document.getElementById('messagesArea'); messagesArea.innerHTML = ''; chat.messages.forEach(msg => addMessageToUI(msg.content, msg.role === 'user')); document.querySelectorAll('.history-item').forEach(el => { el.classList.remove('active'); if (el.dataset.id === chatId) el.classList.add('active'); }); }
-    
-    async function addMessageToUI(text, isUser) {
-        const messagesArea = document.getElementById('messagesArea');
-        const div = document.createElement('div');
-        div.className = `message ${isUser ? 'user' : 'bot'}`;
-        let content = text;
-        if (!isUser) { try { content = await marked.parse(text); } catch(e) { content = formatMessage(text); } }
-        else { content = formatMessage(text); }
-        div.innerHTML = `<div class="message-avatar">${isUser ? '👤' : '🧠'}</div><div class="message-content">${content}</div>`;
-        if (!isUser) {
-            const actionsDiv = document.createElement('div');
-            actionsDiv.className = 'message-actions';
-            actionsDiv.innerHTML = `<button class="action-btn">📋 Копировать</button>`;
-            actionsDiv.querySelector('.action-btn').onclick = () => { navigator.clipboard.writeText(text); showToast('Скопировано!'); };
-            div.querySelector('.message-content').appendChild(actionsDiv);
-            div.addEventListener('mouseenter', () => actionsDiv.style.opacity = '1');
-            div.addEventListener('mouseleave', () => actionsDiv.style.opacity = '0.7');
-        }
-        messagesArea.appendChild(div);
-        messagesArea.scrollTop = messagesArea.scrollHeight;
-    }
-    
-    function saveAndAddMessage(text, isUser) {
-        const chat = chats[currentChatId];
-        if (chat) {
-            chat.messages.push({ role: isUser ? 'user' : 'bot', content: text });
-            if (chat.messages.filter(m => m.role === 'user').length === 1 && isUser) {
-                chat.title = text.slice(0, 30) + (text.length > 30 ? '...' : '');
-                document.getElementById('chatTitle').innerText = chat.title;
-            }
-            saveUserData();
-            renderHistory();
-            if (isUser) { totalMessages++; localStorage.setItem('totalMessages', totalMessages); document.getElementById('statsCount').innerText = totalMessages; }
-        }
-        addMessageToUI(text, isUser);
-    }
-    
-    function renderHistory() {
-        const historyList = document.getElementById('historyList');
-        historyList.innerHTML = '';
-        const sorted = Object.values(chats).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        sorted.forEach(chat => {
-            const item = document.createElement('div');
-            item.className = 'history-item' + (chat.id === currentChatId ? ' active' : '');
-            item.dataset.id = chat.id;
-            item.innerHTML = `<span class="history-title">${escapeHtml(chat.title)}</span><div class="history-actions"><button class="history-btn" onclick="event.stopPropagation(); window.openShareModal('${chat.id}')">🔗</button><button class="history-btn" onclick="event.stopPropagation(); window.deleteChat('${chat.id}')">🗑️</button></div>`;
-            item.onclick = () => loadChat(chat.id);
-            historyList.appendChild(item);
-        });
-    }
-    
-    function showConfirmModal(title, message, onConfirm) {
-        const modal = document.getElementById('customConfirmModal');
-        document.getElementById('confirmTitle').innerText = title;
-        document.getElementById('confirmMessage').innerText = message;
-        window._confirmCallback = onConfirm;
-        modal.classList.add('show');
-    }
-    
-    window.deleteChat = function(chatId) {
-        showConfirmModal('Удалить чат', 'Вы уверены, что хотите удалить этот чат?', () => {
-            delete chats[chatId];
-            saveUserData();
-            const remaining = Object.keys(chats);
-            if (remaining.length === 0) createNewChat();
-            else loadChat(remaining[0]);
-            renderHistory();
-            showToast('Чат удалён');
-        });
-    };
-    
-    function updateCurrentModelBadge() { document.getElementById('currentModelName').innerHTML = modelNames[currentApi] || currentApi; }
-    function switchApi(api) { currentApi = api; localStorage.setItem('currentApi', api); document.querySelectorAll('.api-btn').forEach(btn => { btn.classList.remove('active'); if (btn.dataset.api === api) btn.classList.add('active'); }); updateCurrentModelBadge(); saveAndAddMessage(`Переключено на ${modelNames[api]}`, false); }
-    function showTypingIndicator() { const messagesArea = document.getElementById('messagesArea'); const typingDiv = document.createElement('div'); typingDiv.className = 'message bot'; typingDiv.id = 'typing-indicator'; typingDiv.innerHTML = `<div class="message-avatar">🧠</div><div class="message-content"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`; messagesArea.appendChild(typingDiv); messagesArea.scrollTop = messagesArea.scrollHeight; }
-    function hideTypingIndicator() { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
-    
-    async function sendMessage() {
-        if (isLoading) return;
-        const input = document.getElementById('userInput');
-        const question = input.value.trim();
-        if (!question) return;
-        saveAndAddMessage(question, true);
-        input.value = '';
-        input.style.height = 'auto';
-        const chat = chats[currentChatId];
-        if (!chat) return;
-        const conversationHistory = [];
-        const lastMessages = chat.messages.slice(-10);
-        for (const msg of lastMessages) {
-            if (msg.role === 'user') conversationHistory.push({ role: 'user', content: msg.content });
-            else if (msg.role === 'bot' && !msg.content.includes('Переключено на')) conversationHistory.push({ role: 'assistant', content: msg.content });
-        }
-        conversationHistory.push({ role: 'user', content: question });
-        showTypingIndicator();
-        isLoading = true;
-        const sendBtn = document.getElementById('sendBtn');
-        sendBtn.disabled = true;
-        if (abortController) abortController.abort();
-        abortController = new AbortController();
-        let answer;
-        try {
-            const timeoutId = setTimeout(() => abortController.abort(), 60000);
-            const response = await fetch(`${WORKER_URL}/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: conversationHistory, api: currentApi }), signal: abortController.signal });
-            clearTimeout(timeoutId);
-            const data = await response.json();
-            answer = data.answer || data.error || 'Ошибка API';
-        } catch (err) { answer = err.name === 'AbortError' ? '⏹️ Запрос прерван.' : `Ошибка: ${err.message}`; }
-        abortController = null;
-        hideTypingIndicator();
-        saveAndAddMessage(answer, false);
-        isLoading = false;
-        sendBtn.disabled = false;
-    }
-    
-    function saveNewsStats() { localStorage.setItem('newsStats', JSON.stringify(newsStats)); }
-    window.likeArticle = function(articleId, btn) {
-        if (!newsStats[articleId]) newsStats[articleId] = { views: 0, likes: 0 };
-        const likedKey = `liked_${articleId}`;
-        const isLiked = localStorage.getItem(likedKey) === 'true';
-        if (isLiked) { newsStats[articleId].likes--; localStorage.removeItem(likedKey); btn.classList.remove('liked'); showToast(t('like_removed')); }
-        else { newsStats[articleId].likes++; localStorage.setItem(likedKey, 'true'); btn.classList.add('liked'); showToast(t('like_added')); }
-        saveNewsStats();
-        const likesSpan = document.getElementById(`likes-${articleId}`);
-        if (likesSpan) likesSpan.textContent = formatNumber(newsStats[articleId].likes);
-    };
-    function renderNewsList() {
-        const newsListDiv = document.getElementById('newsList');
-        if (!newsListDiv) return;
-        if (allNews.length === 0) { newsListDiv.innerHTML = `<div class="news-empty">${t('no_news')}</div>`; return; }
-        newsListDiv.innerHTML = allNews.map(article => `<div class="news-card" onclick="window.showFullArticle('${article.id}')"><h3>${escapeHtml(article.title)}</h3><div class="news-meta"><span>📅 ${formatDate(article.published_at)}</span></div><div class="news-summary">${escapeHtml((article.summary || article.content || '').substring(0, 150))}...</div><div class="news-stats"><div class="news-stat ${localStorage.getItem(`liked_${article.id}`) === 'true' ? 'liked' : ''}" onclick="event.stopPropagation(); window.likeArticle('${article.id}', this)">❤️ <span id="likes-${article.id}">${formatNumber(newsStats[article.id]?.likes || 0)}</span></div></div></div>`).join('');
-        const lastVisit = localStorage.getItem('lastNewsVisit') || 0;
-        const newCount = allNews.filter(n => new Date(n.published_at) > new Date(lastVisit)).length;
-        if (newCount > 0) { document.getElementById('newsBadge').textContent = newCount; document.getElementById('newsBadge').style.display = 'inline'; }
-        localStorage.setItem('lastNewsVisit', new Date().toISOString());
-    }
-    window.showFullArticle = function(articleId) { const article = allNews.find(a => a.id === articleId); if (!article) return; let modal = document.getElementById('articleModal'); if (!modal) { modal = document.createElement('div'); modal.id = 'articleModal'; modal.className = 'article-modal'; modal.innerHTML = `<div class="article-modal-content"><button class="close-article-modal" onclick="window.closeArticleModal()">✖</button><div id="articleModalBody"></div></div>`; document.body.appendChild(modal); } document.getElementById('articleModalBody').innerHTML = `<h2>${escapeHtml(article.title)}</h2><div style="margin:16px 0">${escapeHtml(article.content || article.summary || '')}</div>`; modal.classList.add('show'); };
-    window.closeArticleModal = function() { const modal = document.getElementById('articleModal'); if (modal) modal.classList.remove('show'); };
-    
-    // Моковые новости для демонстрации (так как news.json отсутствует)
-    const MOCK_NEWS = {
-        articles: [
-            { id: "1", title: "GPT-5: новые горизонты искусственного интеллекта", summary: "OpenAI анонсирует революционные изменения в следующем поколении языковой модели.", content: "OpenAI представила дорожную карту разработки GPT-5, обещая значительное улучшение рассуждений и мультимодальности.", published_at: new Date().toISOString() },
-            { id: "2", title: "Google DeepMind: новый ИИ для прогнозирования погоды", summary: "Модель превосходит традиционные методы на 90% по точности.", content: "GraphCast от Google DeepMind показывает впечатляющие результаты в предсказании погоды на 10 дней вперед.", published_at: new Date(Date.now() - 86400000).toISOString() },
-            { id: "3", title: "Европейский AI Act: первые ограничения вступают в силу", summary: "Регулирование генеративных моделей начнется в 2025 году.", content: "Евросоюз утвердил первый в мире комплексный закон об искусственном интеллекте.", published_at: new Date(Date.now() - 172800000).toISOString() }
-        ]
-    };
-    
-    async function loadNews() {
-        const newsListDiv = document.getElementById('newsList');
-        if (newsListDiv) newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div></div>';
-        try {
-            const response = await fetch('news.json?t=' + Date.now()).catch(() => null);
-            let data;
-            if (response && response.ok) data = await response.json();
-            else data = MOCK_NEWS; // используем моковые новости, если файл не найден
-            allNews = (data.articles || []).map(a => ({ ...a, id: a.id || Date.now() + Math.random().toString(36) }));
-            renderNewsList();
-        } catch(error) { 
-            allNews = MOCK_NEWS.articles.map(a => ({ ...a, id: a.id || Date.now() + Math.random().toString(36) }));
-            renderNewsList();
-            if (newsListDiv) newsListDiv.innerHTML = newsListDiv.innerHTML; 
-        }
-    }
-    
-    window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); };
-    window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); };
-    window.toggleUserMenu = function() { document.getElementById('userMenu').classList.toggle('show'); };
-    window.showNewsTab = function() { document.getElementById('messagesArea').style.display = 'none'; document.querySelector('.input-area').style.display = 'none'; document.getElementById('newsContainer').style.display = 'block'; loadNews(); document.getElementById('newsBadge').style.display = 'none'; if (window.innerWidth <= 768) window.closeSidebar(); };
-    window.closeNewsTab = function() { document.getElementById('messagesArea').style.display = 'block'; document.querySelector('.input-area').style.display = 'flex'; document.getElementById('newsContainer').style.display = 'none'; };
-    window.openShareModal = function(chatId) { shareChatId = chatId; document.getElementById('shareLinkInput').value = window.location.origin + window.location.pathname + '?share=' + chatId; document.getElementById('shareModal').classList.add('show'); };
-    function closeShareModal() { document.getElementById('shareModal').classList.remove('show'); }
-    function copyChatLink() { copyToClipboard(document.getElementById('shareLinkInput').value); }
-    function getChatText() { const chat = chats[shareChatId]; if (!chat) return ''; return chat.messages.map(m => `${m.role === 'user' ? '👤' : '🧠'}: ${m.content}`).join('\n\n').substring(0, 2000); }
-    function shareToTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getChatText())}`, '_blank'); }
-    function shareToWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(getChatText() + '\n\n' + window.location.href)}`, '_blank'); }
-    function shareToVK() { window.open(`https://vk.com/share.php?url=${encodeURIComponent(window.location.href)}&title=Cognify%20AI`, '_blank'); }
-    function shareToTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getChatText().substring(0, 280))}&url=${encodeURIComponent(window.location.href)}`, '_blank'); }
-    
-    function showAuthModal() { authMode = 'login'; document.getElementById('authTitle').innerHTML = '🔐 Вход'; document.getElementById('authSubmitBtn').innerHTML = 'Войти'; document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться'; document.getElementById('authModal').classList.add('show'); }
-    function toggleAuthMode() { if (authMode === 'login') { authMode = 'register'; document.getElementById('authTitle').innerHTML = '📝 Регистрация'; document.getElementById('authSubmitBtn').innerHTML = 'Зарегистрироваться'; document.getElementById('authSwitch').innerHTML = 'Уже есть аккаунт? Войти'; } else { authMode = 'login'; document.getElementById('authTitle').innerHTML = '🔐 Вход'; document.getElementById('authSubmitBtn').innerHTML = 'Войти'; document.getElementById('authSwitch').innerHTML = 'Нет аккаунта? Зарегистрироваться'; } }
-    function authSubmit() {
-        const username = document.getElementById('authUsername').value.trim();
-        const password = document.getElementById('authPassword').value;
-        if (!username || !password) { showToast('Заполните все поля', true); return; }
-        const users = JSON.parse(localStorage.getItem('users') || '{}');
-        if (authMode === 'register') {
-            if (users[username]) { showToast('Пользователь существует', true); return; }
-            if (password.length < 4) { showToast('Пароль минимум 4 символа', true); return; }
-            users[username] = password;
-            localStorage.setItem('users', JSON.stringify(users));
-            showToast('Регистрация успешна!');
-            toggleAuthMode();
-        } else {
-            if (users[username] !== password) { showToast('Неверный логин или пароль', true); return; }
-            currentUser = username;
-            localStorage.setItem('currentUser', username);
-            updateUserUI();
-            loadUserData();
-            showToast(`Добро пожаловать, ${username}!`);
-            document.getElementById('authModal').classList.remove('show');
-        }
-        document.getElementById('authUsername').value = '';
-        document.getElementById('authPassword').value = '';
-    }
-    function logout() { showConfirmModal('Выход', 'Вы уверены, что хотите выйти?', () => { currentUser = null; localStorage.removeItem('currentUser'); updateUserUI(); loadUserData(); showToast('Вы вышли'); }); }
-    function clearAllData() { showConfirmModal('⚠️ Очистка всех данных', 'Все чаты и история будут удалены без возможности восстановления. Продолжить?', () => { chats = {}; createNewChat(); saveUserData(); renderHistory(); totalMessages = 0; localStorage.setItem('totalMessages', '0'); document.getElementById('statsCount').innerText = '0'; showToast('Все данные очищены'); }); }
-    function exportAllChats() { const data = JSON.stringify(chats, null, 2); const blob = new Blob([data], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `cognify-chats-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url); showToast('Экспорт завершен'); }
-    function importChats() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'application/json'; input.onchange = (e) => { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (event) => { try { const imported = JSON.parse(event.target.result); chats = imported; saveUserData(); renderHistory(); const firstChatId = Object.keys(chats)[0]; if (firstChatId) loadChat(firstChatId); else createNewChat(); showToast('Импорт завершён'); } catch(err) { showToast('Ошибка импорта', true); } }; reader.readAsText(file); }; input.click(); }
-    
-    function initLanguageSelector() { const selector = document.getElementById('languageSelector'); selector.innerHTML = ''; for (const [code, name] of Object.entries(languages)) { const btn = document.createElement('button'); btn.className = 'lang-btn' + (code === currentLang ? ' active' : ''); btn.textContent = name; btn.dataset.lang = code; btn.onclick = () => switchLanguage(code); selector.appendChild(btn); } }
-    function initApiSelector() { const selector = document.getElementById('apiSelector'); selector.innerHTML = ''; const apis = ['groq', 'cerebras', 'cloudflare', 'gemini']; const icons = { groq: '🚀', cerebras: '⚡', cloudflare: '☁️', gemini: '🤖' }; const names = { groq: 'Groq', cerebras: 'Cerebras', cloudflare: 'Cloudflare', gemini: 'Gemini' }; apis.forEach(api => { const btn = document.createElement('button'); btn.className = 'api-btn' + (api === currentApi ? ' active' : ''); btn.innerHTML = `${icons[api]} ${names[api]}`; btn.dataset.api = api; btn.onclick = () => switchApi(api); selector.appendChild(btn); }); }
-    
-    function initDarkTheme() {
-        const themeToggle = document.createElement('div');
-        themeToggle.className = 'theme-toggle';
-        themeToggle.innerHTML = localStorage.getItem('theme') === 'dark' ? '☀️' : '🌙';
-        themeToggle.onclick = () => { document.body.classList.toggle('dark'); const isDark = document.body.classList.contains('dark'); localStorage.setItem('theme', isDark ? 'dark' : 'light'); themeToggle.innerHTML = isDark ? '☀️' : '🌙'; };
-        const headerRight = document.querySelector('.header-right');
-        if (headerRight && !document.querySelector('.theme-toggle')) headerRight.appendChild(themeToggle);
-        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
-    }
-    
-	function addPromptExamples() {
-		const inputArea = document.querySelector('.input-area');
-		if (document.querySelector('.prompt-examples')) return;
-		const examplesDiv = document.createElement('div');
-		examplesDiv.className = 'prompt-examples';
-		examplesDiv.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap; padding: 0 24px 12px; justify-content: center;';
-		examplesDiv.innerHTML = `<a href="https://cognify-ui.github.io/ai-prompt-generator" target="_blank" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;">🎯 500+ готовых промтов для нейросетей →</a>`;
-		inputArea.parentNode.insertBefore(examplesDiv, inputArea);
-	}    
-	
-    document.getElementById('sendBtn').addEventListener('click', sendMessage);
-    document.getElementById('newChatBtn').addEventListener('click', createNewChat);
-    document.getElementById('newsTabBtn').addEventListener('click', window.showNewsTab);
-    document.getElementById('refreshNewsBtn').addEventListener('click', () => loadNews());
-    document.getElementById('closeNewsBtn').addEventListener('click', window.closeNewsTab);
-    document.getElementById('loginMenuItem').addEventListener('click', showAuthModal);
-    document.getElementById('exportMenuItem').addEventListener('click', exportAllChats);
-    document.getElementById('importMenuItem').addEventListener('click', importChats);
-    document.getElementById('clearMenuItem').addEventListener('click', clearAllData);
-    document.getElementById('logoutMenuItem').addEventListener('click', logout);
-    document.getElementById('authSubmitBtn').addEventListener('click', authSubmit);
-    document.getElementById('authSwitch').addEventListener('click', toggleAuthMode);
-    document.getElementById('shareTelegramBtn').addEventListener('click', shareToTelegram);
-    document.getElementById('shareWhatsAppBtn').addEventListener('click', shareToWhatsApp);
-    document.getElementById('ShareVKBtn').addEventListener('click', shareToVK);
-    document.getElementById('shareTwitterBtn').addEventListener('click', shareToTwitter);
-    document.getElementById('copyLinkBtn').addEventListener('click', copyChatLink);
-    document.getElementById('closeShareBtn').addEventListener('click', closeShareModal);
-    document.getElementById('confirmYesBtn').onclick = () => { if (window._confirmCallback) { window._confirmCallback(); } document.getElementById('customConfirmModal').classList.remove('show'); };
-    document.getElementById('confirmNoBtn').onclick = () => document.getElementById('customConfirmModal').classList.remove('show');
-    
-    const textarea = document.getElementById('userInput');
-    textarea.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
-    textarea.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-    document.addEventListener('click', (e) => { const menu = document.getElementById('userMenu'); const avatar = document.getElementById('userAvatar'); if (menu && !menu.contains(e.target) && !avatar.contains(e.target)) menu.classList.remove('show'); });
-    
-    document.getElementById('statsCount').innerText = totalMessages;
-    initLanguageSelector();
-    initApiSelector();
-    updateUserUI();
-    loadUserData();
-    updateUILanguage();
-    updateCurrentModelBadge();
-    updateWelcomeMessage();
-    initDarkTheme();
-    addPromptExamples();
-    
-    window.createNewChat = createNewChat;
-    window.deleteChat = window.deleteChat;
-    window.openShareModal = window.openShareModal;
-    window.showNewsTab = window.showNewsTab;
-    window.closeNewsTab = window.closeNewsTab;
-})();
-</script>
 </body>
 </html>
