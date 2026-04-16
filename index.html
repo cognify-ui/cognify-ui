@@ -106,12 +106,13 @@
         .send-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 30px; padding: 8px 24px; color: white; cursor: pointer; font-weight: 600; transition: all 0.3s; }
         .send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         
-        /* Новости */
+        /* Новости - Ленточный режим */
         .news-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 50; overflow-y: auto; display: none; }
         .news-header { padding: 16px 24px; border-bottom: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; background: white; position: sticky; top: 0; z-index: 10; }
         .news-list { padding: 20px; }
-        .news-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid #e9ecef; transition: all 0.3s; cursor: pointer; }
+        .news-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid #e9ecef; transition: all 0.3s; cursor: pointer; display: flex; gap: 16px; }
         .news-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: #667eea; }
+        .news-card-content { flex: 1; }
         .news-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; color: #212529; }
         .news-meta { font-size: 12px; color: #6c757d; margin-bottom: 12px; display: flex; gap: 16px; flex-wrap: wrap; }
         .news-summary { color: #495057; line-height: 1.5; font-size: 14px; margin-top: 8px; }
@@ -119,8 +120,12 @@
         .news-stat { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #6c757d; cursor: pointer; padding: 8px 12px; border-radius: 20px; transition: all 0.2s; }
         .news-stat:hover { background: #f8f9fa; }
         .news-stat.liked { color: #dc3545; }
-        .news-preview-img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 16px; background: #f0f0f0; }
-        .skeleton-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #e0e0e0; }
+        .news-preview-img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; background: #f0f0f0; flex-shrink: 0; }
+        .load-more-btn { display: block; width: 200px; margin: 20px auto; padding: 12px 24px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 30px; cursor: pointer; text-align: center; font-weight: 600; transition: all 0.2s; }
+        .load-more-btn:hover { background: #667eea; color: white; border-color: #667eea; }
+        .skeleton-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #e0e0e0; display: flex; gap: 16px; }
+        .skeleton-img { width: 120px; height: 120px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 12px; }
+        .skeleton-content { flex: 1; }
         .skeleton-title { height: 20px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; width: 70%; margin-bottom: 10px; }
         .skeleton-meta { height: 14px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; width: 40%; margin-bottom: 10px; }
         .skeleton-text { height: 12px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; margin-bottom: 6px; }
@@ -157,6 +162,7 @@
         body.dark .news-header, body.dark .skeleton-card { background: #16213e; }
         body.dark .news-stat:hover { background: #2c3e50; }
         body.dark .news-action-btn { background: #1f2a44; color: #e0e0e0; border-color: #2c3e50; }
+        body.dark .load-more-btn { background: #1f2a44; color: #e0e0e0; border-color: #2c3e50; }
         
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -280px; height: 100vh; }
@@ -166,6 +172,8 @@
             .sidebar-overlay.show { display: block; }
             .news-card h3 { font-size: 16px; }
             .article-modal-content { padding: 20px; }
+            .news-card { flex-direction: column; }
+            .news-preview-img { width: 100%; height: 160px; }
         }
     </style>
 </head>
@@ -228,6 +236,7 @@
                 </div>
             </div>
             <div class="news-list" id="newsList"></div>
+            <div id="loadMoreContainer" style="text-align: center; padding: 20px;"></div>
         </div>
     </div>
 </div>
@@ -287,11 +296,15 @@
     let currentLang = localStorage.getItem('language') || 'ru';
     let isLoading = false;
     let abortController = null;
+    
+    // Для ленточной подгрузки
+    let displayedCount = 10;
+    const NEWS_PER_PAGE = 10;
 
     const modelNames = { groq: '🚀 Groq', cerebras: '⚡ Cerebras', cloudflare: '☁️ Cloudflare', gemini: '🤖 Gemini' };
     const translations = {
-        ru: { welcome_title: 'Привет! Я Cognify AI', welcome_context: 'Задай любой вопрос, и я отвечу с использованием контекста диалога.', models_title: 'Доступные модели:', model_groq: '🚀 Groq — самый быстрый', model_cerebras: '⚡ Cerebras — 14,400 запросов/день', model_cloudflare: '☁️ Cloudflare — глобальная сеть', model_gemini: '🤖 Gemini — мультимодальная', news_hint: '📰 Нажми «Новости AI» в меню, чтобы читать свежие новости', placeholder: 'Напиши свой вопрос...', send: 'Отправить', guest: 'Гость', login: 'Войти', export_chats: 'Экспорт чатов', clear_all: 'Очистить всё', logout: 'Выйти', today: 'сегодня', yesterday: 'вчера', days_ago: 'дня назад', unknown_date: 'Дата неизвестна', like_added: 'Лайк поставлен!', like_removed: 'Лайк убран', share: 'Поделиться', no_news: 'Новостей пока нет', load_error: 'Не удалось загрузить новости' },
-        en: { welcome_title: 'Hi! I am Cognify AI', welcome_context: 'Ask any question, I will answer using conversation context.', models_title: 'Available models:', model_groq: '🚀 Groq — fastest', model_cerebras: '⚡ Cerebras — 14,400 requests/day', model_cloudflare: '☁️ Cloudflare — global network', model_gemini: '🤖 Gemini — multimodal', news_hint: '📰 Click "AI News" in the menu to read latest news', placeholder: 'Write your question...', send: 'Send', guest: 'Guest', login: 'Login', export_chats: 'Export chats', clear_all: 'Clear all', logout: 'Logout', today: 'today', yesterday: 'yesterday', days_ago: 'days ago', unknown_date: 'Date unknown', like_added: 'Liked!', like_removed: 'Like removed', share: 'Share', no_news: 'No news yet', load_error: 'Failed to load news' }
+        ru: { welcome_title: 'Привет! Я Cognify AI', welcome_context: 'Задай любой вопрос, и я отвечу с использованием контекста диалога.', models_title: 'Доступные модели:', model_groq: '🚀 Groq — самый быстрый', model_cerebras: '⚡ Cerebras — 14,400 запросов/день', model_cloudflare: '☁️ Cloudflare — глобальная сеть', model_gemini: '🤖 Gemini — мультимодальная', news_hint: '📰 Нажми «Новости AI» в меню, чтобы читать свежие новости', placeholder: 'Напиши свой вопрос...', send: 'Отправить', guest: 'Гость', login: 'Войти', export_chats: 'Экспорт чатов', clear_all: 'Очистить всё', logout: 'Выйти', today: 'сегодня', yesterday: 'вчера', days_ago: 'дня назад', unknown_date: 'Дата неизвестна', like_added: 'Лайк поставлен!', like_removed: 'Лайк убран', share: 'Поделиться', no_news: 'Новостей пока нет', load_error: 'Не удалось загрузить новости', load_more: 'Загрузить ещё' },
+        en: { welcome_title: 'Hi! I am Cognify AI', welcome_context: 'Ask any question, I will answer using conversation context.', models_title: 'Available models:', model_groq: '🚀 Groq — fastest', model_cerebras: '⚡ Cerebras — 14,400 requests/day', model_cloudflare: '☁️ Cloudflare — global network', model_gemini: '🤖 Gemini — multimodal', news_hint: '📰 Click "AI News" in the menu to read latest news', placeholder: 'Write your question...', send: 'Send', guest: 'Guest', login: 'Login', export_chats: 'Export chats', clear_all: 'Clear all', logout: 'Logout', today: 'today', yesterday: 'yesterday', days_ago: 'days ago', unknown_date: 'Date unknown', like_added: 'Liked!', like_removed: 'Like removed', share: 'Share', no_news: 'No news yet', load_error: 'Failed to load news', load_more: 'Load more' }
     };
     const languages = { ru: '🇷🇺 Русский', en: '🇬🇧 English' };
     
@@ -302,6 +315,20 @@
     function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => showToast('Скопировано!')); }
     function formatNumber(num) { if (num >= 1000000) return (num/1000000).toFixed(1)+'M'; if (num>=1000) return (num/1000).toFixed(1)+'K'; return num.toString(); }
     function formatDate(dateStr) { if (!dateStr) return t('unknown_date'); const date = new Date(dateStr); if (isNaN(date.getTime())) return t('unknown_date'); const now = new Date(), diff = now - date, days = Math.floor(diff / (1000*60*60*24)); if (days === 0) return t('today'); if (days === 1) return t('yesterday'); if (days < 7) return `${days} ${t('days_ago')}`; return date.toLocaleDateString(); }
+    
+    // Очистка текста от маркдаун-разметки
+    function cleanMarkdown(text) {
+        if (!text) return '';
+        // Убираем ![alt](url) - маркдаун изображений
+        let cleaned = text.replace(/!\[.*?\]\(.*?\)/g, '');
+        // Убираем [text](url) - маркдаун ссылок, оставляем текст
+        cleaned = cleaned.replace(/\[(.*?)\]\(.*?\)/g, '$1');
+        // Убираем **bold** и *italic*
+        cleaned = cleaned.replace(/\*\*/g, '').replace(/\*/g, '');
+        // Убираем лишние пробелы
+        cleaned = cleaned.replace(/\s+/g, ' ').trim();
+        return cleaned;
+    }
     
     function updateWelcomeMessage() {
         const welcomeDiv = document.getElementById('welcomeMessage');
@@ -457,20 +484,40 @@
     function renderNewsList() {
         const newsListDiv = document.getElementById('newsList');
         if (!newsListDiv) return;
-        if (allNews.length === 0) { newsListDiv.innerHTML = `<div class="news-empty">${t('no_news')}</div>`; return; }
-        newsListDiv.innerHTML = allNews.map(article => {
+        if (allNews.length === 0) { 
+            newsListDiv.innerHTML = `<div class="news-empty">${t('no_news')}</div>`;
+            return; 
+        }
+        
+        const displayNews = allNews.slice(0, displayedCount);
+        newsListDiv.innerHTML = displayNews.map(article => {
             let imageHtml = '';
             if (article.preview_image) {
                 imageHtml = `<img src="${article.preview_image}" class="news-preview-img" loading="lazy" onerror="this.style.display='none'">`;
             }
+            const cleanSummary = cleanMarkdown(article.summary || article.content || '').substring(0, 150);
             return `<div class="news-card" onclick="window.showFullArticle('${article.id}')">
                 ${imageHtml}
-                <h3>${escapeHtml(article.title)}</h3>
-                <div class="news-meta"><span>📅 ${formatDate(article.published_at)}</span><span>📰 ${escapeHtml(article.source || 'Cognify AI')}</span></div>
-                <div class="news-summary">${escapeHtml((article.summary || article.content || '').substring(0, 200))}...</div>
-                <div class="news-stats"><div class="news-stat ${localStorage.getItem(`liked_${article.id}`) === 'true' ? 'liked' : ''}" onclick="event.stopPropagation(); window.likeArticle('${article.id}', this)">❤️ <span id="likes-${article.id}">${formatNumber(newsStats[article.id]?.likes || 0)}</span></div><div class="news-stat">🔗 Читать далее →</div></div>
+                <div class="news-card-content">
+                    <h3>${escapeHtml(article.title)}</h3>
+                    <div class="news-meta"><span>📅 ${formatDate(article.published_at)}</span><span>📰 ${escapeHtml(article.source || 'Cognify AI')}</span></div>
+                    <div class="news-summary">${escapeHtml(cleanSummary)}...</div>
+                    <div class="news-stats"><div class="news-stat ${localStorage.getItem(`liked_${article.id}`) === 'true' ? 'liked' : ''}" onclick="event.stopPropagation(); window.likeArticle('${article.id}', this)">❤️ <span id="likes-${article.id}">${formatNumber(newsStats[article.id]?.likes || 0)}</span></div><div class="news-stat">🔗 Читать далее →</div></div>
+                </div>
             </div>`;
         }).join('');
+        
+        // Кнопка "Загрузить ещё"
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
+        if (displayedCount < allNews.length) {
+            loadMoreContainer.innerHTML = `<button class="load-more-btn" id="loadMoreBtn">📰 ${t('load_more')} (${allNews.length - displayedCount})</button>`;
+            document.getElementById('loadMoreBtn').onclick = () => {
+                displayedCount += NEWS_PER_PAGE;
+                renderNewsList();
+            };
+        } else {
+            loadMoreContainer.innerHTML = '';
+        }
         
         const lastVisit = localStorage.getItem('lastNewsVisit') || 0;
         const newCount = allNews.filter(n => new Date(n.published_at) > new Date(lastVisit)).length;
@@ -503,7 +550,9 @@
             }
         }
         
-        const articleText = article.content || article.summary || '';
+        let articleText = article.content || article.summary || '';
+        // Очищаем от маркдаун-разметки перед рендерингом
+        articleText = cleanMarkdown(articleText);
         contentHtml += `<div style="margin-top: 16px;">${marked.parse(articleText)}</div>`;
         
         if (article.link && article.link !== '#') {
@@ -521,7 +570,10 @@
     
     async function loadNews() {
         const newsListDiv = document.getElementById('newsList');
-        if (newsListDiv) newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div><div class="skeleton-text"></div></div>';
+        if (newsListDiv) {
+            newsListDiv.innerHTML = '<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-content"><div class="skeleton-title"></div><div class="skeleton-meta"></div><div class="skeleton-text"></div><div class="skeleton-text"></div></div></div>'.repeat(3);
+        }
+        displayedCount = NEWS_PER_PAGE;
         try {
             const response = await fetch('news.json?t=' + Date.now());
             let data;
@@ -545,8 +597,20 @@
     window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); };
     window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); };
     window.toggleUserMenu = function() { document.getElementById('userMenu').classList.toggle('show'); };
-    window.showNewsTab = function() { document.getElementById('messagesArea').style.display = 'none'; document.querySelector('.input-area').style.display = 'none'; document.getElementById('newsContainer').style.display = 'block'; loadNews(); document.getElementById('newsBadge').style.display = 'none'; if (window.innerWidth <= 768) window.closeSidebar(); };
-    window.closeNewsTab = function() { document.getElementById('messagesArea').style.display = 'block'; document.querySelector('.input-area').style.display = 'flex'; document.getElementById('newsContainer').style.display = 'none'; };
+    window.showNewsTab = function() { 
+        document.getElementById('messagesArea').style.display = 'none'; 
+        document.querySelector('.input-area').style.display = 'none'; 
+        document.getElementById('newsContainer').style.display = 'block'; 
+        displayedCount = NEWS_PER_PAGE;
+        loadNews(); 
+        document.getElementById('newsBadge').style.display = 'none'; 
+        if (window.innerWidth <= 768) window.closeSidebar(); 
+    };
+    window.closeNewsTab = function() { 
+        document.getElementById('messagesArea').style.display = 'block'; 
+        document.querySelector('.input-area').style.display = 'flex'; 
+        document.getElementById('newsContainer').style.display = 'none'; 
+    };
     window.openShareModal = function(chatId) { shareChatId = chatId; document.getElementById('shareLinkInput').value = window.location.origin + window.location.pathname + '?share=' + chatId; document.getElementById('shareModal').classList.add('show'); };
     function closeShareModal() { document.getElementById('shareModal').classList.remove('show'); }
     function copyChatLink() { copyToClipboard(document.getElementById('shareLinkInput').value); }
@@ -613,7 +677,7 @@
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
     document.getElementById('newChatBtn').addEventListener('click', createNewChat);
     document.getElementById('newsTabBtn').addEventListener('click', window.showNewsTab);
-    document.getElementById('refreshNewsBtn').addEventListener('click', () => loadNews());
+    document.getElementById('refreshNewsBtn').addEventListener('click', () => { displayedCount = NEWS_PER_PAGE; loadNews(); });
     document.getElementById('closeNewsBtn').addEventListener('click', window.closeNewsTab);
     document.getElementById('loginMenuItem').addEventListener('click', showAuthModal);
     document.getElementById('exportMenuItem').addEventListener('click', exportAllChats);
