@@ -465,14 +465,27 @@
         if (likesSpan) likesSpan.textContent = formatNumber(newsStats[articleId].likes);
     };
     
+    function isValidArticleLink(url) {
+        if (!url) return false;
+        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?|$)/i;
+        return url.startsWith('http') && !imageExtensions.test(url);
+    }
+    
     function getArticleLink(article) {
-        if (article.link && article.link !== '#' && article.link !== '') {
+        if (article.link && isValidArticleLink(article.link)) {
+            return article.link;
+        }
+        if (article.link && article.link.startsWith('http')) {
             return article.link;
         }
         const content = article.content || article.summary || '';
-        const urlMatch = content.match(/https?:\/\/[^\s\)\]\>]+/);
-        if (urlMatch) {
-            return urlMatch[0];
+        const urlMatches = content.match(/https?:\/\/[^\s\)\]\>]+/g);
+        if (urlMatches) {
+            for (const url of urlMatches) {
+                if (isValidArticleLink(url)) {
+                    return url;
+                }
+            }
         }
         return null;
     }
@@ -488,7 +501,7 @@
         const displayNews = allNews.slice(0, displayedCount);
         newsListDiv.innerHTML = displayNews.map(article => {
             let imageHtml = '';
-            if (article.preview_image) {
+            if (article.preview_image && isValidArticleLink(article.preview_image)) {
                 imageHtml = `<img src="${article.preview_image}" class="news-preview-img" loading="lazy" onerror="this.style.display='none'">`;
             }
             const cleanSummary = cleanMarkdown(article.summary || article.content || '').substring(0, 150);
@@ -535,29 +548,28 @@
         
         let contentHtml = `<h2>${escapeHtml(article.title)}</h2>`;
         
-        if (article.preview_image) {
+        // Только ОДНА картинка в начале статьи (preview_image)
+        if (article.preview_image && isValidArticleLink(article.preview_image)) {
             contentHtml += `<div style="margin: 16px 0; text-align: center;"><img src="${article.preview_image}" style="max-width: 100%; border-radius: 12px;" loading="lazy" onerror="this.style.display='none'"></div>`;
         }
         
-        if (article.images && article.images.length > 0) {
-            for (const img of article.images.slice(0, 5)) {
-                contentHtml += `<img src="${img}" style="max-width: 100%; border-radius: 12px; margin: 12px 0;" loading="lazy" onerror="this.style.display='none'">`;
-            }
-        }
-        
+        // Очищаем контент от маркдауна и HTML
         let articleText = article.content || article.summary || '';
         articleText = cleanMarkdown(articleText);
-        contentHtml += `<div style="margin-top: 16px;">${marked.parse(articleText)}</div>`;
+        // Убираем все ссылки на изображения из текста, чтобы не было дублей
+        articleText = articleText.replace(/!\[.*?\]\(.*?\)/g, '');
+        articleText = articleText.replace(/<img[^>]*>/g, '');
+        
+        contentHtml += `<div style="margin-top: 16px; line-height: 1.7;">${marked.parse(articleText)}</div>`;
         
         const articleLink = getArticleLink(article);
         if (articleLink) {
             contentHtml += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e9ecef;">
-                <a href="${articleLink}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 600;">📖 Читать полную версию на источнике →</a>
+                <a href="${articleLink}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; font-weight: 600;">📖 Читать полную версию на источнике →</a>
             </div>`;
         } else if (article.source && article.source !== 'Cognify AI') {
             contentHtml += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e9ecef;">
                 <p style="color: #6c757d; font-size: 14px;">📌 Источник: ${escapeHtml(article.source)}</p>
-                <p style="color: #6c757d; font-size: 14px;">⚠️ Прямая ссылка на оригинал отсутствует в RSS-ленте</p>
             </div>`;
         }
         
@@ -666,16 +678,16 @@
         if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
     }
     
-	function addPromptExamples() {
-		const inputArea = document.querySelector('.input-area');
-		if (document.querySelector('.prompt-examples')) return;
-		const examplesDiv = document.createElement('div');
-		examplesDiv.className = 'prompt-examples';
-		examplesDiv.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap; padding: 0 24px 12px; justify-content: center;';
-		examplesDiv.innerHTML = `<a href="https://cognify-ui.github.io/ai-prompt-generator" target="_blank" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;">🎯 500+ готовых промтов для нейросетей →</a>`;
-		inputArea.parentNode.insertBefore(examplesDiv, inputArea);
-	}    
-	
+    function addPromptExamples() {
+        const inputArea = document.querySelector('.input-area');
+        if (document.querySelector('.prompt-examples')) return;
+        const examplesDiv = document.createElement('div');
+        examplesDiv.className = 'prompt-examples';
+        examplesDiv.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap; padding: 0 24px 12px; justify-content: center;';
+        examplesDiv.innerHTML = `<a href="https://cognify-ui.github.io/ai-prompt-generator" target="_blank" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;">🎯 500+ готовых промтов для нейросетей →</a>`;
+        inputArea.parentNode.insertBefore(examplesDiv, inputArea);
+    }    
+    
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
     document.getElementById('newChatBtn').addEventListener('click', createNewChat);
     document.getElementById('newsTabBtn').addEventListener('click', window.showNewsTab);
