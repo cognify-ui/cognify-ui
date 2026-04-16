@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Агрегатор реальных новостей - полные тексты + картинки
+Агрегатор реальных новостей - всегда сохраняет ссылки на оригиналы
 """
 
 import json
@@ -16,10 +16,9 @@ MAX_ARTICLES = 500
 
 # RSS-источники
 RSS_FEEDS = {
-    "Habr IT": "https://habr.com/ru/rss/hub/it_news/",
     "Habr All": "https://habr.com/ru/rss/hub/all/",
+    "Habr IT": "https://habr.com/ru/rss/hub/it_news/",
     "TechCrunch": "https://feeds.feedburner.com/TechCrunch",
-    "The Verge": "https://www.theverge.com/rss/index.xml",
     "Wired": "https://www.wired.com/feed/rss",
 }
 
@@ -31,10 +30,10 @@ def clean_cdata(text):
     return text.strip()
 
 def clean_html(text):
-    """Очищает HTML, но сохраняет изображения"""
+    """Очищает HTML от тегов"""
     if not text:
         return ""
-    return text
+    return BeautifulSoup(text, 'html.parser').get_text().strip()
 
 def extract_images_from_html(html_text):
     """Извлекает все изображения из HTML"""
@@ -53,65 +52,38 @@ def extract_images_from_html(html_text):
     
     return images
 
-def html_to_markdown(html_text):
-    """Конвертирует HTML в Markdown с сохранением изображений"""
-    if not html_text:
-        return ""
+def extract_link_from_item(item):
+    """Извлекает ссылку из RSS-элемента любым способом"""
+    # Пробуем link
+    link_elem = item.find('link')
+    if link_elem:
+        link_text = link_elem.get_text(strip=True)
+        if link_text and link_text.startswith('http'):
+            return link_text
+        if link_elem.get('href') and link_elem.get('href').startswith('http'):
+            return link_elem.get('href')
     
-    soup = BeautifulSoup(html_text, 'html.parser')
+    # Пробуем guid (часто содержит ссылку)
+    guid = item.find('guid')
+    if guid:
+        guid_text = guid.get_text(strip=True)
+        if guid_text and guid_text.startswith('http'):
+            return guid_text
     
-    # Заменяем теги на Markdown
-    for p in soup.find_all('p'):
-        p.insert_before('\n\n')
-        p.unwrap()
+    # Пробуем найти ссылку в comments
+    comments = item.find('comments')
+    if comments:
+        comments_text = comments.get_text(strip=True)
+        if comments_text and comments_text.startswith('http'):
+            return comments_text
     
-    for br in soup.find_all('br'):
-        br.replace_with('\n')
-    
-    for h2 in soup.find_all('h2'):
-        h2.insert_before('\n## ')
-        h2.unwrap()
-    
-    for h3 in soup.find_all('h3'):
-        h3.insert_before('\n### ')
-        h3.unwrap()
-    
-    for strong in soup.find_all(['strong', 'b']):
-        strong.insert_before('**')
-        strong.insert_after('**')
-        strong.unwrap()
-    
-    for em in soup.find_all(['em', 'i']):
-        em.insert_before('*')
-        em.insert_after('*')
-        em.unwrap()
-    
-    for a in soup.find_all('a'):
-        href = a.get('href', '')
-        text = a.get_text()
-        if href:
-            a.replace_with(f'[{text}]({href})')
-    
-    # Изображения в Markdown
-    for img in soup.find_all('img'):
-        src = img.get('src', '')
-        alt = img.get('alt', '')
-        if src and not src.startswith('data:'):
-            if not src.startswith('http'):
-                src = 'https:' + src if src.startswith('//') else src
-            img.replace_with(f'\n\n![{alt}]({src})\n\n')
-    
-    text = str(soup)
-    # Убираем лишние пробелы и переносы
-    text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
-    
-    return text.strip()
+    return None
 
 def fetch_rss_feed(url, source_name):
     """Получает и парсит RSS-ленту"""
     articles = []
     try:
-        response = requests.get(url, timeout=30, headers={
+        response = requests.get(url, timeout=20, headers={
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         })
         response.raise_for_status()
@@ -128,6 +100,13 @@ def fetch_rss_feed(url, source_name):
             if not title:
                 continue
             
+            # Ссылка - ОБЯЗАТЕЛЬНО извлекаем
+            link = extract_link_from_item(item)
+            if not link:
+                # Если ссылки нет, пропускаем эту новость
+                print(f"     ⚠️ Нет ссылки: {title[:50]}...")
+                continue
+            
             # Получаем полный контент
             full_content = ""
             images = []
@@ -137,7 +116,7 @@ def fetch_rss_feed(url, source_name):
             if content_elem:
                 raw_content = clean_cdata(content_elem.get_text(strip=True))
                 images = extract_images_from_html(raw_content)
-                full_content = html_to_markdown(raw_content)
+                full_content = clean_html(raw_content)
             
             # Если нет content:encoded, берем description
             if not full_content:
@@ -145,7 +124,7 @@ def fetch_rss_feed(url, source_name):
                 if desc_elem:
                     raw_desc = clean_cdata(desc_elem.get_text(strip=True))
                     images = extract_images_from_html(raw_desc)
-                    full_content = html_to_markdown(raw_desc)
+                    full_content = clean_html(raw_desc)
             
             # Ограничиваем длину до 5000 символов
             if len(full_content) > 5000:
@@ -157,10 +136,6 @@ def fetch_rss_feed(url, source_name):
             # Первое изображение как превью
             preview_image = images[0] if images else None
             
-            # Ссылка на оригинал
-            link_elem = item.find('link')
-            link = link_elem.get_text(strip=True) if link_elem else ""
-            
             # Дата
             date_elem = item.find('pubDate')
             pub_date = date_elem.get_text(strip=True) if date_elem else datetime.now().isoformat()
@@ -170,7 +145,7 @@ def fetch_rss_feed(url, source_name):
                 "title": title,
                 "summary": summary,
                 "content": full_content,
-                "link": link,
+                "link": link,  # ОБЯЗАТЕЛЬНО сохраняем ссылку
                 "source": source_name,
                 "published_at": pub_date,
                 "tags": ["AI", "технологии", "IT"],
@@ -184,15 +159,15 @@ def fetch_rss_feed(url, source_name):
     return articles
 
 def fetch_all_news():
-    """Собирает новости из всех источников"""
+    """Собирает новости со всех источников"""
     all_articles = []
-    print("📡 Сбор новостей с картинками...")
+    print("📡 Сбор новостей с гарантированными ссылками...")
     print("=" * 50)
     
     for name, url in RSS_FEEDS.items():
         print(f"  📰 {name}...")
         articles = fetch_rss_feed(url, name)
-        print(f"     ✅ {len(articles)} новостей")
+        print(f"     ✅ {len(articles)} новостей (все со ссылками)")
         for art in articles:
             if art['images']:
                 print(f"        🖼️ {len(art['images'])} изображений")
@@ -209,9 +184,9 @@ def fetch_all_news():
     print("=" * 50)
     print(f"📊 Итого: {len(result)} уникальных новостей")
     
-    # Считаем новости с картинками
-    with_images = sum(1 for a in result if a['images'])
-    print(f"🖼️ Новостей с картинками: {with_images}")
+    # Проверяем наличие ссылок
+    with_links = sum(1 for a in result if a.get('link'))
+    print(f"🔗 Новостей со ссылками: {with_links}")
     
     return result
 
@@ -231,7 +206,7 @@ def save_news(articles):
 
 def main():
     print("=" * 55)
-    print("🚀 АГРЕГАТОР НОВОСТЕЙ (полные тексты + картинки)")
+    print("🚀 АГРЕГАТОР НОВОСТЕЙ (с гарантированными ссылками)")
     print(f"🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 55)
     
@@ -243,7 +218,7 @@ def main():
         for i, art in enumerate(articles[:5], 1):
             print(f"   {i}. {art['title'][:60]}...")
             print(f"      📍 {art['source']}")
-            print(f"      📝 Длина: {len(art['content'])} символов")
+            print(f"      🔗 {art.get('link', 'НЕТ ССЫЛКИ!')[:60]}...")
             if art['images']:
                 print(f"      🖼️ Картинок: {len(art['images'])}")
             print()
@@ -252,9 +227,9 @@ def main():
         demo_news = [{
             "id": "1",
             "title": "Добро пожаловать в Cognify AI News!",
-            "summary": "Новости загружаются из RSS-лент с полными текстами до 5000 символов и изображениями.",
+            "summary": "Новости загружаются из RSS-лент с полными текстами до 5000 символов, изображениями и ссылками.",
             "content": "Теперь каждая новость содержит полный текст, картинки и ссылку на оригинал. Наслаждайтесь чтением!",
-            "link": "#",
+            "link": "https://cognify-ui.github.io",
             "source": "Cognify AI",
             "published_at": datetime.now().isoformat(),
             "tags": ["info"],
